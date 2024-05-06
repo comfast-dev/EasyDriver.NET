@@ -5,6 +5,9 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <RootNamespace>Comfast</RootNamespace>
+        <PackageId>EasyDriver</PackageId>
+        <Version>0.1.0</Version>
+        <Company>Comfast</Company>
     </PropertyGroup>
 
     <ItemGroup>

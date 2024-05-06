@@ -6,8 +6,4 @@ public class DriverConfig {
     public bool Reconnect { get; set; }
     public bool AutoClose { get; set; }
     public bool Headless { get; set; } = false;
-    
-    public bool HighlightActions { get; set; }
-    public int TimeoutMs { get; set; }
-    public int? ShortWaitMs { get; set; }
 }

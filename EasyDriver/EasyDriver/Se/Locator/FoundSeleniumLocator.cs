@@ -1,16 +1,15 @@
-using Comfast.EasyDriver.Locator;
-using Comfast.EasyDriver.Selector;
+using Comfast.EasyDriver.Se.Finder;
 using OpenQA.Selenium;
 
-namespace Comfast.EasyDriver.Se;
+namespace Comfast.EasyDriver.Se.Locator;
 
 public class FoundSeleniumLocator : SeleniumLocator, IFoundLocator {
     public IWebElement FoundElement { get; }
 
-    public FoundSeleniumLocator(SelectorChain chain, string? description, IWebElement foundElement) 
+     public FoundSeleniumLocator(SelectorChain chain, string? description, IWebElement foundElement)
         : base(chain, description) {
         FoundElement = foundElement;
     }
-    
+
     protected override IWebElement DoFind() => FoundElement;
 }

@@ -1,16 +1,15 @@
 using Comfast.EasyDriver.Ui;
-using Xunit;
+using static Comfast.EasyDriver.DriverApi;
 
-using static Comfast.EasyDriver.CfApi;
-namespace EasyDriver.Test.Integration;
+namespace EasyDriver.Tests.Integration;
 
 public class InteractionsTest {
-    
-    public InteractionsTest() {        
+
+    public InteractionsTest() {
         new BrowserContent().OpenResourceFile("test.html");
     }
-    
-    [Fact] public void click() {
+
+    [Fact] public void Click() {
         var btn = S("#clicker button");
         var count = S("#clicker span");
 

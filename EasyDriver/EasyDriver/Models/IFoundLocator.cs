@@ -1,7 +1,6 @@
-using Comfast.EasyDriver.Locator;
 using OpenQA.Selenium;
 
-namespace Comfast.EasyDriver.Se;
+namespace Comfast.EasyDriver;
 
 public interface IFoundLocator : ILocator {
     public IWebElement FoundElement { get; }

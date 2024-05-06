@@ -15,12 +15,12 @@ public static class StringExtensions {
 
     public static string? RgxMatch(this string str, string pattern, int capturingGroup = 0) {
         var match = Regex.Match(str, pattern);
-        
-        return match.Success 
-            ? match.Groups[capturingGroup].Value 
+
+        return match.Success
+            ? match.Groups[capturingGroup].Value
             : null;
     }
-    
+
     public static string MaxLength(this string str, int length) {
         return str.Length <= length ? str : str.Substring(0, length);
     }

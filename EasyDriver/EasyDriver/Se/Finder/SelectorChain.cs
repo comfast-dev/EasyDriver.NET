@@ -1,4 +1,4 @@
-namespace Comfast.EasyDriver.Selector;
+namespace Comfast.EasyDriver.Se.Finder;
 
 /// <summary>
 /// Represent XPATH/CSS selector e.g.
@@ -12,15 +12,15 @@ namespace Comfast.EasyDriver.Selector;
 public class SelectorChain {
     private const string Separator = " >> ";
     private readonly string _chain;
-    
+
     public SelectorChain(string cssOrXpathChain) {
         _chain = cssOrXpathChain;
     }
-    
+
     public SelectorChain Add(string selector) {
         return new SelectorChain(_chain + Separator + SelectorParser.NormalizeChildSelector(selector));
     }
-    
+
     public string[] Split() => _chain.Split(Separator);
     public override string ToString() => _chain;
 }

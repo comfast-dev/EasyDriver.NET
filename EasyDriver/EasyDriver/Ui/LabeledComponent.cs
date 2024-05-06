@@ -1,5 +1,5 @@
 ﻿using Comfast.EasyDriver.Se;
-using Comfast.EasyDriver.Selector;
+using Comfast.EasyDriver.Se.Locator;
 
 namespace Comfast.EasyDriver.Ui;
 
@@ -8,12 +8,14 @@ namespace Comfast.EasyDriver.Ui;
 /// </summary>
 public abstract class LabeledComponent : BaseComponent {
     public abstract string[] AllLabels { get; }
-    
+
     public string Label { get; }
     public override string Description => $"{GetType().Name}: {Label}";
 
-    public LabeledComponent(string label) { Label = label; }
-    
+    public LabeledComponent(string label) {
+        Label = label;
+    }
+
     public override IFoundLocator Find() {
         try {
             return base.Find();

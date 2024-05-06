@@ -1,11 +1,11 @@
 using System.Text.RegularExpressions;
 using Comfast.Commons.Utils;
 
-namespace Comfast.EasyDriver.Selector;
+namespace Comfast.EasyDriver.Se.Finder;
 
 public class SelectorParser {
     public const string IsXpathPattern = @"^([\(\.]{0,3}\/|\.\.)";
-    
+
     /**
      * If XPATH passed without dot like "//some/xpath" method will add it like: ".//some/xpath".
      * <p>Explanation: Nested XPATH Selectors should start with dot "./" or ".//", that means "from current node"
@@ -18,7 +18,7 @@ public class SelectorParser {
             ? selector.RgxReplace("^/", "./")
             : selector;
     }
-    
+
     /**
      * @param selector string
      * @return true if selector is XPATH

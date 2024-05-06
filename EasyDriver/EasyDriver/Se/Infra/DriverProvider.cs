@@ -1,5 +1,4 @@
-﻿using Comfast.Commons.Utils;
-using OpenQA.Selenium;
+﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 
 namespace Comfast.EasyDriver.Se.Infra;
@@ -7,7 +6,7 @@ namespace Comfast.EasyDriver.Se.Infra;
 /**
  * Return one Driver instance per thread
  */
-public class DriverSource {
+public class DriverProvider {
     private static readonly ThreadLocal<WebDriver> Instances = new(ProvideDriverInstance, true);
     public static WebDriver Driver => GetDriver();
 
@@ -17,16 +16,16 @@ public class DriverSource {
      * Can be called multiple times.
      */
     public static WebDriver GetDriver() {
-        if (Configuration.DriverConfig.Reconnect 
+        if (Configuration.DriverConfig.Reconnect
             && Instances.Values.Count > 1
-            ) {
+           ) {
             throw new Exception(@"
 Reconnect feature isn't compatible with parallel runs. Possible solutions:
 - Set DriverConfig.Reconnect flag to false in AppConfig.json
 - Change runner configuration to run tests in one thread
 ");
         }
-        
+
         return Instances.Value ?? throw new Exception("never happen");
     }
 
@@ -49,7 +48,7 @@ Reconnect feature isn't compatible with parallel runs. Possible solutions:
     private static void AddShutdownHook(WebDriver driver) {
         AppDomain.CurrentDomain.ProcessExit += (s, e) => {
             driver.Close(); // closes browser
-            driver.Dispose(); // closes driver process ( e.g. chromedriver.exe ) 
+            driver.Dispose(); // closes driver process ( e.g. chromedriver.exe )
         };
     }
 
@@ -58,9 +57,9 @@ Reconnect feature isn't compatible with parallel runs. Possible solutions:
      */
     private static ChromeDriver RunNewDriver() {
         ChromeOptions options = new();
-        if(Configuration.DriverConfig.Headless) options.AddArguments("headless");
+        if (Configuration.DriverConfig.Headless) options.AddArguments("headless");
         options.BinaryLocation = Configuration.DriverConfig.BrowserPath;
-        
+
         return new ChromeDriver(Configuration.DriverConfig.DriverPath, options);
     }
 }

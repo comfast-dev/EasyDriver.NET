@@ -1,8 +1,8 @@
-using Comfast.EasyDriver.Locator;
+using Comfast.EasyDriver;
 using Comfast.EasyDriver.Ui;
-using Xunit;
-using static Comfast.EasyDriver.CfApi;
-namespace EasyDriver.Test.Integration;
+using static Comfast.EasyDriver.DriverApi;
+
+namespace EasyDriver.Tests.Integration;
 
 public class FindTest {
     private const string INPUT_VALUE = "some input";
@@ -58,7 +58,7 @@ public class FindTest {
         shouldNotFind(S("#inputForm").S(".//option"));
         shouldNotFind(S("#selectForm").S(".//input"));
     }
-    
+
     [Fact] public void findAll() {
         shouldFindCount(S("form input"), 2);
         shouldFindCount(S("form").S("input"), 1);
@@ -71,7 +71,7 @@ public class FindTest {
         shouldNotFind(S("//form >> .//option"));
         shouldNotFind(S("form >> option"));
         shouldNotFind(S("form").S("select option"));
-        
+
     }
 
     [Fact] public void exists() {
@@ -90,9 +90,9 @@ public class FindTest {
     // }
 
     [Fact] public void isDisplayedDoesntThrowTest() {
-            Assert.True(S("#selectForm >> option").IsDisplayed);
-            // Assert.False(S("#selectForm >> lol >> option").IsDisplayed); // 2nd element not found
-            // Assert.False(S("#selectForm >> option >> lol").IsDisplayed); // 3rd element not found
+        Assert.True(S("#selectForm >> option").IsDisplayed);
+        // Assert.False(S("#selectForm >> lol >> option").IsDisplayed); // 2nd element not found
+        // Assert.False(S("#selectForm >> option >> lol").IsDisplayed); // 3rd element not found
     }
 
     [Fact] void count() {
@@ -103,7 +103,7 @@ public class FindTest {
         shouldFindCount(S("form").S(".//input"), 1);
         shouldFindCount(S("form").S("article"), 0);
     }
-    
+
     [Fact] void autoAddDotInNestedXpath() {
         //here, dot is added to second selector
         shouldFindCount(S("//form").S("//input"), 1);
@@ -111,11 +111,13 @@ public class FindTest {
     }
 
     private void shouldFind(ILocator locator, String expectedText) {
-        Assert.Equal(expectedText, locator.GetAttribute("value")); // format("should find '%s' in:\n'%s'", expectedText, locator)
+        Assert.Equal(expectedText,
+            locator.GetAttribute("value")); // format("should find '%s' in:\n'%s'", expectedText, locator)
     }
 
     private void shouldFindCount(ILocator locator, int expectedCount) {
-        Assert.Equal(locator.Count, expectedCount); //format("should find %d matches of locator:\n%s", expectedCount, locator)
+        Assert.Equal(locator.Count,
+            expectedCount); //format("should find %d matches of locator:\n%s", expectedCount, locator)
     }
 
     private void shouldNotFind(ILocator locator) {

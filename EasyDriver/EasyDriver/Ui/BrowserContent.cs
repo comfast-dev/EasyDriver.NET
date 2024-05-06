@@ -1,5 +1,3 @@
-using Comfast.Commons.Utils;
-
 namespace Comfast.EasyDriver.Ui;
 
 public class BrowserContent {
@@ -9,7 +7,7 @@ public class BrowserContent {
      */
     public void OpenResourceFile(String resourcePath) {
         var path = Path.Combine(Directory.GetCurrentDirectory(), resourcePath);
-        CfApi.NavigateTo(path);
+        DriverApi.NavigateTo(path);
     }
 
     // /**
@@ -21,12 +19,12 @@ public class BrowserContent {
     //     return this;
     // }
     //
-    
+
     /// <summary>
     /// Set body tag content
     /// </summary>
     public BrowserContent SetBody(string bodyHtml) {
-        CfApi.ExecuteJs<object>("document.querySelector('html>body').innerHTML = arguments[0]", bodyHtml);
+        DriverApi.ExecuteJs<object>("document.querySelector('html>body').innerHTML = arguments[0]", bodyHtml);
         return this;
     }
     // /**

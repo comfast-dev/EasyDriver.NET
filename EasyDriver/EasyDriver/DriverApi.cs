@@ -1,13 +1,14 @@
 ﻿using Comfast.Commons.Utils;
-using Comfast.EasyDriver.Se;
+using Comfast.EasyDriver.Se.Locator;
 using OpenQA.Selenium;
 
 namespace Comfast.EasyDriver;
-public class CfApi {
-    public static IWebDriver Driver => Configuration.GetDriver();
-    public static SeleniumLocator S(string cssOrXpath) => new(cssOrXpath);
 
+public static class DriverApi {
+    public static IWebDriver Driver => Configuration.GetDriver();
     public static string CurrentUrl => Driver.Url;
+
+    public static SeleniumLocator S(string cssOrXpath) => new(cssOrXpath);
     public static void NavigateTo(string url) => Driver.Navigate().GoToUrl(url);
 
     public static T ExecuteJs<T>(string jsCode, params object[] args) {
@@ -19,5 +20,3 @@ public class CfApi {
         WaitUtils.WaitFor(action, description, timeoutMs);
     }
 }
-
-

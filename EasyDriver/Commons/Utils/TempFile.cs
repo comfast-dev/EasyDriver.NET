@@ -2,11 +2,11 @@
 
 public class TempFile {
     public string FilePath { get; }
-    
+
     public TempFile(string name) {
         FilePath = Path.Combine(Path.GetTempPath(), name);
     }
-    
+
     public void Write(string content) {
         // Directory.CreateDirectory(Path.GetDirectoryName(FilePath));
         // if (!File.Exists(FilePath)) File.Create(FilePath);

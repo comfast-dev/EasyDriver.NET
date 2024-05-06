@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Comfast.EasyDriver.Locator;
+namespace Comfast.EasyDriver.Se.Finder;
 
 public static class Xpath {
     /**

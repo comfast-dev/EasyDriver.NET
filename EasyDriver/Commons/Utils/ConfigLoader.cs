@@ -7,13 +7,15 @@ public class ConfigLoader {
     public static T Load<T>(string configFilePath = "AppConfig.json", string? configKey = null) {
         using var input = new StreamReader(configFilePath);
         var inputJson = input.ReadToEnd();
-        
-         if (configKey != null) {
-            var jObject = JObject.Parse(inputJson);
-            var jsonKey = jObject[configKey] ?? throw new Exception($"Not found key {configKey} in JSON: {configFilePath}");
-            inputJson = jsonKey.ToString();
-         }
 
-        return JsonConvert.DeserializeObject<T>(inputJson) ?? throw new Exception($"Failed to deserialize JSON: {inputJson.MaxLength(500)}");
+        if (configKey != null) {
+            var jObject = JObject.Parse(inputJson);
+            var jsonKey = jObject[configKey]
+                          ?? throw new Exception($"Not found key {configKey} in JSON: {configFilePath}");
+            inputJson = jsonKey.ToString();
+        }
+
+        return JsonConvert.DeserializeObject<T>(inputJson)
+               ?? throw new Exception($"Failed to deserialize JSON: {inputJson.MaxLength(500)}");
     }
 }

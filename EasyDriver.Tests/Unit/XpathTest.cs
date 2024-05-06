@@ -1,16 +1,15 @@
-﻿using Comfast.EasyDriver.Locator;
-using Xunit;
+﻿using Comfast.EasyDriver.Se.Finder;
 
-namespace EasyDriver.Test.Integration;
+namespace EasyDriver.Tests.Unit;
 
 public class XpathTest {
     [Fact] public void EscapeTextTest() {
-        test("It's \"hard\" text 'to' match", "concat('It', \"'\", 's \"hard\" text ', \"'\", 'to', \"'\", ' match')");
-        test("Some text", "'Some text'");
-        test("I'am", "\"I'am\"");
+        DoTest("It's \"hard\" text 'to' match", "concat('It', \"'\", 's \"hard\" text ', \"'\", 'to', \"'\", ' match')");
+        DoTest("Some text", "'Some text'");
+        DoTest("I'am", "\"I'am\"");
     }
 
-    private void test(string inputText, string expectedEscapedXpathText) {
+    private void DoTest(string inputText, string expectedEscapedXpathText) {
         Assert.Equal(expectedEscapedXpathText, inputText.EscapeXpath());
     }
 }

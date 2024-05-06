@@ -1,0 +1,301 @@
+<!--suppress HtmlFormInputWithoutLabel, HtmlUnknownTag -->
+<html lang="en">
+<head>
+    <style>
+        table {
+            margin-bottom: 20px;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 7px;
+        }
+
+        #testForm p {
+            display: block;
+            margin: 10px;
+            font-size: 15px;
+        }
+
+        #focusAndHover button {
+            color: black
+        }
+
+        #focusAndHover button:hover {
+            color: blue
+        }
+
+        #focusAndHover button:focus {
+            color: red
+        }
+
+        #dragAndDrop div {
+            float: left;
+            width: 100px;
+            min-height: 50px;
+            margin: 10px;
+            background-color: lightsteelblue;
+        }
+
+        @keyframes movingButton {
+            0% {
+                background-color: red;
+                left: 0;
+            }
+            100% {
+                background-color: blue;
+                left: 60%;
+            }
+        }
+
+    </style>
+    <title>Html test examples</title>
+</head>
+<body>
+<h1>Html playground</h1>
+
+<table id="textAndHtml">
+    <tr><th colspan="2">Text and HTML</th></tr>
+    <tr><td>HTML with newlines: </td><td><p> Hello <span>World</span>
+    !</p></td></tr>
+</table>
+
+<table id="isDisplayed">
+    <tr><th colspan="2">isDisplayed</th></tr>
+    <tr><td>Default: </td><td><span class='default'>Hello</span></td></tr>
+    <tr><td>display:none </td><td><span class='displayNone' style='display:none'>Hello</span></td></tr>
+    <tr><td>visibility:hidden</td><td><span class='visibilityHidden' style='visibility:hidden'>Hello</span></td></tr>
+    <tr><td>opacity:0.1 </td><td><span class='opacity01' style='opacity: 0.1'>Hello</span></td></tr>
+    <tr><td>opacity:0 </td><td><span class='opacity0' style='opacity: 0'>Hello</span></td></tr>
+</table>
+
+<form id="testForm">
+    <table>
+        <tr><th colspan="2">Test form</th></tr>
+        <tr class="text"><td>input type=text:</td><td><label><input type="text" value=""></label></td></tr>
+        <tr class="text_abc"><td>input value=abc</td><td><label><input value="abc"></label></td></tr>
+        <tr class="required"><td>input required:</td><td><label><input required></label></td></tr>
+        <tr class="disabled"><td>input disabled:</td><td><label><input disabled></label></td></tr>
+        <tr class="password"><td>input type=password:</td><td><input type="password"></td></tr>
+        <tr class="number"><td>input type=number:</td><td><input type="number"></td></tr>
+        <tr class="email"><td>input type=email:</td><td><input type="email"></td></tr>
+        <tr class="url"><td>input type=url:</td><td><input type="url"></td></tr>
+        <tr class="tel"><td>input type=tel:</td><td><input type="tel"></td></tr>
+        <tr class="date"><td>input type=date:</td><td><input type="date"></td></tr>
+        <tr class="time"><td>input type=time:</td><td><input type="time"></td></tr>
+        <tr class="week"><td>input type=week:</td><td><input type="week"></td></tr>
+        <tr class="month"><td>input type=month:</td><td><input type="month"></td></tr>
+        <tr class="color"><td>input type=color:</td><td><input type="color"></td></tr>
+        <tr class="file"><td>input type=file:</td><td><input type="file"></td></tr>
+        <tr class="multiple"><td>input type=multiple files:</td><td><input type="file" multiple></td></tr>
+        <tr class="range"><td>input type=range:</td><td><input type="range"></td></tr>
+        <tr class="hidden"><td>input type=hidden:</td><td><input type="hidden" value="xyz"></td></tr>
+        <tr class="button"><td>input type=button:</td><td><input type="button" value="Click me"/></td></tr>
+        <tr class="datetime"><td>input type=datetime-local:</td><td><input type="datetime-local"></td></tr>
+        <tr class="textarea"><td> textarea:</td><td><textarea cols="25" rows="2"></textarea></td></tr>
+        <tr class="radio"><td> radio:</td><td>
+            <fieldset>
+                <legend>Radio - Choose your destiny</legend>
+                <label><input type="radio" name="myRadio" value="liuKang">Liu Kang</label>
+                <label><input type="radio" name="myRadio" value="subZero" checked>Rayden</label>
+                <label><input type="radio" name="myRadio" value="johnyCage">Johny Cage</label>
+                <label><input type="radio" name="myRadio" disabled>Goro</label>
+            </fieldset>
+        </td></tr>
+        <tr class="checkboxes"><td> checkboxes:</td><td>
+            <fieldset>
+                <legend>Checkbox - Choose your team</legend>
+                <label><input type="checkbox" name="myCb" checked>Tanya</label>
+                <label><input type="checkbox" name="myCb">Sonya</label>
+                <label><input type="checkbox" name="myCb">Jax</label>
+                <label><input type="checkbox" name="myCb" disabled>Goro</label>
+                <label><input type="checkbox" name="myCb" checked disabled>Shinnok</label>
+            </fieldset>
+        </td></tr>
+        <tr><td> select:</td><td>
+            <select id="singleSelect">
+                <option value="option1">Option 1</option>
+                <option value="option2">Option 2</option>
+                <option value="option3">Option 3</option>
+            </select>
+        </td></tr>
+        <tr><td> multi select:</td><td>
+            <select id="multiSelect" multiple>
+                <option value="option1">Option 1</option>
+                <option value="option2">Option 2</option>
+                <option value="option3">Option 3</option>
+            </select>
+        </td></tr>
+        <tr><td> group select:</td><td>
+            <select id="groupSelect">
+                <optgroup label="Group 1">
+                    <option value="option1">Option 1</option>
+                    <option value="option2">Option 2</option>
+                </optgroup>
+                <optgroup label="Group 2">
+                    <option value="option3">Option 3</option>
+                    <option value="option4">Option 4</option>
+                </optgroup>
+            </select>
+        </td></tr>
+        <tr><td> custom size group select:</td><td>
+            <select id="sizedSelect" size="4">
+                <optgroup label="Group 1">
+                    <option value="option1">Option 1</option>
+                    <option value="option2">Option 2</option>
+                </optgroup>
+                <optgroup label="Group 2">
+                    <option value="option3">Option 3</option>
+                    <option value="option4">Option 4</option>
+                </optgroup>
+            </select>
+        </td></tr>
+        <tr class="reset"><td colspan="2"><input type="reset"></td></tr>
+        <tr class="submit"><td colspan="2"><input type="submit"></td></tr>
+    </table>
+</form>
+
+<table id="interactions">
+    <tr><th colspan="2">Interactions</th></tr>
+    <tr id="clicker">
+        <td>
+            <button onclick="increment(`#clicker .counter`)">Increment</button>
+            <button onclick="setValue(`#clicker .counter`, 0)">Reset</button>
+        </td>
+        <td><p>Clicks count: <span class="counter">0</span></p></td>
+    </tr>
+    <tr id="focusAndHover"><td>focus and hover</td><td>
+        <p>(focused (clicked) button is red, hovered is blue)</p>
+        <button id='one'>One</button>
+        <button id='two'>Two</button>
+        <button id='three'>Three</button>
+    </td></tr>
+    <tr id="dragAndDrop"><td>drag and drop</td><td>
+        <p draggable="true" ondragstart="dragAndDrop.drag(event)" id="dragMe">DRAG ME !</p>
+        <div ondrop="dragAndDrop.drop(event)" ondragover="dragAndDrop.allowDrop(event)">drop zone 1</div>
+        <div ondrop="dragAndDrop.drop(event)" ondragover="dragAndDrop.allowDrop(event)">drop zone 2</div>
+    </td></tr>
+    <tr id="obscured"><td>obscured button</td><td>
+        <button id="obscuredButton" style="width: 100px; margin: 40px 0;">Try to click me</button>
+        <div style="position: absolute; height: 100px; width: 100px; background: rgba(255,0,0,.5); margin-left: 40px; margin-top: -120px;">
+            div over button
+        </div>
+    </td></tr>
+    <tr id="movingButton">
+        <td>Moving button, clicks:<span class="counter">0</span>
+            <button onclick="$('#movingButton .target').style.animation = 'movingButton 1s ease-in-out 1s infinite alternate'">Start</button>
+            <button onclick="setValue(`#movingButton .counter`, 0);$('#movingButton .target').style.animation = ''">Reset</button>
+        </td>
+        <td>
+            <button class="target" style="position: relative;left: 0;" onclick="increment('#movingButton .counter')">I am moving</button>
+        </td></tr>
+    <tr id="countdown">
+        <td>Spawn HTML after timeout<br>
+            <textarea name="html_to_spawn">Hello world</textarea><br>
+            <button name="start" onclick="countdown.start()">Countdown start</button>
+            <input name="timeout" style="width: 40px" value="500">[ms]<br>
+            <button name="reset" onclick="countdown.reset()">Reset</button>
+        </td><td class="target">
+    </td></tr>
+</table>
+<table id="Nested elements">
+    <tr><th colspan="2">Nested elements</th></tr>
+    <tr id="iframes"><td>nested Iframes</td><td>
+        <iframe id="myFrame"></iframe>
+    </td></tr>
+    <tr id="shadowDom"><td>nested Shadow DOM's</td><td>
+        <my-div html="<h3>Hello from shadow</h3>">
+            <my-div html="<h5>We need go deeper</h5>"></my-div>
+        </my-div>
+    </td></tr>
+    <tr id="scrolledDiv"><td>Text scrolled inside div</td><td>
+        <div style="height: 100px; overflow-y: scroll; border: 1px solid black">
+            <div style="height: 200px; background: #ffafaf;">Scroll down to show text</div>
+            <p>Not visible text</p>
+        </div>
+    </td></tr>
+</table>
+
+<script>
+    /// utility functions
+    const $ = css => document.querySelector(css);
+    const setValue = (selector, value) => $(selector).innerText = value;
+    const increment = selector => {
+        const counter = $(selector);
+        counter.innerText = parseInt(counter.innerText) + 1;
+    }
+
+    function DragAndDrop() {
+        this.allowDrop = e => e.preventDefault();
+        this.drag = e => e.dataTransfer.setData("text", e.target.id)
+        this.drop = e => {
+            e.preventDefault();
+            const data = e.dataTransfer.getData("text");
+            e.target.appendChild(document.getElementById(data));
+        }
+    }
+
+    const dragAndDrop = new DragAndDrop();
+
+    function Countdown() {
+        const htmlTextarea = $('#countdown textarea[name=html_to_spawn]');
+        const startBtn = $('#countdown button[name=start]');
+        const timeoutInput = $('#countdown input[name=timeout]');
+        const target = $('#countdown .target');
+        this.reset = () => {
+            timeoutInput.value = 500;
+            target.innerHTML = "";
+        }
+        this.start = () => {
+            startBtn.disabled = true;
+            timeoutInput.disabled = true
+            const timeout = timeoutInput.value;
+            const updateInterval = 50;
+            const interval = setInterval(() => {
+                const time = parseInt(timeoutInput.value);
+                if (time > 0) timeoutInput.value = time - updateInterval;
+            }, updateInterval);
+
+            setTimeout(() => {
+                target.innerHTML = htmlTextarea.value;
+                clearInterval(interval);
+                timeoutInput.value = timeout;
+                startBtn.disabled = false;
+                timeoutInput.disabled = false
+            }, timeout);
+        }
+    }
+
+    const countdown = new Countdown();
+
+    //IFrame setup
+    function fillIframe(iframeCss) {
+        const iframe = document.getElementById(iframeCss).contentWindow.document;
+        iframe.open();
+        iframe.write(`<h3>Hello from iframe</h3><iframe id="nestedIframe"></iframe>`);
+        iframe.close();
+        const nestedIframe = iframe.getElementById('nestedIframe').contentWindow.document;
+        nestedIframe.open();
+        nestedIframe.write(`<h5>We need go deeper</h5>`);
+        nestedIframe.close();
+    }
+
+    fillIframe("myFrame")
+
+
+    //Shadow DOM setup
+    class MyDiv extends HTMLElement {
+        constructor() {
+            super();
+            const shadow = this.attachShadow({mode: "open"});
+            shadow.innerHTML = this.getAttribute("html");
+            for (let child of this.children) shadow.appendChild(child);
+        }
+    }
+
+    customElements.define("my-div", MyDiv);
+
+</script>
+</body>
+</html>

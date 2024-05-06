@@ -1,0 +1,9 @@
+bin
+obj
+*.user
+
+#specflow generated features
+*feature.cs
+
+#visualstudio cache
+.vs/

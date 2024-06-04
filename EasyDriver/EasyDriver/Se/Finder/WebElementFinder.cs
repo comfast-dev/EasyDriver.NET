@@ -40,8 +40,7 @@ public class WebElementFinder : IFinder<IWebElement> {
             // } catch(InvalidSelectorException | NoSuchElementException | InvalidArgumentException | JavascriptException ex) {
         } catch (Exception ex) {
             if (!throwIfNotFound) return null;
-            // throw new ElementFindFail(chain, i, ex);
-            throw new Exception("Element find fail", ex);
+            throw new ElementFindFail(selectors, i, ex);
         }
     }
 
@@ -64,5 +63,18 @@ public class WebElementFinder : IFinder<IWebElement> {
             if (shadowRoot == null) throw;
             return shadowRoot.FindElement(by);
         }
+    }
+}
+
+internal class ElementFindFail : Exception {
+    public ElementFindFail(string[] selectors, int failIndex, Exception cause) : base(BuildErrorMessage(selectors, failIndex, cause), cause) { }
+
+    private static string BuildErrorMessage(string[] selectors, int failIndex, Exception cause) {
+        var separator = SelectorChain.Separator;
+        var offset = selectors.Take(failIndex).Aggregate(0, (acc, x) => acc + x.Length + separator.Length);
+        var spaces = new String(' ', offset);
+
+        return $"\nElement find fail:"
+               + $"\n{string.Join(separator, selectors)}\n{spaces}^\n{spaces}{cause.Message}";
     }
 }

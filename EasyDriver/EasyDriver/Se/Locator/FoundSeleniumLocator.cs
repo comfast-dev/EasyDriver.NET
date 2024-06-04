@@ -11,5 +11,5 @@ public class FoundSeleniumLocator : SeleniumLocator, IFoundLocator {
         FoundElement = foundElement;
     }
 
-    protected override IWebElement DoFind() => FoundElement;
+    public override IWebElement DoFind() => FoundElement;
 }

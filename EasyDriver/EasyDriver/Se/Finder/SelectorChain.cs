@@ -10,7 +10,7 @@ namespace Comfast.EasyDriver.Se.Finder;
 /// //html//table/tr >> td.selected
 /// </summary>
 public class SelectorChain {
-    private const string Separator = " >> ";
+    public const string Separator = " >> ";
     private readonly string _chain;
 
     public SelectorChain(string cssOrXpathChain) {

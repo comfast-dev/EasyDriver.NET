@@ -1,3 +1,5 @@
+using OpenQA.Selenium;
+
 namespace Comfast.EasyDriver;
 
 public interface ILocator {
@@ -22,6 +24,7 @@ public interface ILocator {
     public string GetAttribute(string name);
     public ILocator WaitFor(int? timeoutMs = null, bool throwIfFail = true);
     public ILocator WaitForDisappear(int? timeoutMs = null);
+    public ILocator SendKeys(string text);
 
     // public ILocator Tap();
     // public ILocator Focus();
@@ -34,6 +37,7 @@ public interface ILocator {
     public IFoundLocator Find();
     public IFoundLocator? TryFind();
     public IReadOnlyCollection<IFoundLocator> FindAll();
+    public IWebElement DoFind();
 
     public List<T> Map<T>(Func<IFoundLocator, T> func);
     // public ILocator ForEach(Action<ILocator> func);

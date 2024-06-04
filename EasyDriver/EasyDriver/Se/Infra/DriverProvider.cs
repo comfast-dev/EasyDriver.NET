@@ -60,6 +60,12 @@ Reconnect feature isn't compatible with parallel runs. Possible solutions:
         if (Configuration.DriverConfig.Headless) options.AddArguments("headless");
         options.BinaryLocation = Configuration.DriverConfig.BrowserPath;
 
-        return new ChromeDriver(Configuration.DriverConfig.DriverPath, options);
+        try {
+            return new ChromeDriver(Configuration.DriverConfig.DriverPath, options);
+        } catch (InvalidOperationException e) {
+            if (e.Message.Contains("No process is associated with this object."))
+                throw new Exception("Invalid driver path: " + Configuration.DriverConfig.DriverPath, e);
+            throw;
+        }
     }
 }

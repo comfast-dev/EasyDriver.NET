@@ -14,7 +14,7 @@ public abstract class BaseComponent : ILocator {
 
     protected virtual IWebDriver GetDriver() => Configuration.GetDriver();
 
-    protected virtual IWebElement DoFind() => Finder.Find();
+    public virtual IWebElement DoFind() => Finder.Find();
 
     protected virtual ReadOnlyCollection<IWebElement> DoFindAll() => Finder.FindAll();
 
@@ -48,12 +48,20 @@ public abstract class BaseComponent : ILocator {
         return this;
     }
 
+    public virtual ILocator SendKeys(string text) {
+        DoFind().SendKeys(text);
+        return this;
+    }
+
     public virtual ILocator SetValue(string text) {
         //todo use more logic, handle Inputs, Selects, Checkboxes
         // new AnyInput(DoFind()).SetValue(text)
-        if (Find().TagName != "input") throw new NotImplementedException();
-        var el = DoFind();
 
+        var found = Find();
+        var tag = found.TagName;
+        if (tag != "input" && tag != "textarea") throw new NotImplementedException($"SetValue doesn't handle {tag}. Handle only input / textarea.");
+
+        var el = found.FoundElement;
         el.Clear();
         el.SendKeys(text);
         return this;

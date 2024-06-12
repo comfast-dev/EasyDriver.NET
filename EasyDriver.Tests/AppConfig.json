@@ -1,5 +1,6 @@
 {
   "DriverConfig": {
+    "BrowserName": "chromium",
     "BrowserPath": "C:\\bin\\124\\chromium\\chrome.exe",
     "DriverPath": "C:\\bin\\124\\chromedriver.exe",
     "Reconnect": false,

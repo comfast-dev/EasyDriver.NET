@@ -1,7 +1,4 @@
-﻿using Comfast.EasyDriver;
-using FluentAssertions;
-using Xunit.Sdk;
-using Configuration = Comfast.EasyDriver.Configuration;
+﻿using Configuration = Comfast.EasyDriver.Configuration;
 
 namespace EasyDriver.Tests.Integration;
 

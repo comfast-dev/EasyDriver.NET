@@ -5,19 +5,19 @@ namespace Comfast.EasyDriver.Se.Finder;
 
 public class WebElementFinder : IFinder<IWebElement> {
     private readonly IWebDriver _webDriver;
-    private readonly SelectorChain _chain;
+    private readonly SelectorChain _selector;
 
-    public WebElementFinder(IWebDriver webDriver, SelectorChain chain) {
+    public WebElementFinder(IWebDriver webDriver, SelectorChain selector) {
         _webDriver = webDriver;
-        _chain = chain;
+        _selector = selector;
     }
 
     public IWebElement Find() {
-        return DoFind(true, _chain.Split());
+        return DoFind(true, _selector.Split());
     }
 
     public ReadOnlyCollection<IWebElement> FindAll() {
-        var selectors = _chain.Split();
+        var selectors = _selector.Split();
         if (selectors.Length == 0) throw new Exception("Empty chain, require at least 1 item");
 
         var lastBy = String2By(selectors[selectors.Length - 1]);

@@ -9,6 +9,11 @@ public static class DriverSessionStore {
     private static readonly TempFile SessionTempFile = new("WebDriverSessionInfo.txt");
 
     // ReSharper disable once MemberCanBePrivate.Global
+    /// <summary>
+    /// 1. Extract data needed to connect to the browser: SessionId and driver Url
+    /// 2. Store it in temp file.
+    /// </summary>
+    /// <param name="driver"></param>
     public static void StoreSessionInfo(WebDriver driver) {
         var ssid = driver.ReadField<string>("SessionId.sessionOpaqueKey");
         var uri = driver.ReadField<string>("CommandExecutor.HttpExecutor.remoteServerUri.AbsoluteUri");
@@ -20,7 +25,7 @@ public static class DriverSessionStore {
     /// It is only possible when:
     /// 1. driver process still running e.g. chromedriver.exe
     /// 2. browser still running
-    /// 3. Data is stored - called method <see cref="StoreSessionInfo"/>
+    /// 3. Data is stored - method <see cref="StoreSessionInfo"/> called in previous run
     /// </summary>
     /// <param name="newDriverProvider">WebDriver provider in case of restore fail</param>
     /// <returns></returns>

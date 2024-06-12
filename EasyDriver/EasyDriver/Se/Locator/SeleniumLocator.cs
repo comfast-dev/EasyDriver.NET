@@ -4,14 +4,14 @@ namespace Comfast.EasyDriver.Se.Locator;
 
 public class SeleniumLocator : BaseComponent {
     private readonly WebElementFinder _finder;
-    public override SelectorChain Chain { get; }
+    public override SelectorChain Selector { get; }
     public override string? Description { get; }
 
     public SeleniumLocator(string selector, string? description = null)
         : this(new SelectorChain(selector), description) { }
 
     protected SeleniumLocator(SelectorChain selector, string? description = null) {
-        Chain = selector;
+        Selector = selector;
         Description = description;
 
         var driver = Configuration.GetDriver();
@@ -19,5 +19,5 @@ public class SeleniumLocator : BaseComponent {
     }
 
     public SeleniumLocator S(string selector, string description = null)
-        => new(Chain.Add(selector), description);
+        => new(Selector.Add(selector), description);
 }

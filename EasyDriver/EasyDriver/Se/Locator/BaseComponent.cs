@@ -1,16 +1,18 @@
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 using Comfast.Commons.Utils;
+using Comfast.EasyDriver.Models;
 using Comfast.EasyDriver.Se.Finder;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Interactions;
 
 namespace Comfast.EasyDriver.Se.Locator;
 
 public abstract class BaseComponent : ILocator {
-    public abstract SelectorChain Chain { get; }
+    public abstract SelectorChain Selector { get; }
     public abstract string? Description { get; }
 
-    private WebElementFinder Finder => new(GetDriver(), Chain);
+    private WebElementFinder Finder => new(GetDriver(), Selector);
 
     protected virtual IWebDriver GetDriver() => Configuration.GetDriver();
 
@@ -18,10 +20,10 @@ public abstract class BaseComponent : ILocator {
 
     protected virtual ReadOnlyCollection<IWebElement> DoFindAll() => Finder.FindAll();
 
-    public virtual IFoundLocator Find() => new FoundSeleniumLocator(Chain, Description, DoFind());
+    public virtual IFoundLocator Find() => new FoundSeleniumLocator(Selector, Description, DoFind());
 
     public virtual IReadOnlyCollection<IFoundLocator> FindAll() => DoFindAll()
-        .Select(webEl => new FoundSeleniumLocator(Chain, Description, webEl)).ToList();
+        .Select(webEl => new FoundSeleniumLocator(Selector, Description, webEl)).ToList();
 
     public virtual IFoundLocator? TryFind() {
         try {
@@ -29,6 +31,14 @@ public abstract class BaseComponent : ILocator {
         } catch (Exception) {
             return null;
         }
+    }
+
+    public virtual IFoundLocator Nth(int number) {
+        var all = DoFindAll();
+        if (all.Count < number)
+            throw new Exception($"Not found element #{number}. There are {all.Count} matched by:\n{Selector}");
+
+        return new FoundSeleniumLocator(Selector, Description, all[number - 1]);
     }
 
     public virtual string Text => DoFind().Text;
@@ -59,7 +69,8 @@ public abstract class BaseComponent : ILocator {
 
         var found = Find();
         var tag = found.TagName;
-        if (tag != "input" && tag != "textarea") throw new NotImplementedException($"SetValue doesn't handle {tag}. Handle only input / textarea.");
+        if (tag != "input" && tag != "textarea")
+            throw new NotImplementedException($"SetValue doesn't handle {tag}. Handle only input / textarea.");
 
         var el = found.FoundElement;
         el.Clear();
@@ -70,6 +81,38 @@ public abstract class BaseComponent : ILocator {
     public virtual ILocator Highlight(string cssColor = "red") {
         ExecuteJs($"el.style.border = '2px solid {cssColor}'");
         return this;
+    }
+
+    public virtual ILocator Hover() {
+        new Actions(GetDriver()).MoveToElement(DoFind()).Perform();
+        return this;
+    }
+
+    public virtual ILocator Focus() {
+        ExecuteJs("el.focus()");
+        return this;
+    }
+
+    public virtual ILocator Clear() {
+        DoFind().Clear();
+        return this;
+    }
+
+    public virtual string GetCssValue(string propertyName) {
+        return DoFind().GetCssValue(propertyName);
+    }
+
+    public virtual ILocator DragTo(ILocator target) {
+            IWebElement targetEl = target.DoFind();
+            ExecuteJs(ReadJsFile("dragAndDrop.js") + "executeDragAndDrop(el, arguments[0])", targetEl);
+
+            return this;
+// Selenium native implementation (causes problems)
+// new Actions(getDriver()).dragAndDrop(find(), targetEl).perform();
+    }
+
+    private string ReadJsFile(string jsFileName) {
+        return new StreamReader("EasyDriver\\Js\\" + jsFileName).ReadToEnd();
     }
 
     public ILocator ExecuteJs(string jsCode, params object[] jsArgs) {
@@ -96,6 +139,8 @@ public abstract class BaseComponent : ILocator {
     private object[] FindAndAddToArgs(object[] jsArgs) => new List<object>(jsArgs) { DoFind() }.ToArray();
 
     public virtual string GetAttribute(string name) => DoFind().GetAttribute(name);
+
+    public bool HasAttribute(string name) => GetAttribute(name) != null;
 
     public virtual ILocator WaitFor(int? timeoutMs = null, bool throwIfFail = true) {
         WaitUtils.WaitFor(() => IsDisplayed, "Element displayed.", timeoutMs);

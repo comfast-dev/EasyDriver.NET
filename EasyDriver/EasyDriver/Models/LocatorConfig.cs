@@ -1,4 +1,4 @@
-﻿namespace Comfast.EasyDriver;
+﻿namespace Comfast.EasyDriver.Models;
 
 public class LocatorConfig {
     public bool HighlightActions { get; set; }

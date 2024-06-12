@@ -1,7 +1,13 @@
 using OpenQA.Selenium;
 
-namespace Comfast.EasyDriver;
+namespace Comfast.EasyDriver.Models;
 
+/// <summary>
+/// Represents DOM Element already found.
+/// </summary>
 public interface IFoundLocator : ILocator {
+    /// <summary>
+    /// Instance of WebDriver Element
+    /// </summary>
     public IWebElement FoundElement { get; }
 }

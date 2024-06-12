@@ -1,3 +1,4 @@
+using Comfast.EasyDriver.Models;
 using Comfast.EasyDriver.Se.Finder;
 using OpenQA.Selenium;
 

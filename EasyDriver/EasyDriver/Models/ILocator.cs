@@ -1,6 +1,6 @@
 using OpenQA.Selenium;
 
-namespace Comfast.EasyDriver;
+namespace Comfast.EasyDriver.Models;
 
 public interface ILocator {
 
@@ -27,11 +27,10 @@ public interface ILocator {
     public ILocator SendKeys(string text);
 
     // public ILocator Tap();
-    // public ILocator Focus();
-    // public ILocator Hover();
-    // public ILocator Clear();
-    // public ILocator Type();
-    // public ILocator DragTo(ILocator target);
+    public ILocator Focus();
+    public ILocator Hover();
+    public ILocator Clear();
+    public ILocator DragTo(ILocator target);
     // public ILocator SetChecked(bool checked);
 
     public IFoundLocator Find();
@@ -41,5 +40,5 @@ public interface ILocator {
 
     public List<T> Map<T>(Func<IFoundLocator, T> func);
     // public ILocator ForEach(Action<ILocator> func);
-    // public ILocator GetNth(int number);
+    public IFoundLocator Nth(int number);
 }

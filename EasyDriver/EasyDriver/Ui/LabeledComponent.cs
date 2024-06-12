@@ -1,5 +1,5 @@
-﻿using Comfast.EasyDriver.Se;
-using Comfast.EasyDriver.Se.Locator;
+﻿using Comfast.EasyDriver.Se.Locator;
+using OpenQA.Selenium;
 
 namespace Comfast.EasyDriver.Ui;
 
@@ -16,9 +16,9 @@ public abstract class LabeledComponent : BaseComponent {
         Label = label;
     }
 
-    public override IFoundLocator Find() {
+    public override IWebElement DoFind() {
         try {
-            return base.Find();
+            return base.DoFind();
         } catch (Exception e) {
             var labels = string.Join("\", \"", AllLabels);
             throw new(e.Message + $"\nAvailable {GetType().Name} labels are: \"{labels}\" \n");

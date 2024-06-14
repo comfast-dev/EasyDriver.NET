@@ -10,6 +10,6 @@
   "LocatorConfig": {
     "TimeoutMs": 20000,
     "ShortWaitMs": 3000,
-    "HighlightActions": true
+    "HighlightActions": false
   }
 }

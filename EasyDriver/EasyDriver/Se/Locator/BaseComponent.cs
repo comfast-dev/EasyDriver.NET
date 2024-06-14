@@ -55,11 +55,13 @@ public abstract class BaseComponent : ILocator {
 
     public virtual ILocator Click() {
         DoFind().Click();
+        HighlightIfEnabled();
         return this;
     }
 
     public virtual ILocator SendKeys(string text) {
         DoFind().SendKeys(text);
+        HighlightIfEnabled();
         return this;
     }
 
@@ -75,6 +77,7 @@ public abstract class BaseComponent : ILocator {
         var el = found.FoundElement;
         el.Clear();
         el.SendKeys(text);
+        HighlightIfEnabled();
         return this;
     }
 
@@ -83,18 +86,25 @@ public abstract class BaseComponent : ILocator {
         return this;
     }
 
+    private void HighlightIfEnabled() {
+        if (Configuration.LocatorConfig.HighlightActions) Highlight();
+    }
+
     public virtual ILocator Hover() {
         new Actions(GetDriver()).MoveToElement(DoFind()).Perform();
+        HighlightIfEnabled();
         return this;
     }
 
     public virtual ILocator Focus() {
         ExecuteJs("el.focus()");
+        HighlightIfEnabled();
         return this;
     }
 
     public virtual ILocator Clear() {
         DoFind().Clear();
+        HighlightIfEnabled();
         return this;
     }
 
@@ -106,6 +116,7 @@ public abstract class BaseComponent : ILocator {
             IWebElement targetEl = target.DoFind();
             ExecuteJs(ReadJsFile("dragAndDrop.js") + "executeDragAndDrop(el, arguments[0])", targetEl);
 
+            HighlightIfEnabled();
             return this;
 // Selenium native implementation (causes problems)
 // new Actions(getDriver()).dragAndDrop(find(), targetEl).perform();

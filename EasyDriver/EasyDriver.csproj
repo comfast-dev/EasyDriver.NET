@@ -11,6 +11,7 @@
         <Company>Comfast</Company>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <IncludeContentFilesProjectOutputGroup>true</IncludeContentFilesProjectOutputGroup>
     </PropertyGroup>
 
     <ItemGroup>

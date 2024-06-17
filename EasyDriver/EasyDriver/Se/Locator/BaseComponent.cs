@@ -87,7 +87,10 @@ public abstract class BaseComponent : ILocator {
     }
 
     private void HighlightIfEnabled() {
-        if (Configuration.LocatorConfig.HighlightActions) Highlight();
+        if (Configuration.LocatorConfig.HighlightActions) {
+            var found = TryFind();
+            if (found != null) found.Highlight();
+        }
     }
 
     public virtual ILocator Hover() {

@@ -2,20 +2,20 @@ using Comfast.EasyDriver.Se.Finder;
 
 namespace Comfast.EasyDriver.Se.Locator;
 
+/// <summary>
+/// Basic locator
+/// </summary>
 public class SimpleLocator : BaseComponent {
+    /// <inheritdoc />
     public override string Selector { get; }
+
+    /// <inheritdoc />
     public override string? Description { get; }
 
+    /// <param name="selector">CSS or XPATH</param>
+    /// <param name="description">Locator description for logs</param>
     public SimpleLocator(string selector, string? description = null) {
         Selector = selector;
         Description = description;
     }
-
-    /// <summary>
-    /// Add child selector.
-    /// e.g. S("html")._S("body")
-    /// is equivalent to S("html >> body")
-    /// </summary>
-    public SimpleLocator _S(string childCssOrXpath, string description = null)
-        => new(Selector + WebElementFinder.SelectorSeparator + childCssOrXpath, description);
 }

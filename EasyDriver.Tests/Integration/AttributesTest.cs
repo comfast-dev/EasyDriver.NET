@@ -62,6 +62,16 @@ public class AttributesTest {
         Assert.False(S("input").HasAttribute("notattribute"));
     }
 
+    [Fact] public void HasClass() {
+        new BrowserContent().SetBody("<input class='myclass disabled' />");
+
+        var input = S("input");
+        Assert.True(input.HasClass("myclass"));
+        Assert.True(input.HasClass("disabled"));
+        Assert.False(input.HasClass("lol"));
+        Assert.False(input.HasClass("myclass disabled"));
+    }
+
     [Fact] void Value() {
         Assert.Equal("abc", S(".text_abc input").Value);
         Assert.Null(S(".text_abc label").Value);

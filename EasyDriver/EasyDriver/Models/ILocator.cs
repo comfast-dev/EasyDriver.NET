@@ -3,42 +3,200 @@ using OpenQA.Selenium;
 namespace Comfast.EasyDriver.Models;
 
 public interface ILocator {
+    /// <summary>
+    /// Create new child locator.
+    /// </summary>
+    public ILocator _S(string cssOrXpath);
 
+    /// <summary>
+    /// Element text
+    /// </summary>
     public string Text { get; }
+
+    /// <summary>
+    /// All element texts matched by selector
+    /// </summary>
     public string[] Texts { get; }
+
+    /// <summary>
+    /// Count of elements matched by selector
+    /// </summary>
     public int Count { get; }
+
+    /// <summary>
+    /// true if element exist in DOM and displayed on screen.<br/>
+    /// Does not require to be in current viewport
+    /// </summary>
     public bool IsDisplayed { get; }
+
+    /// <summary>
+    /// true if element exist in DOM. Can be hidden.
+    /// </summary>
     public bool Exists { get; }
+
+    /// <summary>
+    /// Element tag name e.g. "form"
+    /// </summary>
     public string TagName { get; }
+
+    /// <summary>
+    /// Inner HTML code of element.
+    /// Equivalent to JS code: element.innerHTML
+    /// </summary>
     public string InnerHtml { get; }
+
+    /// <summary>
+    /// Inner HTML code of element.
+    /// Equivalent to JS code: element.outerHTML
+    /// </summary>
     public string OuterHtml { get; }
 
+    /// <summary>
+    /// Element value property
+    /// Equivalent to JS code: element.value
+    /// </summary>
     public string Value { get; }
-    // public string CssValue { get; }
-    // S(string cssOrXpath)
 
+    // public string CssValue { get; }
+
+    /// <summary>
+    /// Check for CSS class. e.g. <br/>
+    /// <input class="myclass disabled" />
+    ///
+    /// HasClass("myclass") // return true
+    /// HasClass("disabled") // return true
+    /// HasClass("lol") // return false
+    /// HasClass("myclass disabled") // return false - it doesn't check 'class' property, but CSS one
+    ///
+    /// </summary>
     public bool HasClass(string cssClass);
+
+    /// <summary>
+    /// Click the element
+    /// </summary>
     public ILocator Click();
+
+    /// <summary>
+    /// SetValue to standard Form elements like input, textarea, select, checkbox
+    /// </summary>
     public ILocator SetValue(string text);
+
+    /// <summary>
+    /// Set element border with given color to focus attention
+    /// </summary>
+    /// <param name="cssColor"></param>
+    /// <returns></returns>
     public ILocator Highlight(string cssColor = "red");
+
+    /// <summary>
+    /// Get element attribute value
+    /// </summary>
     public string GetAttribute(string name);
+
+    /// <summary>
+    /// Wait for element to appear.
+    /// </summary>
+    /// <param name="timeoutMs">custom timeout</param>
+    /// <param name="throwIfFail">if false - function doesn't throw Exception and stop the program</param>
     public ILocator WaitFor(int? timeoutMs = null, bool throwIfFail = true);
+
+    /// <summary>
+    /// Wait for element to disappear from DOM
+    /// </summary>
+    /// <param name="timeoutMs">custom timeout</param>
     public ILocator WaitForDisappear(int? timeoutMs = null);
+
+    /// <summary>
+    /// Does keyboard input
+    /// </summary>
     public ILocator SendKeys(string text);
 
     // public ILocator Tap();
+
+    /// <summary>
+    /// Focus on element e.g. set cursor on it.
+    /// </summary>
     public ILocator Focus();
+
+    /// <summary>
+    /// Move mouse over element.
+    /// </summary>
     public ILocator Hover();
+
+    /// <summary>
+    /// Clear element value
+    /// </summary>
     public ILocator Clear();
+
+    /// <summary>
+    /// Drag & Drop this element over another element
+    /// </summary>
+    /// <param name="target">target locator</param>
     public ILocator DragTo(ILocator target);
+
     // public ILocator SetChecked(bool checked);
 
+    /// <summary>
+    /// Find ane return object with fixed DOM element for further actions.
+    /// </summary>
     public IFoundLocator Find();
+
+    /// <summary>
+    /// Tries find, doesn't throw Exception.<br/>
+    /// return null if not found
+    /// </summary>
     public IFoundLocator? TryFind();
+
+    /// <summary>
+    /// Find all elements matched by locator.<br/>
+    /// Return found locators with fixed found DOM element.
+    /// </summary>
     public IReadOnlyCollection<IFoundLocator> FindAll();
+
+    /// <summary>
+    /// Find and return found Selenium WebElement.
+    /// </summary>
     public IWebElement DoFind();
 
+    /// <summary>
+    /// Perform action on all found elements.<br/>
+    /// It is equivalent to:<br/>
+    /// - C# LINQ .Select() method<br/>
+    /// - JAVA / JavaScript .map() method.<br/>
+    /// Example:<br/>
+    /// string[] allLinksInTable = S("table.myTable a").Map(el => el.GetAttribute("href")).ToArray();
+    /// </summary>
     public List<T> Map<T>(Func<IFoundLocator, T> func);
     // public ILocator ForEach(Action<ILocator> func);
+
+    /// <summary>
+    /// Find all elements and return nth found DOM element.<br/>
+    /// where first is 1
+    /// </summary>
     public IFoundLocator Nth(int number);
+
+    /// <summary>
+    /// Execute JavaScript code, where current element is "el" variable<br/>
+    /// Examples:<code>
+    ///
+    /// S("table").ExecuteJs("el.style.padding = '0px'");<br/>
+    ///
+    /// //with args:
+    /// var myFontSize = 15.5;
+    /// S("p").ExecuteJs("el.style.fontSize = arguments[0]", myFontSize);</code>
+    /// </summary>
+    /// <param name="jsCode">javascript</param>
+    /// <param name="jsArgs">passed as arguments[] array</param>
+    public ILocator ExecuteJs(string jsCode, params object[] jsArgs);
+
+    /// <summary>
+    /// Examples:<code>
+    ///
+    /// var href = S("a").ExecuteJs&lt;string&gt;("return el.href");</code>
+    /// </summary>
+    /// <param name="jsCode">javascript</param>
+    /// <param name="jsArgs">passed as arguments[] array</param>
+    /// <typeparam name="TReturnType"></typeparam>
+    /// <returns>Javascript result</returns>
+    public TReturnType ExecuteJs<TReturnType>(string jsCode, params object[] jsArgs);
 }

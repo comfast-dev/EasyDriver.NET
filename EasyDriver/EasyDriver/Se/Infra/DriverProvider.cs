@@ -7,8 +7,8 @@ using OpenQA.Selenium.Firefox;
 namespace Comfast.EasyDriver.Se.Infra;
 
 /// <summary>
-/// Return one Driver instance per thread. Configuration parameters:
-/// - reconnect - try to recreate driver based on previous session
+/// Return one Driver instance per thread. Configuration parameters:<br/>
+/// - reconnect - try to recreate driver based on previous session<br/>
 /// - autoClose - close browser after process exit
 /// </summary>
 public class DriverProvider : IDriverProvider {
@@ -21,8 +21,8 @@ public class DriverProvider : IDriverProvider {
     }
 
     /// <summary>
-    /// Provide WebDriver Instance.
-    /// - One per thread.
+    /// Provide WebDriver Instance.<br/>
+    /// - One per thread.<br/>
     /// - Can be called multiple times.
     /// </summary>
     public IWebDriver GetDriver() {

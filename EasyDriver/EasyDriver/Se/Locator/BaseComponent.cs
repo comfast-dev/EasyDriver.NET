@@ -8,8 +8,13 @@ using OpenQA.Selenium.Interactions;
 
 namespace Comfast.EasyDriver.Se.Locator;
 
+/// <summary>
+/// Base class for every component.
+/// Example implementation:
+/// <see cref="LinkComponent"/>
+/// </summary>
 public abstract class BaseComponent : ILocator {
-    public abstract SelectorChain Selector { get; }
+    public abstract string Selector { get; }
     public abstract string? Description { get; }
 
     private WebElementFinder Finder => new(GetDriver(), Selector);
@@ -20,10 +25,10 @@ public abstract class BaseComponent : ILocator {
 
     protected virtual ReadOnlyCollection<IWebElement> DoFindAll() => Finder.FindAll();
 
-    public virtual IFoundLocator Find() => new FoundSeleniumLocator(Selector, Description, DoFind());
+    public virtual IFoundLocator Find() => new FoundLocator(Selector, Description, DoFind());
 
     public virtual IReadOnlyCollection<IFoundLocator> FindAll() => DoFindAll()
-        .Select(webEl => new FoundSeleniumLocator(Selector, Description, webEl)).ToList();
+        .Select(webEl => new FoundLocator(Selector, Description, webEl)).ToList();
 
     public virtual IFoundLocator? TryFind() {
         try {
@@ -38,7 +43,7 @@ public abstract class BaseComponent : ILocator {
         if (all.Count < number)
             throw new Exception($"Not found element #{number}. There are {all.Count} matched by:\n{Selector}");
 
-        return new FoundSeleniumLocator(Selector, Description, all[number - 1]);
+        return new FoundLocator(Selector, Description, all[number - 1]);
     }
 
     public virtual string Text => DoFind().Text;

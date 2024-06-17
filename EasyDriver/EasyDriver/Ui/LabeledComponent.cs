@@ -4,7 +4,7 @@ using OpenQA.Selenium;
 namespace Comfast.EasyDriver.Ui;
 
 /// <summary>
-/// Example Implementation <see cref="LinkEl"/>
+/// Example Implementation <see cref="LinkByText"/>
 /// </summary>
 public abstract class LabeledComponent : BaseComponent {
     public abstract string[] AllLabels { get; }

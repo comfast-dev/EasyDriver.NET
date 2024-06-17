@@ -22,7 +22,7 @@ public class FindTest {
         ShouldFindCount(S("form input"), 2);
         ShouldFindCount(S("form > input"), 2);
         ShouldFindCount(S("form >> input"), 1);
-        ShouldFindCount(S("form").S("input"), 1);
+        ShouldFindCount(S("form")._S("input"), 1);
     }
 
     [Fact] public void FindXpath() {
@@ -33,18 +33,18 @@ public class FindTest {
     }
 
     [Fact] public void NestedCss() {
-        ShouldFind(S("html").S("form").S("input"), InputValue);
+        ShouldFind(S("html")._S("form")._S("input"), InputValue);
     }
 
     [Fact] public void NestedXpath() {
-        ShouldFind(S("//html").S("//form").S("//input"), InputValue);
+        ShouldFind(S("//html")._S("//form")._S("//input"), InputValue);
     }
 
     [Fact] public void NestedMixedXpathAndCss() {
-        ShouldFind(S("html").S(".//form[1]").S("input"), InputValue);
-        ShouldFind(S("html").S(".//form[2]").S("option"), OptionValue);
-        ShouldFind(S("//body").S("#inputForm").S(".//input"), InputValue);
-        ShouldFind(S("//body").S("#selectForm").S(".//option"), OptionValue);
+        ShouldFind(S("html")._S(".//form[1]")._S("input"), InputValue);
+        ShouldFind(S("html")._S(".//form[2]")._S("option"), OptionValue);
+        ShouldFind(S("//body")._S("#inputForm")._S(".//input"), InputValue);
+        ShouldFind(S("//body")._S("#selectForm")._S(".//option"), OptionValue);
 
         ShouldFind(S("html >> .//form[1] >> input"), InputValue);
         ShouldFind(S("html >> .//form[2] >> option"), OptionValue);
@@ -53,33 +53,33 @@ public class FindTest {
     }
 
     [Fact] public void RelativeXpath() {
-        ShouldFind(S("#inputForm").S(".//input"), InputValue);
-        ShouldFind(S("#selectForm").S(".//option"), OptionValue);
+        ShouldFind(S("#inputForm")._S(".//input"), InputValue);
+        ShouldFind(S("#selectForm")._S(".//option"), OptionValue);
 
-        ShouldNotFind(S("#inputForm").S(".//option"));
-        ShouldNotFind(S("#selectForm").S(".//input"));
+        ShouldNotFind(S("#inputForm")._S(".//option"));
+        ShouldNotFind(S("#selectForm")._S(".//input"));
     }
 
     [Fact] public void FindAll() {
         ShouldFindCount(S("form input"), 2);
-        ShouldFindCount(S("form").S("input"), 1);
-        ShouldFindCount(S("form").S("article"), 0);
+        ShouldFindCount(S("form")._S("input"), 1);
+        ShouldFindCount(S("form")._S("article"), 0);
     }
 
     [Fact] public void CrossSearch() {
         ShouldFind(S("//form//option"), OptionValue);
         ShouldNotFind(S("//form >> .//option"));
         ShouldNotFind(S("form >> option"));
-        ShouldNotFind(S("form").S("select option"));
+        ShouldNotFind(S("form")._S("select option"));
     }
 
     [Fact] public void Exists() {
-        Assert.True(S("//body").S("input").Exists);
-        Assert.False(S("//body").S("article").Exists);
+        Assert.True(S("//body")._S("input").Exists);
+        Assert.False(S("//body")._S("article").Exists);
     }
 
     [Fact] public void ParentXpath() {
-        Assert.Equal("form", S("option").S(".. >> ..").TagName);
+        Assert.Equal("form", S("option")._S(".. >> ..").TagName);
         Assert.Equal("form", S("option >> .. >> ..").TagName);
         Assert.Equal("form", S("//option/../..").TagName);
     }
@@ -94,14 +94,16 @@ public class FindTest {
         ShouldFindCount(S("form"), 3);
         ShouldFindCount(S("form input"), 2);
         ShouldFindCount(S("//form//input"), 2);
-        ShouldFindCount(S("form").S("input"), 1);
-        ShouldFindCount(S("form").S(".//input"), 1);
-        ShouldFindCount(S("form").S("article"), 0);
+        ShouldFindCount(S("form")._S("input"), 1);
+        ShouldFindCount(S("form")._S(".//input"), 1);
+        ShouldFindCount(S("form")._S("article"), 0);
     }
 
     [Fact] void AutoAddDotInNestedXpath() {
         //here, dot is added to second selector
-        ShouldFindCount(S("//form").S("//input"), 1);
+        ShouldFindCount(S("//form")._S("//input"), 1);
+        ShouldFindCount(S("//form >> //input"), 1);
+        ShouldFindCount(S("form >> input"), 1);
         ShouldFindCount(S("//form//input"), 2);
     }
 

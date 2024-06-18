@@ -199,7 +199,12 @@ public abstract class BaseComponent : ILocator {
 
     /// <inheritdoc />
     public virtual ILocator WaitFor(int? timeoutMs = null, bool throwIfFail = true) {
-        WaitUtils.WaitFor(() => IsDisplayed, "Element displayed.", timeoutMs);
+        try {
+            WaitUtils.WaitFor(() => IsDisplayed, "Element displayed.", timeoutMs);
+        } catch (Exception) {
+            if (throwIfFail) throw;
+        }
+
         return this;
     }
 

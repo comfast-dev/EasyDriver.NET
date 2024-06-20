@@ -6,7 +6,7 @@
         <Nullable>enable</Nullable>
         <RootNamespace>Comfast</RootNamespace>
         <PackageId>EasyDriver</PackageId>
-        <Version>0.2.2</Version>
+        <Version>0.2.5</Version>
         <Authors>Piotr Kluz</Authors>
         <Company>Comfast</Company>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>

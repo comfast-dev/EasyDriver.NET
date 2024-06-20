@@ -6,6 +6,7 @@ using Comfast.EasyDriver.Se.Finder;
 using Comfast.EasyDriver.Ui;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
+using static Comfast.EasyDriver.DriverApi;
 
 namespace Comfast.EasyDriver.Se.Locator;
 
@@ -242,9 +243,7 @@ public abstract class BaseComponent : ILocator {
         return new StreamReader("EasyDriver\\Js\\" + jsFileName).ReadToEnd();
     }
 
-    private WebElementFinder Finder => new(GetDriver(), Selector);
-
-    protected virtual IWebDriver GetDriver() => Configuration.GetDriver();
+    private WebElementFinder Finder => new(DriverApi.GetDriver(), Selector);
 
     private void HighlightIfEnabled() {
         if (Configuration.LocatorConfig.HighlightActions) {

@@ -51,7 +51,7 @@ public class InteractionsTest {
 
     [Fact(Skip = "webdriver implementation is failing")]
     public void WebdriverDragAndDrop() {
-        var driver = Configuration.GetDriver();
+        var driver = GetDriver();
         var div = driver.FindElement(By.CssSelector("#dragAndDrop div"));
         var dragMe = driver.FindElement(By.CssSelector("#dragAndDrop #dragMe"));
         var dragMeParent = driver.FindElement(By.XPath("//*[@id='dragMe']/.."));

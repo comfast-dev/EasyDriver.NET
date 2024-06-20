@@ -1,8 +1,11 @@
 ﻿# Changelog
 
-[0.2.4 IN PROGRESS]
-- Fix WaitFor(throwIfFail = false)
+[0.2.5 IN PROGRESS]
+- Download files functionality
 
+[0.2.4]
+- Refactored logic of BrowserRunner - add ability to customize it
+- Fix WaitFor(throwIfFail = false)
 
 [0.2.3]
 - Reduce amount of types:

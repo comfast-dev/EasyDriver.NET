@@ -1,5 +1,3 @@
-using Comfast.EasyDriver.Se.Finder;
-
 namespace Comfast.EasyDriver.Se.Locator;
 
 /// <summary>

@@ -199,6 +199,11 @@
             <button name="reset" onclick="countdown.reset()">Reset</button>
         </td><td class="target">
     </td></tr>
+    <tr id="download"><td>Download file <input name="fileName" value="testFile.txt"><br><textarea name="fileContent">Some file content</textarea></td><td>
+        <button class="simple" onclick="download.simple()">Download</button><br>
+        <button class="delay" onclick="download.afterDelay()">Download after</button><input class="delay" value="3000">ms<br>
+        <button class="bigFile" onclick="download.bigFile()">Download big file</button><input name="fileSize" value="1">MB<br>
+    </td></tr>
 </table>
 <table id="Nested elements">
     <tr><th colspan="2">Nested elements</th></tr>
@@ -223,6 +228,7 @@
     /// utility functions
     const $ = css => document.querySelector(css);
     const setValue = (selector, value) => $(selector).innerText = value;
+    const getInput = name => $(`*[name=${name}]`).value;
     const increment = selector => {
         const counter = $(selector);
         counter.innerText = parseInt(counter.innerText) + 1;
@@ -237,38 +243,35 @@
             e.target.appendChild(document.getElementById(data));
         }
     }
-
     const dragAndDrop = new DragAndDrop();
+
+    function setCountdown(timeoutInput, action, triggerButton = null) {
+        if(triggerButton) triggerButton.disabled = true
+        timeoutInput.disabled = true
+        const timeout = timeoutInput.value;
+        const updateInterval = 50;
+        const interval = setInterval(() => {
+            const time = parseInt(timeoutInput.value);
+            if (time > 0) timeoutInput.value = time - updateInterval;
+        }, updateInterval);
+
+        setTimeout(() => {
+            clearInterval(interval);
+            timeoutInput.value = timeout;
+            timeoutInput.disabled = false
+            if(triggerButton) triggerButton.disabled = false
+            action()
+        }, timeout);
+    }
 
     function Countdown() {
         const htmlTextarea = $('#countdown textarea[name=html_to_spawn]');
-        const startBtn = $('#countdown button[name=start]');
         const timeoutInput = $('#countdown input[name=timeout]');
         const target = $('#countdown .target');
-        this.reset = () => {
-            timeoutInput.value = 500;
-            target.innerHTML = "";
-        }
-        this.start = () => {
-            startBtn.disabled = true;
-            timeoutInput.disabled = true
-            const timeout = timeoutInput.value;
-            const updateInterval = 50;
-            const interval = setInterval(() => {
-                const time = parseInt(timeoutInput.value);
-                if (time > 0) timeoutInput.value = time - updateInterval;
-            }, updateInterval);
-
-            setTimeout(() => {
-                target.innerHTML = htmlTextarea.value;
-                clearInterval(interval);
-                timeoutInput.value = timeout;
-                startBtn.disabled = false;
-                timeoutInput.disabled = false
-            }, timeout);
-        }
+        const button = $('#countdown button[name=start]');
+        this.start = () => setCountdown(timeoutInput, () => target.innerHTML = htmlTextarea.value, button)
+        this.reset = () => target.innerHTML = ''
     }
-
     const countdown = new Countdown();
 
     //IFrame setup
@@ -285,7 +288,6 @@
 
     fillIframe("myFrame")
 
-
     //Shadow DOM setup
     class MyDiv extends HTMLElement {
         constructor() {
@@ -298,6 +300,23 @@
 
     customElements.define("my-div", MyDiv);
 
+    function Download() {
+        this.downloadFile = (fileName, fileContent) => {
+            const element = document.createElement('a');
+            element.href = 'data:attachment/text,' + encodeURI(fileContent);
+            element.target = '_blank';
+            element.download = fileName;
+            element.click();
+        }
+        this.simple = () => this.downloadFile(getInput("fileName"), getInput("fileContent"))
+        this.afterDelay = () => setCountdown($("#download input.delay"), this.simple, $("#download button.delay"))
+        this.bigFile = () => {
+            const text = "lol "
+            const bytesCount = parseInt(getInput("fileSize")) * 1024 * 1024
+            this.downloadFile(getInput("fileName"), text.repeat(bytesCount / text.length))
+        }
+    }
+    const download = new Download();
 </script>
 </body>
 </html>

@@ -4,9 +4,12 @@ using OpenQA.Selenium.Remote;
 
 namespace Comfast.EasyDriver.Se.Infra;
 
-public static class DriverSessionStore {
+/// <summary>
+/// Stores WebDriver session in temp file and restores it in new process.
+/// </summary>
+public class DriverSessionStore {
     private const string Separator = "#";
-    private static readonly TempFile SessionTempFile = new("WebDriverSessionInfo.txt");
+    private readonly TempFile _sessionTempFile = new("WebDriverSessionInfo.txt");
 
     // ReSharper disable once MemberCanBePrivate.Global
     /// <summary>
@@ -14,10 +17,10 @@ public static class DriverSessionStore {
     /// 2. Store it in temp file.
     /// </summary>
     /// <param name="driver"></param>
-    public static void StoreSessionInfo(WebDriver driver) {
+    public void StoreSessionInfo(IWebDriver driver) {
         var ssid = driver.ReadField<string>("SessionId.sessionOpaqueKey");
         var uri = driver.ReadField<string>("CommandExecutor.HttpExecutor.remoteServerUri.AbsoluteUri");
-        SessionTempFile.Write($"{uri}{Separator}{ssid}");
+        _sessionTempFile.Write($"{uri}{Separator}{ssid}");
     }
 
     /// <summary>
@@ -29,9 +32,9 @@ public static class DriverSessionStore {
     /// </summary>
     /// <param name="newDriverProvider">WebDriver provider in case of restore fail</param>
     /// <returns></returns>
-    public static WebDriver RestoreSessionOrElse(Func<WebDriver> newDriverProvider) {
+    public IWebDriver RestoreSessionOrElse(Func<IWebDriver> newDriverProvider) {
         try {
-            var sessionInfo = SessionTempFile.Read().Split(Separator);
+            var sessionInfo = _sessionTempFile.Read().Split(Separator);
             var recreatedDriver = new RemoteWebDriver(
                 new FixedSessionExecutor(sessionInfo[0], sessionInfo[1]),
                 new RemoteSessionSettings());

@@ -35,4 +35,9 @@ public class DriverConfig {
     /// e.g. "chrome", "firefox", "edge"
     /// </summary>
     public string BrowserName { get; set; } = "chrome";
+    
+    /// <summary>
+    /// Where browser should download files
+    /// </summary>
+    public string DownloadPath { get; set; } = Path.Combine(Path.GetTempPath(), "EasyDriver", "downloads");
 }

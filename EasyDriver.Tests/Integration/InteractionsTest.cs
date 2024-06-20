@@ -72,4 +72,7 @@ public class InteractionsTest {
 
         Assert.Equal(text, el.Value);
     }
+
+    [Fact(Skip = "todo")] public void DownloadFile() { }
+    [Fact(Skip = "todo")] public void WaitFor_ErrorMessages() { }
 }

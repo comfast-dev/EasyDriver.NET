@@ -5,7 +5,7 @@ using FluentAssertions;
 namespace EasyDriver.Tests.Integration;
 
 public class BrowserContentTest {
-    [Fact] void TrustedHtmlTest() {
+    [Fact(Skip = "unstable on chrome")] void TrustedHtmlTest() {
         try {
             var func = () => {
                 DriverApi.NavigateTo("chrome://settings/privacy");

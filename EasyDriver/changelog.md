@@ -1,6 +1,6 @@
 ﻿# Changelog
 
-[0.2.5 IN PROGRESS]
+[0.2.5]
 - Download files functionality
 
 [0.2.4]

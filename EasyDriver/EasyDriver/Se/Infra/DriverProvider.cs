@@ -14,12 +14,19 @@ public class DriverProvider : IDriverProvider {
     private readonly DriverConfig _driverConfig;
     private readonly DriverSessionStore _driverSessionStore = new();
 
+    /// <summary>
+    /// Update this field to customize browser creation logic
+    /// </summary>
     public IBrowserRunner BrowserRunner { get; set; }
 
     public DriverProvider(DriverConfig driverConfig) {
         _instances = new ThreadLocal<IWebDriver>(ProvideDriverInstance, true);
         _driverConfig = driverConfig;
         BrowserRunner = new BrowserRunner(driverConfig);
+
+        AppDomain.CurrentDomain.ProcessExit += (s, e) => {
+            if (_driverConfig.AutoClose) CloseAllDrivers();
+        };
     }
 
     /// <summary>
@@ -43,25 +50,16 @@ Reconnect feature isn't compatible with parallel runs. Possible solutions:
     /// Run/reconnect to Browser instance
     /// </summary>
     private IWebDriver ProvideDriverInstance() {
-        bool reconnect = _driverConfig.Reconnect;
-        bool autoClose = _driverConfig.AutoClose;
-
-        var webDriver = reconnect && !autoClose
+        return _driverConfig.Reconnect
             ? _driverSessionStore.RestoreSessionOrElse(BrowserRunner.RunNewBrowser)
             : BrowserRunner.RunNewBrowser();
-
-        if (autoClose) AddShutdownHook(webDriver);
-
-        return webDriver;
     }
 
     /// <summary>
-    /// Make sure WebDriver is closed after end of process
+    /// Close all WebDrivers managed by this provider
     /// </summary>
-    private void AddShutdownHook(IWebDriver driver) {
-        AppDomain.CurrentDomain.ProcessExit += (s, e) => {
-            driver.Close(); // closes browser
-            driver.Dispose(); // closes driver process ( e.g. chromedriver.exe )
-        };
+    public void CloseAllDrivers() {
+        foreach (var webDriver in _instances.Values)
+            webDriver.Quit();
     }
 }

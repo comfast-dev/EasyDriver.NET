@@ -1,12 +1,15 @@
 using Comfast.EasyDriver.Ui;
+using Xunit.Abstractions;
 using static Comfast.EasyDriver.DriverApi;
 
 namespace EasyDriver.Tests.Integration;
 
 public class AttributesTest {
+    private readonly ITestOutputHelper _output;
 
-    public AttributesTest() {
+    public AttributesTest(ITestOutputHelper output) {
         new BrowserContent().OpenResourceFile("test.html");
+        _output = output;
     }
 
     [Fact] public void TextAndHtml() {

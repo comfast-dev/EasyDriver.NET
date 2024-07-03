@@ -2,6 +2,9 @@ using OpenQA.Selenium;
 
 namespace Comfast.EasyDriver.Models;
 
+/// <summary>
+/// Main locator interface
+/// </summary>
 public interface ILocator {
     /// <summary>
     /// Create new child locator.
@@ -62,14 +65,20 @@ public interface ILocator {
     /// <summary>
     /// Check for CSS class. e.g. <br/>
     /// <input class="myclass disabled" />
-    ///
+    /// <code>
     /// HasClass("myclass") // return true
     /// HasClass("disabled") // return true
     /// HasClass("lol") // return false
-    /// HasClass("myclass disabled") // return false - it doesn't check 'class' property, but CSS one
-    ///
+    /// HasClass("myclass disabled") // return false - it doesn't check 'class' property, but CSS class
+    ///</code>
     /// </summary>
     public bool HasClass(string cssClass);
+
+    /// <summary>
+    /// Gets value of CSS Property.
+    /// Native WebDriver method: GetCssValue.
+    /// </summary>
+    public string GetCssValue(string cssPropertyName);
 
     /// <summary>
     /// Click the element
@@ -89,9 +98,14 @@ public interface ILocator {
     public ILocator Highlight(string cssColor = "red");
 
     /// <summary>
-    /// Get element attribute value
+    /// Get element attribute value, null if not found.
     /// </summary>
-    public string GetAttribute(string name);
+    public string? GetAttribute(string name);
+
+    /// <summary>
+    /// true - if attribute is present
+    /// </summary>
+    public bool HasAttribute(string attribute);
 
     /// <summary>
     /// Wait for element to appear.
@@ -178,7 +192,6 @@ public interface ILocator {
     /// <summary>
     /// Execute JavaScript code, where current element is "el" variable<br/>
     /// Examples:<code>
-    ///
     /// S("table").ExecuteJs("el.style.padding = '0px'");<br/>
     ///
     /// //with args:
@@ -191,7 +204,6 @@ public interface ILocator {
 
     /// <summary>
     /// Examples:<code>
-    ///
     /// var href = S("a").ExecuteJs&lt;string&gt;("return el.href");</code>
     /// </summary>
     /// <param name="jsCode">javascript</param>

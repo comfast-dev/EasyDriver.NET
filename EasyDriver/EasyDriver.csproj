@@ -6,7 +6,7 @@
         <Nullable>enable</Nullable>
         <RootNamespace>Comfast</RootNamespace>
         <PackageId>EasyDriver</PackageId>
-        <Version>0.2.5</Version>
+        <Version>0.2.6</Version>
         <Authors>Piotr Kluz</Authors>
         <Company>Comfast</Company>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -15,7 +15,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Selenium.WebDriver" Version="4.21.0" />
+        <PackageReference Include="Selenium.WebDriver" Version="4.22.0" />
     </ItemGroup>
 
     <ItemGroup>

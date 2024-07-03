@@ -8,12 +8,12 @@ public class BrowserContentTest {
     [Fact(Skip = "unstable on chrome")] void TrustedHtmlTest() {
         try {
             var func = () => {
-                DriverApi.NavigateTo("chrome://settings/privacy");
+                NavigateTo("chrome://settings/privacy");
                 new BrowserContent().SetBody("<ul><li>xxx</li></ul>");
             };
             func.Should().NotThrow();
         } finally {
-            DriverApi.NavigateTo("about:blank");
+            NavigateTo("about:blank");
         }
     }
 }

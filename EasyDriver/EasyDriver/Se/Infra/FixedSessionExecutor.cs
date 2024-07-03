@@ -4,7 +4,7 @@ using OpenQA.Selenium.Remote;
 namespace Comfast.EasyDriver.Se.Infra;
 
 /// <summary>
-/// Replace NewSession command with fixed SessionId/Url to reconnect to same browser.
+/// Replace NewSession command with fixed SessionId/Url to trick RemoteWebDriver constructor to reconnect to same browser.
 /// </summary>
 internal class FixedSessionExecutor : HttpCommandExecutor {
     private readonly string _sessionId;
@@ -13,10 +13,14 @@ internal class FixedSessionExecutor : HttpCommandExecutor {
         _sessionId = sessionId;
     }
 
-    public override Response Execute(Command command) {
+    public override async Task<Response> ExecuteAsync(Command command) {
         return command.Name == DriverCommand.NewSession
             ? MockNewSession()
-            : base.Execute(command);
+            : await base.ExecuteAsync(command);
+    }
+
+    public override Response Execute(Command command) {
+        return Task.Run((Func<Task<Response>>) (() => ExecuteAsync(command))).GetAwaiter().GetResult();
     }
 
     private Response MockNewSession() {

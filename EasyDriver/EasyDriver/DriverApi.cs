@@ -1,4 +1,5 @@
 ﻿using Comfast.Commons.Utils;
+using Comfast.EasyDriver.Models;
 using Comfast.EasyDriver.Se.Locator;
 using OpenQA.Selenium;
 
@@ -19,11 +20,11 @@ public static class DriverApi {
     public static void NavigateTo(string url) => GetDriver().Navigate().GoToUrl(url);
 
     /// <summary>
-    ///
+    /// Creates locator instance
     /// </summary>
     /// <param name="cssOrXpath">Any selector</param>
     /// <param name="description"></param>
-    public static SimpleLocator S(string cssOrXpath, string? description = null) => new(cssOrXpath, description);
+    public static ILocator S(string cssOrXpath, string? description = null) => new SimpleLocator(cssOrXpath, description);
 
     /// <summary>
     /// Executes JavaScript from browser console.

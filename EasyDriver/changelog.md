@@ -1,5 +1,11 @@
 ﻿# Changelog
 
+[0.2.6]
+Fixed bugs:
+1. Reconnect after Selenium version upgrade
+2. WaitFor error message now contains selector.
+3. Added new integration tests
+
 [0.2.5]
 - Download files functionality
 

@@ -26,35 +26,35 @@ public class FindTest {
     }
 
     [Fact] public void FindXpath() {
-        ShouldFind(S("//input"), InputValue);
-        ShouldFind(S("//form/input"), InputValue);
-        ShouldFind(S("//html//input"), InputValue);
+        ShouldHaveValue(S("//input"), InputValue);
+        ShouldHaveValue(S("//form/input"), InputValue);
+        ShouldHaveValue(S("//html//input"), InputValue);
         ShouldNotFind(S("//html/head/input"));
     }
 
     [Fact] public void NestedCss() {
-        ShouldFind(S("html")._S("form")._S("input"), InputValue);
+        ShouldHaveValue(S("html")._S("form")._S("input"), InputValue);
     }
 
     [Fact] public void NestedXpath() {
-        ShouldFind(S("//html")._S("//form")._S("//input"), InputValue);
+        ShouldHaveValue(S("//html")._S("//form")._S("//input"), InputValue);
     }
 
     [Fact] public void NestedMixedXpathAndCss() {
-        ShouldFind(S("html")._S(".//form[1]")._S("input"), InputValue);
-        ShouldFind(S("html")._S(".//form[2]")._S("option"), OptionValue);
-        ShouldFind(S("//body")._S("#inputForm")._S(".//input"), InputValue);
-        ShouldFind(S("//body")._S("#selectForm")._S(".//option"), OptionValue);
+        ShouldHaveValue(S("html")._S(".//form[1]")._S("input"), InputValue);
+        ShouldHaveValue(S("html")._S(".//form[2]")._S("option"), OptionValue);
+        ShouldHaveValue(S("//body")._S("#inputForm")._S(".//input"), InputValue);
+        ShouldHaveValue(S("//body")._S("#selectForm")._S(".//option"), OptionValue);
 
-        ShouldFind(S("html >> .//form[1] >> input"), InputValue);
-        ShouldFind(S("html >> .//form[2] >> option"), OptionValue);
-        ShouldFind(S("//body >> #inputForm >> .//input"), InputValue);
-        ShouldFind(S("//body >> #selectForm >> .//option"), OptionValue);
+        ShouldHaveValue(S("html >> .//form[1] >> input"), InputValue);
+        ShouldHaveValue(S("html >> .//form[2] >> option"), OptionValue);
+        ShouldHaveValue(S("//body >> #inputForm >> .//input"), InputValue);
+        ShouldHaveValue(S("//body >> #selectForm >> .//option"), OptionValue);
     }
 
     [Fact] public void RelativeXpath() {
-        ShouldFind(S("#inputForm")._S(".//input"), InputValue);
-        ShouldFind(S("#selectForm")._S(".//option"), OptionValue);
+        ShouldHaveValue(S("#inputForm")._S(".//input"), InputValue);
+        ShouldHaveValue(S("#selectForm")._S(".//option"), OptionValue);
 
         ShouldNotFind(S("#inputForm")._S(".//option"));
         ShouldNotFind(S("#selectForm")._S(".//input"));
@@ -67,7 +67,7 @@ public class FindTest {
     }
 
     [Fact] public void CrossSearch() {
-        ShouldFind(S("//form//option"), OptionValue);
+        ShouldHaveValue(S("//form//option"), OptionValue);
         ShouldNotFind(S("//form >> .//option"));
         ShouldNotFind(S("form >> option"));
         ShouldNotFind(S("form")._S("select option"));
@@ -118,20 +118,9 @@ public class FindTest {
         S("my-div >> my-div >> h5").Text.Should().Match("We need go deeper");
     }
 
-    private void ShouldThrow<T>(Func<T> func, string expectedMessage) {
-        func.Should().Throw<Exception>()
-            .Where(e => e.Message.Contains(expectedMessage));
-    }
-
-    private void ShouldFind(ILocator locator, String expectedText) {
-        locator.GetAttribute("value").Should().Match(expectedText);
-    }
-
-    private void ShouldFindCount(ILocator locator, int expectedCount) {
-        locator.Count.Should().Be(expectedCount);
-    }
-
-    private void ShouldNotFind(ILocator locator) {
-        Assert.False(locator.Exists, "should not find: " + locator);
+    [Fact(Skip = "not yet handled")] public void OpenIframe() {
+        new BrowserContent().OpenResourceFile("test.html");
+        S("#myframe >> h3").Text.Should().Match("Hello from iframe");
+        S("#myframe >> #nestedIframe >> h3").Text.Should().Match("We need go deeper");
     }
 }

@@ -74,5 +74,4 @@ public class InteractionsTest {
     }
 
     [Fact(Skip = "todo")] public void DownloadFile() { }
-    [Fact(Skip = "todo")] public void WaitFor_ErrorMessages() { }
 }

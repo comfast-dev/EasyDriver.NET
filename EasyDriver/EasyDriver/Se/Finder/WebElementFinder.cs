@@ -18,31 +18,26 @@ namespace Comfast.EasyDriver.Se.Finder;
 /// </para>
 /// </summary>
 public class WebElementFinder : IFinder<IWebElement> {
-    /// <summary>
-    /// used to separate sub-selectors
-    /// </summary>
-    public const string SelectorSeparator = " >> ";
-
     private readonly IWebDriver _webDriver;
-    private readonly string _selector;
+    private readonly string[] _selectors;
 
     public WebElementFinder(IWebDriver webDriver, string selector) {
         _webDriver = webDriver;
-        _selector = selector;
+        _selectors = selector.SplitChain();
     }
 
     /// <summary>
     /// Find first matched element
     /// </summary>
     public IWebElement Find() {
-        return DoFind(true, _selector.Split(SelectorSeparator));
+        return DoFind(true, _selectors);
     }
 
     /// <summary>
     /// Find all matched elements
     /// </summary>
     public ReadOnlyCollection<IWebElement> FindAll() {
-        var selectors = _selector.Split(SelectorSeparator);
+        var selectors = _selectors;
         if (selectors.Length == 0) throw new Exception("Empty chain, require at least 1 item");
 
         var lastBy = String2By(selectors[^1], true);
@@ -80,8 +75,19 @@ public class WebElementFinder : IFinder<IWebElement> {
             //handle case where child element is under shadow DOM
             var jsDriver = (IJavaScriptExecutor)_webDriver;
             var shadowRoot = (ISearchContext)jsDriver.ExecuteScript("return arguments[0].shadowRoot", parent);
-            if (shadowRoot == null) throw;
-            return shadowRoot.FindElement(by);
+            if (shadowRoot != null) return shadowRoot.FindElement(by);
+
+            throw;
+            //handle iframe case
+            // try {
+            //     _webDriver.SwitchTo().Frame((IWebElement)parent);
+            //     return parent.FindElement(by);
+            // } catch {
+            //     throw;
+            // }
+            // finally {
+            //     _webDriver.SwitchTo().ParentFrame();
+            // }
         }
     }
 

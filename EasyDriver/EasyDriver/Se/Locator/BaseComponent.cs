@@ -20,7 +20,7 @@ public abstract class BaseComponent : ILocator {
     /// Create new Child selector based on this as parent.
     /// </summary>
     public ILocator _S(string cssOrXpath) {
-        return new SimpleLocator(Selector + WebElementFinder.SelectorSeparator + cssOrXpath);
+        return new SimpleLocator(Selector + SelectorChain.SelectorSeparator + cssOrXpath);
     }
 
     /// <summary>
@@ -64,7 +64,7 @@ public abstract class BaseComponent : ILocator {
     }
 
     /// <inheritdoc />
-    public virtual string Text => DoFind().Text;
+    public virtual string Text => ExecuteJs<string>("return el.innerText");
 
     /// <inheritdoc />
     public virtual string[] Texts => Map(el => el.Text).ToArray();
@@ -92,6 +92,17 @@ public abstract class BaseComponent : ILocator {
 
     /// <inheritdoc />
     public virtual bool HasClass(string cssClass) => GetAttribute("class").Split(" ").Contains(cssClass);
+
+    /// <inheritdoc />
+    public virtual string GetCssValue(string cssPropertyName) {
+        return DoFind().GetCssValue(cssPropertyName);
+    }
+
+    /// <inheritdoc />
+    public virtual string GetAttribute(string name) => DoFind().GetAttribute(name);
+
+    /// <inheritdoc />
+    public bool HasAttribute(string name) => DoFind().GetAttribute(name) != null;
 
     /// <inheritdoc />
     public virtual ILocator Click() {
@@ -152,11 +163,6 @@ public abstract class BaseComponent : ILocator {
     }
 
     /// <inheritdoc />
-    public virtual string GetCssValue(string propertyName) {
-        return DoFind().GetCssValue(propertyName);
-    }
-
-    /// <inheritdoc />
     public virtual ILocator DragTo(ILocator target) {
         HighlightIfEnabled();
         IWebElement targetEl = target.DoFind();
@@ -193,15 +199,9 @@ public abstract class BaseComponent : ILocator {
     private object[] FindAndAddToArgs(object[] jsArgs) => new List<object>(jsArgs) { DoFind() }.ToArray();
 
     /// <inheritdoc />
-    public virtual string GetAttribute(string name) => DoFind().GetAttribute(name);
-
-    /// <inheritdoc />
-    public bool HasAttribute(string name) => GetAttribute(name) != null;
-
-    /// <inheritdoc />
     public virtual ILocator WaitFor(int? timeoutMs = null, bool throwIfFail = true) {
         try {
-            WaitUtils.WaitFor(() => IsDisplayed, "Element displayed.", timeoutMs);
+            WaitUtils.WaitFor(() => Find().IsDisplayed, "Element displayed.", timeoutMs);
         } catch (Exception) {
             if (throwIfFail) throw;
         }
@@ -211,7 +211,7 @@ public abstract class BaseComponent : ILocator {
 
     /// <inheritdoc />
     public virtual ILocator WaitForDisappear(int? timeoutMs = null) {
-        WaitUtils.WaitFor(() => !IsDisplayed, "Element disappear.", timeoutMs);
+        WaitUtils.WaitFor(() => !IsDisplayed, $"Element disappear: \n{Selector}", timeoutMs);
         return this;
     }
 
@@ -243,7 +243,7 @@ public abstract class BaseComponent : ILocator {
         return new StreamReader("EasyDriver\\Js\\" + jsFileName).ReadToEnd();
     }
 
-    private WebElementFinder Finder => new(DriverApi.GetDriver(), Selector);
+    private WebElementFinder Finder => new(GetDriver(), Selector);
 
     private void HighlightIfEnabled() {
         if (Configuration.LocatorConfig.HighlightActions) {

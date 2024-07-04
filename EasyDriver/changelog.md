@@ -1,5 +1,10 @@
 ﻿# Changelog
 
+[0.3.0] NOT RELEASED
+1. Validation of browser path and driver path, hints for user about download links
+2. Optional (virtual) Description field in BaseComponent
+3. Add documentation to LabeledComponent, refactor
+
 [0.2.6]
 Fixed bugs:
 1. Reconnect after Selenium version upgrade

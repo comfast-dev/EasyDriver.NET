@@ -1,0 +1,8 @@
+{
+    "SomeString": "onetwothree",
+    "SomeInt": 123,
+    "SomeFloat": 123.5,
+    "SomeBool": true,
+    "SomeObj": {"key": "value", "nested": {"key": "value"}},
+    "SomeArray": [123, true, 123.5, {"key": "value"}]
+}

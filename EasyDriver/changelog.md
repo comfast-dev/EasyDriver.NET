@@ -8,6 +8,8 @@
 - [ ] Auto generating markdown docs
 - [ ] Logger compatible with Xunit
 - [ ] Auto download browser using selenium-manager
+- [x] ConfigLoader bug: read simple types
+- [x] Configuration Reload method with custom file e.g. MyAppConfig.json
 
 ### [0.2.6]
 Fixed bugs:

@@ -14,12 +14,12 @@ public static class Configuration {
     /// <summary>
     /// Options that define way how WebDriver managed browser is created/managed
     /// </summary>
-    public static DriverConfig DriverConfig { get; }
+    public static DriverConfig DriverConfig { get; set; }
 
     /// <summary>
     /// Feature flags / timeouts for locators
     /// </summary>
-    public static LocatorConfig LocatorConfig { get; }
+    public static LocatorConfig LocatorConfig { get; set; }
 
     /// <summary>
     /// Main logic that manages WebDriver creation
@@ -27,7 +27,6 @@ public static class Configuration {
     public static DriverProvider DriverProvider { get; private set; }
 
     static Configuration() {
-        //initialize
         DriverConfig = ConfigLoader.Load<DriverConfig>("AppConfig.json", "DriverConfig");
         LocatorConfig = ConfigLoader.Load<LocatorConfig>("AppConfig.json", "LocatorConfig");
         DriverProvider = new DriverProvider(DriverConfig);
@@ -48,5 +47,14 @@ public static class Configuration {
     /// </summary>
     public static void SetCustomDriverProvider(DriverProvider driverProvider) {
         DriverProvider = driverProvider;
+    }
+
+    /// <summary>
+    /// Reloads Configuration from given AppConfig file.
+    /// </summary>
+    /// <param name="filePath"> e.g. MyAppConfig.json</param>
+    public static void ReloadConfig(string filePath) {
+        DriverConfig = ConfigLoader.Load<DriverConfig>(filePath, "DriverConfig");
+        LocatorConfig = ConfigLoader.Load<LocatorConfig>(filePath, "LocatorConfig");
     }
 }

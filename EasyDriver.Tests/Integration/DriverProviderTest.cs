@@ -47,6 +47,7 @@ public class DriverProviderTest : IDisposable {
         //prepare browser
         const string pageTitle = "Lol page";
         var options = new ChromeOptions() { BinaryLocation = Configuration.DriverConfig.BrowserPath };
+        options.AddArgument("headless");
         var myChrome = new ChromeDriver(Configuration.DriverConfig.DriverPath, options);
         new BrowserContent().SetBody($"<h1>{pageTitle}</h1>");
         Configuration.DriverConfig.AutoClose = true;

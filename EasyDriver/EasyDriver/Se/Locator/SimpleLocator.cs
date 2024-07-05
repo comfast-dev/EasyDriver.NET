@@ -8,11 +8,11 @@ public class SimpleLocator : BaseComponent {
     public override string Selector { get; }
 
     /// <inheritdoc />
-    public override string? Description { get; }
+    public override string Description { get; }
 
     /// <param name="selector">CSS or XPATH</param>
     /// <param name="description">Locator description for logs</param>
-    public SimpleLocator(string selector, string? description = null) {
+    public SimpleLocator(string selector, string description = "SimpleLocator") {
         Selector = selector;
         Description = description;
     }

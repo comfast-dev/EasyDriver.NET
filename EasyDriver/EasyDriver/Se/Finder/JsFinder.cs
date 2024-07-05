@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using OpenQA.Selenium;
 
 namespace Comfast.EasyDriver.Se.Finder;
@@ -66,9 +65,9 @@ function find(selectors) {
     /// <summary>
     /// Find all matched elements
     /// </summary>
-    public ReadOnlyCollection<IWebElement> FindAll() {
+    public IList<IWebElement> FindAll() {
         var result = _jsDriver.ExecuteScript(_js + "return find(arguments)", _selectors);
-        if (result is IWebElement[] foundElements) return new ReadOnlyCollection<IWebElement>(foundElements);
+        if (result is IWebElement[] foundElements) return new List<IWebElement>(foundElements);
 
         throw new Exception("Internal error: Invalid return from Javascript console");
     }

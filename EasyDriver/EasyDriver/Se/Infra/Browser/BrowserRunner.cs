@@ -10,84 +10,86 @@ namespace Comfast.EasyDriver.Se.Infra.Browser;
 /// Covers logic of running different browsers.
 /// </summary>
 public class BrowserRunner : IBrowserRunner {
-    private readonly DriverConfig _driverConfig;
+    private readonly DriverConfig _config;
+
     public BrowserRunner(DriverConfig driverConfig) {
-        _driverConfig = driverConfig;
+        _config = driverConfig;
     }
 
     /// <summary>
     ///  Run new WebDriver instance
     /// </summary>
     public IWebDriver RunNewBrowser() {
-        var browser = _driverConfig.BrowserName;
-        switch (browser) {
-            case "chrome":
-            case "chromium":
-            case "brave":
-                return RunChromium();
-            case "firefox":
-                return RunFirefox();
-            case "edge":
-                return RunEdge();
-            default: throw new Exception("Invalid browser: " + browser);
-        }
+        AssertFileExists(_config.DriverPath, "DriverConfig.DriverPath");
+        AssertFileExists(_config.BrowserPath, "DriverConfig.BrowserPath");
+
+        var browserName = _config.BrowserName;
+        return browserName switch {
+            "chrome" or "chromium" or "brave" => RunChromium(),
+            "firefox" => RunFirefox(),
+            "edge" => RunEdge(),
+            _ => throw new($"Invalid browser name: {browserName}. Check your configuration.")
+        };
+    }
+
+    private void AssertFileExists(string filePath, string fieldName) {
+        if (!File.Exists(filePath))
+            throw new($@"
+Not found file path: {fieldName}: '{filePath}'. Check your configuration.
+
+Download links for Chrome + Chromedriver here:
+https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json
+");
     }
 
     private ChromeDriver RunChromium() {
         var options = new ChromeOptions();
 
-        //headless
-        if (_driverConfig.Headless) options.AddArgument("headless");
-
         //download
-        options.AddUserProfilePreference("download.default_directory", _driverConfig.DownloadPath);
+        options.AddUserProfilePreference("download.default_directory", _config.DownloadPath);
         options.AddUserProfilePreference("download.prompt_for_download", false);
         options.AddUserProfilePreference("download.directory_upgrade", true);
         options.AddUserProfilePreference("safebrowsing.enabled", true);
 
-        // turns off infobar
+        //headless
+        if (_config.Headless) options.AddArgument("headless");
+
+        // turns off info bars
         // options.AddExcludedArgument("enable-automation"); //infobar 1
         options.AddArgument("--disable-infobars");
 
-        options.BinaryLocation = _driverConfig.BrowserPath;
-
-        //proper error message
-        try {
-            return new ChromeDriver(_driverConfig.DriverPath, options);
-        } catch (InvalidOperationException e) {
-            if (e.Message.Contains("No process is associated with this object."))
-                throw new Exception("Invalid driver path: " + Configuration.DriverConfig.DriverPath, e);
-            throw;
-        }
+        options.BinaryLocation = _config.BrowserPath;
+        return new ChromeDriver(_config.DriverPath, options);
     }
 
     private FirefoxDriver RunFirefox() {
         var options = new FirefoxOptions();
+
         //downloads
         options.SetPreference("browser.download.folderList", 2);
-        options.SetPreference("browser.download.dir", _driverConfig.DownloadPath);
+        options.SetPreference("browser.download.dir", _config.DownloadPath);
         options.SetPreference("browser.helperApps.neverAsk.saveToDisk", "application/pdf,application/octet-stream");
 
         //headless
-        if (_driverConfig.Headless) options.AddArguments("--headless");
+        if (_config.Headless) options.AddArguments("--headless");
 
-        options.BinaryLocation = _driverConfig.BrowserPath;
-        return new FirefoxDriver(options);
+        options.BinaryLocation = _config.BrowserPath;
+        return new FirefoxDriver(_config.DriverPath, options);
     }
 
     private EdgeDriver RunEdge() {
         var options = new EdgeOptions();
 
         //download
-        options.AddUserProfilePreference("download.default_directory", _driverConfig.DownloadPath);
+        options.AddUserProfilePreference("download.default_directory", _config.DownloadPath);
         options.AddUserProfilePreference("download.prompt_for_download", false);
         options.AddUserProfilePreference("profile.default_content_settings.popups", 0);
         options.AddUserProfilePreference("safebrowsing.enabled", true);
 
         //headless
-        if (_driverConfig.Headless) options.AddArguments("headless");
+        if (_config.Headless) options.AddArguments("headless");
 
-        options.BinaryLocation = _driverConfig.BrowserPath;
-        return new EdgeDriver(_driverConfig.DriverPath, options);
+        options.BinaryLocation = _config.BrowserPath;
+        return new EdgeDriver(_config.DriverPath, options);
     }
 }

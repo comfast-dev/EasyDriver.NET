@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using OpenQA.Selenium;
 
 namespace Comfast.EasyDriver.Se.Finder;
@@ -36,7 +35,7 @@ public class WebElementFinder : IFinder<IWebElement> {
     /// <summary>
     /// Find all matched elements
     /// </summary>
-    public ReadOnlyCollection<IWebElement> FindAll() {
+    public IList<IWebElement> FindAll() {
         var selectors = _selectors;
         if (selectors.Length == 0) throw new Exception("Empty chain, require at least 1 item");
 

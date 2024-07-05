@@ -4,7 +4,7 @@ using Newtonsoft.Json.Linq;
 namespace Comfast.Commons.Utils;
 
 public class ConfigLoader {
-    public static T Load<T>(string configFilePath = "AppConfig.json", string? configKey = null) {
+    public static T Load<T>(string configFilePath, string? configKey) {
         using var input = new StreamReader(configFilePath);
         var inputJson = input.ReadToEnd();
 

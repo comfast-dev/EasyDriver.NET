@@ -1,10 +1,11 @@
 namespace Comfast.EasyDriver.Ui;
 
 public class BrowserContent {
-    /**
-     * Copy given resource file to temp folder and open it in browser.
-     * @param resourcePath path to resource file, where root is "src/test/resources"
-     */
+
+    /// <summary>
+    /// Copy given resource file to temp folder and open it in browser.
+    /// </summary>
+    /// <param name="resourcePath">path to resource file, where root is "src/test/resources"</param>
     public void OpenResourceFile(String resourcePath) {
         var path = Path.Combine(Directory.GetCurrentDirectory(), resourcePath);
         DriverApi.NavigateTo(path);

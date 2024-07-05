@@ -5,6 +5,12 @@
 /// </summary>
 public class DriverConfig {
     /// <summary>
+    /// Used to differentiate which driver to run.
+    /// e.g. "chrome", "firefox", "edge"
+    /// </summary>
+    public string BrowserName { get; set; } = "chrome";
+
+    /// <summary>
     /// e.g. c:/browsers/chrome120/chrome.exe
     /// </summary>
     public string BrowserPath { get; set; }
@@ -30,12 +36,6 @@ public class DriverConfig {
     /// </summary>
     public bool Headless { get; set; } = false;
 
-    /// <summary>
-    /// Used to differentiate which driver to run.
-    /// e.g. "chrome", "firefox", "edge"
-    /// </summary>
-    public string BrowserName { get; set; } = "chrome";
-    
     /// <summary>
     /// Where browser should download files
     /// </summary>

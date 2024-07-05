@@ -165,12 +165,17 @@ public interface ILocator {
     /// Find all elements matched by locator.<br/>
     /// Return found locators with fixed found DOM element.
     /// </summary>
-    public IReadOnlyCollection<IFoundLocator> FindAll();
+    public IList<IFoundLocator> FindAll();
 
     /// <summary>
-    /// Find and return found Selenium WebElement.
+    /// Finds Selenium WebElement.
     /// </summary>
     public IWebElement DoFind();
+
+    /// <summary>
+    /// Finds all elements matched by locator
+    /// </summary>
+    public IList<IWebElement> DoFindAll();
 
     /// <summary>
     /// Perform action on all found elements.<br/>

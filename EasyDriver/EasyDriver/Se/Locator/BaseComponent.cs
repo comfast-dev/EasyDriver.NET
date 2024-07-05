@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 using Comfast.Commons.Utils;
 using Comfast.EasyDriver.Models;
@@ -11,7 +10,7 @@ using static Comfast.EasyDriver.DriverApi;
 namespace Comfast.EasyDriver.Se.Locator;
 
 /// <summary>
-/// Base class for every component.
+/// Base class for component.
 /// Example implementation:
 /// <see cref="LinkByHref"/>
 /// </summary>
@@ -25,24 +24,29 @@ public abstract class BaseComponent : ILocator {
 
     /// <summary>
     /// Css / Xpath selector
+    /// or both delimited with ' >> ' like:
+    /// "form.focused >> //input[@name='user']"
     /// </summary>
     public abstract string Selector { get; }
 
     /// <summary>
     /// Description for this Component / Locator
+    /// Used in logs / error messages
     /// </summary>
-    public abstract string? Description { get; }
+    public abstract string Description { get; }
 
     /// <inheritdoc />
     public virtual IWebElement DoFind() => Finder.Find();
 
     /// <inheritdoc />
+    public virtual IList<IWebElement> DoFindAll() => Finder.FindAll();
+
+    /// <inheritdoc />
     public virtual IFoundLocator Find() => new FoundLocator(Selector, Description, DoFind());
 
     /// <inheritdoc />
-    public virtual IReadOnlyCollection<IFoundLocator> FindAll() =>
-        DoFindAll()
-            .Select(webEl => new FoundLocator(Selector, Description, webEl)).ToList();
+    public virtual IList<IFoundLocator> FindAll() =>
+        DoFindAll().Select(webEl => (IFoundLocator)new FoundLocator(Selector, Description, webEl)).ToList();
 
     /// <inheritdoc />
     public virtual IFoundLocator? TryFind() {
@@ -225,7 +229,7 @@ public abstract class BaseComponent : ILocator {
             try {
                 results.Add(func.Invoke(element));
             } catch (Exception e) {
-                var elementHtml = element.GetAttribute("outerHTML").LimitString(100);
+                var elementHtml = element.OuterHtml.LimitString(100);
                 throw new Exception($"Mapping failed during processing element [{i}/{elements.Count}]: " + elementHtml,
                     e);
             }
@@ -237,11 +241,7 @@ public abstract class BaseComponent : ILocator {
     /// <inheritdoc />
     public override string ToString() => Description ?? "??";
 
-    protected virtual ReadOnlyCollection<IWebElement> DoFindAll() => Finder.FindAll();
-
-    private string ReadJsFile(string jsFileName) {
-        return new StreamReader("EasyDriver\\Js\\" + jsFileName).ReadToEnd();
-    }
+    private string ReadJsFile(string jsFileName) => File.ReadAllText("EasyDriver\\Js\\" + jsFileName);
 
     private WebElementFinder Finder => new(GetDriver(), Selector);
 

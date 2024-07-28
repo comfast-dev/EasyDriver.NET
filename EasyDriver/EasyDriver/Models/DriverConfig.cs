@@ -34,10 +34,19 @@ public class DriverConfig {
     /// <summary>
     /// If true - browser will run without UI
     /// </summary>
-    public bool Headless { get; set; } = false;
+    public bool Headless { get; set; }
 
     /// <summary>
-    /// Where browser should download files
+    /// Where the browser should download files
     /// </summary>
     public string DownloadPath { get; set; } = Path.Combine(Path.GetTempPath(), "EasyDriver", "downloads");
+
+    // public string? Proxy { get; set; } = null;
+    // public string? ProxyUser { get; set; } = null;
+    // public string? ProxyPassword { get; set; } = null;
+
+    /// <summary>
+    /// If set - Proxy will be used while browser creation
+    /// </summary>
+    public string? ProxyUrl { get; set; } = null;
 }

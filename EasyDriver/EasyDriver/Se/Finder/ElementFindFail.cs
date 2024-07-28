@@ -1,4 +1,6 @@
-﻿namespace Comfast.EasyDriver.Se.Finder;
+﻿using Comfast.Commons.Utils;
+
+namespace Comfast.EasyDriver.Se.Finder;
 
 /// <summary>
 /// Throw when not found DOM element.
@@ -12,7 +14,10 @@ public class ElementFindFail : Exception {
         var offset = selectors.Take(failIndex).Aggregate(0, (acc, x) => acc + x.Length + separator.Length);
         var spaces = new String(' ', offset);
 
-        return $"\nElement find fail:"
-               + $"\n{string.Join(separator, selectors)}\n{spaces}^\n{spaces}{cause.Message}";
+        return $"Element find fail:"
+               + $"\n{string.Join(separator, selectors)}\n{spaces}^\n{spaces}{ClearSeleniumMessage(cause.Message)}";
     }
+
+    private static string ClearSeleniumMessage(string causeMessage) =>
+        causeMessage.RgxReplace(@"\s*\(Session info[\s\S]+$", "");
 }

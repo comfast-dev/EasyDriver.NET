@@ -20,7 +20,7 @@ internal class FixedSessionExecutor : HttpCommandExecutor {
     }
 
     public override Response Execute(Command command) {
-        return Task.Run((Func<Task<Response>>) (() => ExecuteAsync(command))).GetAwaiter().GetResult();
+        return Task.Run((Func<Task<Response>>)(() => ExecuteAsync(command))).GetAwaiter().GetResult();
     }
 
     private Response MockNewSession() {

@@ -3,61 +3,96 @@
 namespace Comfast.Commons.Utils;
 
 /// <summary>
-/// Read/Set Any nested private/public Property or Field based on dot path.
+/// Read/Set any nested private/public Property or Field based on dot path.
 /// e.g. object.ReadField("Some.Nested._privateField.Id")
 /// e.g. object.SetField("newValue", "Some._nestedObj.MyProperty")
 /// </summary>
 public static class ReflectionUtils {
+    private static BindingFlags _universalFlags = BindingFlags.Public | BindingFlags.NonPublic |
+                                         BindingFlags.Instance | BindingFlags.IgnoreCase;
 
-    public static T ReadField<T>(this object target, string fieldPath)
-        => target.ReadField<T>(fieldPath.Split('.'));
-
-    public static T ReadField<T>(this object target, params string[] fieldPath) {
-        var curr = target;
-        foreach (var name in fieldPath) {
-            if (curr == null) throw new Exception($"Can't read field {name} from null object");
-            curr = GetFieldValue(curr, name);
+    /// <summary>
+    /// Rewrite all fields from source to target object.
+    /// </summary>
+    public static T RewriteFrom<T>(this T target, T source) {
+        foreach (var prop in typeof(T).GetProperties(_universalFlags)) {
+            prop.SetValue(target, prop.GetValue(source));
         }
 
-        if (curr == null) throw new Exception($"Field {fieldPath} is null");
-        return (T)curr;
+        return target;
     }
 
-    public static void SetField(this object target, object? valueToSet, string fieldPath)
-        => target.SetField(valueToSet, fieldPath.Split('.'));
+    /// <summary>
+    /// Read any nested any nested private/public Property or Field.
+    /// </summary>
+    /// <param name="target">object to get field from</param>
+    /// <param name="fieldPath">field name or dotSeparated._nested.Path</param>
+    /// <typeparam name="T">field type</typeparam>
+    /// <returns>Field value</returns>
+    public static T? ReadField<T>(this object target, string fieldPath) => target.ReadField<T>(fieldPath.Split('.'));
 
-    public static void SetField(this object target, object? valueToSet, params string[] fieldPath) {
+    /// <summary>
+    /// Write any nested any nested private/public Property or Field.
+    /// </summary>
+    /// <param name="target">object to get field from</param>
+    /// <param name="fieldPath">field name or dotSeparated._nested.Path</param>
+    /// <param name="valueToSet">Value to be set in field</param>
+    public static void WriteField(this object target, string fieldPath, object? valueToSet) =>
+        target.WriteField(fieldPath.Split('.'), valueToSet);
+
+    private static T? ReadField<T>(this object target, string[] fieldPath) {
+        var curr = target;
+        for (int i = 0; i < fieldPath.Length; i++) {
+            var name = fieldPath[i];
+            if (curr == null) {
+                var parentsPath = fieldPath.SkipLast(fieldPath.Length - i);
+                throw new($"Can't get field '{name}', because parent '{string.Join(".", parentsPath)}' is null");
+            }
+
+            curr = getOneMember(curr.GetType(), name).GetValue(curr);
+        }
+
+        return (T?)curr;
+    }
+
+    private static void WriteField(this object target, string[] fieldPath, object? valueToSet) {
         var parentsPath = fieldPath.SkipLast(1).ToArray();
+        var name = fieldPath.Last();
         var parent = target.ReadField<object?>(parentsPath);
+        if (parent == null)
+            throw new($"Can't get field '{name}', because parent '{string.Join(".", parentsPath)}' is null");
 
-        if (parent == null) throw new Exception("Not found field: " + parentsPath);
+        getOneMember(parent.GetType(), fieldPath.Last()).SetValue(parent, valueToSet);
+    }
 
-        switch (getOneFieldOrProp(parent, fieldPath.Last())) {
+    public static void SetValue(this MemberInfo memberInfo, object target, object? value) {
+        switch (memberInfo) {
             case FieldInfo f:
-                f.SetValue(parent, valueToSet);
+                f.SetValue(target, value);
                 return;
             case PropertyInfo p:
-                p.SetValue(parent, valueToSet);
+                if (!p.CanWrite) throw new($"Can't set Property '{memberInfo.Name}' without setter.");
+                p.SetValue(target, value);
                 return;
-            default: throw new Exception("Invalid type returned;");
+            default: throw new("Fatal error: invalid MemberInfo type returned.");
         }
     }
 
-    private static object? GetFieldValue(object target, string name) {
-        return getOneFieldOrProp(target, name) switch {
+    public static object? GetValue(this MemberInfo memberInfo, object target) {
+        return memberInfo switch {
             FieldInfo f => f.GetValue(target),
             PropertyInfo p => p.GetValue(target),
-            _ => throw new Exception("Invalid type returned;")
+            _ => throw new($"Fatal error: invalid MemberInfo type returned for field '{memberInfo.Name}'")
         };
     }
 
-    private static MemberInfo? getOneFieldOrProp(object target, string name) {
-        var prop = target.GetType().GetProperty(name);
+    private static MemberInfo getOneMember(Type type, string name) {
+        var prop = type.GetProperty(name, _universalFlags);
         if (prop != null) return prop;
 
-        var privateField = target.GetType().GetField(name, BindingFlags.Instance | BindingFlags.NonPublic);
-        if (privateField != null) return privateField;
+        var field = type.GetField(name, _universalFlags);
+        if (field != null) return field;
 
-        throw new Exception("Should never happen");
+        throw new ArgumentException($"Not found field '{name}' in {type.Name}");
     }
 }

@@ -2,6 +2,7 @@ using Comfast.Commons.Utils;
 using Comfast.EasyDriver.Models;
 using Comfast.EasyDriver.Se.Infra;
 using Comfast.EasyDriver.Se.Infra.Browser;
+using Microsoft.Extensions.Configuration;
 using OpenQA.Selenium;
 
 namespace Comfast.EasyDriver;
@@ -14,12 +15,12 @@ public static class Configuration {
     /// <summary>
     /// Options that define way how WebDriver managed browser is created/managed
     /// </summary>
-    public static DriverConfig DriverConfig { get; set; }
+    public static DriverConfig DriverConfig { get; } = new();
 
     /// <summary>
     /// Feature flags / timeouts for locators
     /// </summary>
-    public static LocatorConfig LocatorConfig { get; set; }
+    public static LocatorConfig LocatorConfig { get; } = new();
 
     /// <summary>
     /// Main logic that manages WebDriver creation
@@ -27,14 +28,14 @@ public static class Configuration {
     public static DriverProvider DriverProvider { get; private set; }
 
     static Configuration() {
-        DriverConfig = ConfigLoader.Load<DriverConfig>("AppConfig.json", "DriverConfig");
-        LocatorConfig = ConfigLoader.Load<LocatorConfig>("AppConfig.json", "LocatorConfig");
-        DriverProvider = new DriverProvider(DriverConfig);
+        ReloadConfig("AppConfig.json");
+        DriverProvider = new(DriverConfig);
     }
 
     /// <summary>
-    /// Gives ability to override way that WebDriver is created.
-    /// Keeps Reconnect, AutoClose and Multi-thread handling untouched.
+    /// Overrides how WebDriver is created.
+    /// Doesn't affect to Reconnect, AutoClose and Multi-thread functionalities.
+    /// Given function "runBrowser" will be called once to create WebDriver per every thread
     /// </summary>
     /// <param name="runBrowser">Function that will run browser e.g. () => new ChromeDriver(myOptions)</param>
     public static void SetCustomBrowser(Func<IWebDriver> runBrowser) {
@@ -54,7 +55,17 @@ public static class Configuration {
     /// </summary>
     /// <param name="filePath"> e.g. MyAppConfig.json</param>
     public static void ReloadConfig(string filePath) {
-        DriverConfig = ConfigLoader.Load<DriverConfig>(filePath, "DriverConfig");
-        LocatorConfig = ConfigLoader.Load<LocatorConfig>(filePath, "LocatorConfig");
+        ReloadConfig(new ConfigurationBuilder().AddJsonFile(filePath).Build());
+    }
+
+    /// <summary>
+    /// Reloads configuration.
+    /// </summary>
+    /// <param name="conf">IConfiguration object</param>
+    public static void ReloadConfig(IConfiguration conf) {
+        // todo if DriverProvider.Instances.Count > 0 - show warning/throw
+
+        DriverConfig.RewriteFrom(conf.GetSection("DriverConfig").Get<DriverConfig>());
+        LocatorConfig.RewriteFrom(conf.GetSection("LocatorConfig").Get<LocatorConfig>());
     }
 }

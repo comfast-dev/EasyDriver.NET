@@ -12,6 +12,11 @@ public interface ILocator {
     public ILocator _S(string cssOrXpath);
 
     /// <summary>
+    /// Element selector
+    /// </summary>
+    public string Selector { get; }
+
+    /// <summary>
     /// Element text
     /// </summary>
     public string Text { get; }
@@ -59,6 +64,11 @@ public interface ILocator {
     /// Equivalent to JS code: element.value
     /// </summary>
     public string Value { get; }
+
+    /// <summary>
+    /// Internal element DOM Id. Unique, changes during element refresh.
+    /// </summary>
+    public string DomId { get; }
 
     // public string CssValue { get; }
 
@@ -108,11 +118,18 @@ public interface ILocator {
     public bool HasAttribute(string attribute);
 
     /// <summary>
-    /// Wait for element to appear.
+    /// Wait for element. Don't check visibility.
     /// </summary>
     /// <param name="timeoutMs">custom timeout</param>
     /// <param name="throwIfFail">if false - function doesn't throw Exception and stop the program</param>
     public ILocator WaitFor(int? timeoutMs = null, bool throwIfFail = true);
+
+    /// <summary>
+    /// Wait for element to appear.
+    /// </summary>
+    /// <param name="timeoutMs">custom timeout</param>
+    /// <param name="throwIfFail">if false - function doesn't throw Exception and stop the program</param>
+    public ILocator WaitForAppear(int? timeoutMs = null, bool throwIfFail = true);
 
     /// <summary>
     /// Wait for element to disappear from DOM
@@ -141,6 +158,11 @@ public interface ILocator {
     /// Clear element value
     /// </summary>
     public ILocator Clear();
+
+    /// <summary>
+    /// Scrolls to element
+    /// </summary>
+    public ILocator ScrollIntoView();
 
     /// <summary>
     /// Drag & Drop this element over another element

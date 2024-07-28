@@ -16,18 +16,18 @@ namespace Comfast.EasyDriver.Se.Locator;
 /// </summary>
 public abstract class BaseComponent : ILocator {
     /// <summary>
-    /// Create new Child selector based on this as parent.
-    /// </summary>
-    public ILocator _S(string cssOrXpath) {
-        return new SimpleLocator(Selector + SelectorChain.SelectorSeparator + cssOrXpath);
-    }
-
-    /// <summary>
     /// Css / Xpath selector
     /// or both delimited with ' >> ' like:
     /// "form.focused >> //input[@name='user']"
     /// </summary>
     public abstract string Selector { get; }
+
+    /// <summary>
+    /// Create new Child selector based on this as parent.
+    /// </summary>
+    public ILocator _S(string cssOrXpath) {
+        return new SimpleLocator(Selector + SelectorChain.SelectorSeparator + cssOrXpath);
+    }
 
     /// <summary>
     /// Description for this Component / Locator
@@ -93,6 +93,9 @@ public abstract class BaseComponent : ILocator {
 
     /// <inheritdoc />
     public virtual string Value => GetAttribute("value");
+
+    /// <inheritdoc />
+    public string DomId => DoFind().ReadField<string>("elementId") ?? throw new("Fatal error: field elementId is null");
 
     /// <inheritdoc />
     public virtual bool HasClass(string cssClass) => GetAttribute("class").Split(" ").Contains(cssClass);
@@ -200,12 +203,20 @@ public abstract class BaseComponent : ILocator {
         return (TReturnType)result;
     }
 
-    private object[] FindAndAddToArgs(object[] jsArgs) => new List<object>(jsArgs) { DoFind() }.ToArray();
+    /// <inheritdoc />
+    public ILocator WaitFor(int? timeoutMs = null, bool throwIfFail = true) {
+        try {
+            return GetWaiter(timeoutMs).WaitFor("Element exist.", Find);
+        } catch (Exception) {
+            if (throwIfFail) throw;
+            return this;
+        }
+    }
 
     /// <inheritdoc />
-    public virtual ILocator WaitFor(int? timeoutMs = null, bool throwIfFail = true) {
+    public virtual ILocator WaitForAppear(int? timeoutMs = null, bool throwIfFail = true) {
         try {
-            WaitUtils.WaitFor(() => Find().IsDisplayed, "Element displayed.", timeoutMs);
+            GetWaiter(timeoutMs).WaitFor($"Element appear: \n{Selector}", () => Find().IsDisplayed);
         } catch (Exception) {
             if (throwIfFail) throw;
         }
@@ -215,7 +226,7 @@ public abstract class BaseComponent : ILocator {
 
     /// <inheritdoc />
     public virtual ILocator WaitForDisappear(int? timeoutMs = null) {
-        WaitUtils.WaitFor(() => !IsDisplayed, $"Element disappear: \n{Selector}", timeoutMs);
+        GetWaiter(timeoutMs).WaitFor($"Element disappear: \n{Selector}", () => !IsDisplayed);
         return this;
     }
 

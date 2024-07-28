@@ -2,15 +2,20 @@
 
 [NOT RELEASED]
 
-- [x] Validation of browser path and driver path, hints for user about download links
-- [x] Optional (virtual) Description field in BaseComponent
-- [x] Second parameter for description in `DriverApi.S("", "description")`
-- [x] Change collections interface to from `ReadOnlyCollection` to `IList`
 - [ ] Auto generating markdown docs
 - [ ] Logger compatible with Xunit
 - [ ] Auto download browser using selenium-manager
+
+### [0.3.0]
+- [x] Validation of browser path and driver path
+- [x] Optional (virtual) Description field in BaseComponent
+- [x] Second parameter for description in `DriverApi.S("", "description")`
+- [x] Change collections interface to from `ReadOnlyCollection` to `IList`
 - [x] ConfigLoader bug: read simple types
 - [x] Configuration Reload method with custom file e.g. MyAppConfig.json
+- [x] Configuration reload using IConfiguration
+- [x] Multiple types of builds: Release parallel+headless+fast, Debug reconnect+headed
+- [x] Added unit/integration tests coverage 76%
 
 ### [0.2.6]
 

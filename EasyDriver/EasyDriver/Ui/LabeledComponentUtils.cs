@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Text;
 using Comfast.Commons.Utils;
+
 namespace Comfast.EasyDriver.Ui;
 
 /// <summary>
@@ -15,8 +16,8 @@ public static class LabeledComponentUtils {
     /// <summary>
     /// Find all components of given type in current page
     /// </summary>
-    public static LabeledComponent[] FindAll(Type type)
-        => CreateInstance(type, "").AllLabels
+    public static LabeledComponent[] FindAll(Type type) =>
+        CreateInstance(type, "").AllLabels
             .Where(label => label.Trim().Length > 0)
             .Select(label => CreateInstance(type, label))
             .Where(el => el.IsDisplayed)
@@ -58,8 +59,9 @@ public static class LabeledComponentUtils {
     }
 
     private static LabeledComponent CreateInstance(Type type, string label) {
-        if (!type.IsSubclassOf(typeof(LabeledComponent))) throw new Exception(
-            $"Require {type} to be {typeof(LabeledComponent)}");
+        if (!type.IsSubclassOf(typeof(LabeledComponent)))
+            throw new Exception(
+                $"Require {type} to be {typeof(LabeledComponent)}");
 
         return (LabeledComponent)Activator.CreateInstance(type, label)!;
     }

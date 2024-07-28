@@ -301,6 +301,7 @@
         }
         this.reset = () => target.innerHTML = ''
     }
+
     const spawn = new Spawn();
 
     function Respawn() {
@@ -310,7 +311,7 @@
         const target = $('#respawn .target');
         this.startRespawn = () => {
             button.enabled = false
-            const interval = setInterval(() => target.innerHTML = "<p>"+timeoutInput.value+"</p>", parseInt(intervalInput.value))
+            const interval = setInterval(() => target.innerHTML = "<p>" + timeoutInput.value + "</p>", parseInt(intervalInput.value))
             setCountdown(timeoutInput, () => {
                 clearInterval(interval)
                 button.enabled = true
@@ -318,6 +319,7 @@
         }
         this.reset = () => target.innerHTML = '<p></p>'
     }
+
     const respawn = new Respawn();
 
     //IFrame setup
@@ -382,6 +384,7 @@
             window.location.replace(url.toString())
         }, intervalMs)
     }
+
     handleRedirect();
 
 </script>

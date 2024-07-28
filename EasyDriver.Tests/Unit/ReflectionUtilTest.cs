@@ -22,16 +22,18 @@ public class ReflectionUtilTest {
         public string? nullField = null;
         private string NoSetterProp { get; } = "NoSetterProp value";
     }
+
     class ParentClass {
-        public TestClass  TestProp { get; set; } = new();
+        public TestClass TestProp { get; set; } = new();
         private TestClass TestPrivateProp { get; } = new();
         private TestClass TestMethodProp => new();
-        public TestClass  TestReadonlyProp { get; } = new();
+        public TestClass TestReadonlyProp { get; } = new();
         private TestClass TestReadonlyPrivateProp { get; } = new();
         private TestClass TestReadonlyMethodProp => new();
-        public TestClass  TestField = new();
+        public TestClass TestField = new();
         private TestClass _testPrivateField = new();
     }
+
     class NestedClass {
         private string ReadonlyPrivateProp { get; } = "ReadonlyPrivateProp value";
         private string PublicProp { get; set; } = "PublicProp value";
@@ -74,7 +76,7 @@ public class ReflectionUtilTest {
     }
 
     [Fact] void ReadFieldIgnoreCaseTest() {
-        ShouldReadField(_test, "priVAtePrOp",   "PrivateProp value");
+        ShouldReadField(_test, "priVAtePrOp", "PrivateProp value");
         ShouldReadField(_test, "_pRivaTefielD", "_privateField value");
 
         ShouldReadField(_parent, "TeSTFielD.priVAtePrOp", "PrivateProp value");
@@ -91,7 +93,7 @@ public class ReflectionUtilTest {
 
     [Fact] void ReadObjectTest() {
         //given
-        TestClass testObject = new() {PublicField = "abc"};
+        TestClass testObject = new() { PublicField = "abc" };
         _parent.TestProp = testObject;
 
         //expect
@@ -122,8 +124,10 @@ public class ReflectionUtilTest {
     }
 
     [Fact] void InvalidTypeReadTest() {
-        ShouldThrow(() => _parent.ReadField<int>("TestProp"), "Unable to cast object of type 'TestClass' to type 'System.Int32'.");
-        ShouldThrow(() => _parent.ReadField<TestClass>("TestProp.PublicProp"), "Unable to cast object of type 'System.String' to type 'TestClass'.");
+        ShouldThrow(() => _parent.ReadField<int>("TestProp"),
+            "Unable to cast object of type 'TestClass' to type 'System.Int32'.");
+        ShouldThrow(() => _parent.ReadField<TestClass>("TestProp.PublicProp"),
+            "Unable to cast object of type 'System.String' to type 'TestClass'.");
     }
 
     [Fact] void SetFieldTest() {

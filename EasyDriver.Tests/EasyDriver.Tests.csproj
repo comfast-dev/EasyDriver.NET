@@ -8,12 +8,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentAssertions" Version="6.12.0" />
-        <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
-        <PackageReference Include="xunit" Version="2.9.0" />
-        <PackageReference Include="Xunit.Extensions.AssemblyFixture" Version="2.6.0" />
-        
+        <PackageReference Include="FluentAssertions" Version="6.12.0"/>
+        <PackageReference Include="JetBrains.Annotations" Version="2023.3.0"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0"/>
+        <PackageReference Include="xunit" Version="2.9.0"/>
+        <PackageReference Include="Xunit.Extensions.AssemblyFixture" Version="2.6.0"/>
+
         <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
@@ -25,10 +25,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\EasyDriver\EasyDriver.csproj" />
-        <None Update="test.html;testJson.json" CopyToOutputDirectory="PreserveNewest" />
+        <ProjectReference Include="..\EasyDriver\EasyDriver.csproj"/>
+        <None Update="test.html;testJson.json" CopyToOutputDirectory="PreserveNewest"/>
     </ItemGroup>
-    
+
     <Target Name="CopyConfigFiles" BeforeTargets="Publish">
         <Copy Condition="$(Configuration)=='Debug'" SourceFiles="xunit.runner.debug.json" DestinationFiles="$(OutDir)/xunit.runner.json"/>
         <Copy Condition="$(Configuration)=='Debug'" SourceFiles="AppConfig.debug.json" DestinationFiles="$(OutDir)/AppConfig.json"/>

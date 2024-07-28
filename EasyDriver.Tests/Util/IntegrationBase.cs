@@ -23,7 +23,7 @@ public class IntegrationFixture : IDisposable {
 
     //After all hook
     public void Dispose() {
-        if(!Configuration.DriverConfig.Reconnect)
+        if (!Configuration.DriverConfig.Reconnect)
             Configuration.DriverProvider.CloseAllDrivers();
     }
 }

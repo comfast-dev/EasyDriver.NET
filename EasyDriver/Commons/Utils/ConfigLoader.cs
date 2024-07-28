@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Comfast.Commons.Utils;
@@ -13,7 +13,7 @@ public class ConfigLoader {
         if (configKey != null) {
             var jObject = JObject.Parse(inputJson);
             var jsonValue = jObject[configKey]
-                          ?? throw new Exception($"Not found key '{configKey}' in JSON: {configFilePath}");
+                            ?? throw new Exception($"Not found key '{configKey}' in JSON: {configFilePath}");
 
             if (jsonValue is JValue v) return (T)v.Value;
             inputJson = jsonValue.ToString();

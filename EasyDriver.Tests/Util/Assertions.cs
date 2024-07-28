@@ -4,7 +4,6 @@ using FluentAssertions;
 namespace EasyDriver.Tests.Util;
 
 public static class Assertions {
-
     public static void ShouldThrow(Action func, string expectedErrorMessage) {
         func.Should().Throw<Exception>()
             .Where(e => e.Message.Contains(expectedErrorMessage));

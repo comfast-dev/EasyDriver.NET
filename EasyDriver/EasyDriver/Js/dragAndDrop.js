@@ -14,6 +14,7 @@ function customEvent(typeOfEvent) {
     };
     return event;
 }
+
 function dispatchEvent(element, event, transferData) {
     if (transferData !== undefined) {
         event.dataTransfer = transferData;
@@ -24,6 +25,7 @@ function dispatchEvent(element, event, transferData) {
         element.fireEvent("on" + event.type, event);
     }
 }
+
 function executeDragAndDrop(element, target) {
     var dragStartEvent = customEvent('dragstart');
     dispatchEvent(element, dragStartEvent);

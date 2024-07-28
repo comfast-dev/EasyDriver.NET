@@ -38,7 +38,7 @@ public class Waiter {
     /// <param name="duringAction">Action that trigger change</param>
     public void WaitForReload(ILocator locator, Action? duringAction = null) {
         var beforeDomId = locator.DomId;
-        if(duringAction != null) duringAction.Invoke();
+        if (duringAction != null) duringAction.Invoke();
         WaitFor("Reload element: " + locator.Selector, () => locator.DomId != beforeDomId);
     }
 

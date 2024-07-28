@@ -18,5 +18,6 @@ public class ElementFindFail : Exception {
                + $"\n{string.Join(separator, selectors)}\n{spaces}^\n{spaces}{ClearSeleniumMessage(cause.Message)}";
     }
 
-    private static string ClearSeleniumMessage(string causeMessage) => causeMessage.RgxReplace(@"\s*\(Session info[\s\S]+$", "");
+    private static string ClearSeleniumMessage(string causeMessage) =>
+        causeMessage.RgxReplace(@"\s*\(Session info[\s\S]+$", "");
 }

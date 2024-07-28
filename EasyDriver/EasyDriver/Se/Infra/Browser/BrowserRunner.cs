@@ -35,8 +35,9 @@ public class BrowserRunner : IBrowserRunner {
     }
 
     private void AssertUrl(string url, string title) {
-        if (!Uri.IsWellFormedUriString(url, UriKind.Absolute)) throw new(
-            $"Invalid URL: {title}: {url}");
+        if (!Uri.IsWellFormedUriString(url, UriKind.Absolute))
+            throw new(
+                $"Invalid URL: {title}: {url}");
     }
 
     private void AssertFileExists(string filePath, string fieldName) {

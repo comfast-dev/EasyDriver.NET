@@ -9,7 +9,7 @@ namespace Comfast.Commons.Utils;
 /// </summary>
 public static class ReflectionUtils {
     private static BindingFlags _universalFlags = BindingFlags.Public | BindingFlags.NonPublic |
-                                         BindingFlags.Instance | BindingFlags.IgnoreCase;
+                                                  BindingFlags.Instance | BindingFlags.IgnoreCase;
 
     /// <summary>
     /// Rewrite all fields from source to target object.

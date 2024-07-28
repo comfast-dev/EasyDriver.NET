@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk" InitialTargets="CopyConfigFiles">
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
@@ -37,4 +37,12 @@
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
     </ItemGroup>
+    
+    <Target Name="CopyConfigFiles" BeforeTargets="Publish">
+        <Copy Condition="$(Configuration)=='Debug'" SourceFiles="xunit.runner.debug.json" DestinationFiles="$(OutDir)/xunit.runner.json"/>
+        <Copy Condition="$(Configuration)=='Debug'" SourceFiles="AppConfig.debug.json" DestinationFiles="$(OutDir)/AppConfig.json"/>
+
+        <Copy Condition="$(Configuration)=='Release'" SourceFiles="xunit.runner.release.json" DestinationFiles="$(OutDir)/xunit.runner.json"/>
+        <Copy Condition="$(Configuration)=='Release'" SourceFiles="AppConfig.release.json" DestinationFiles="$(OutDir)/AppConfig.json"/>
+    </Target>
 </Project>

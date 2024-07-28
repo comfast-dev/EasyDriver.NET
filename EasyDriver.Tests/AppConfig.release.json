@@ -8,8 +8,8 @@
     "Headless": true
   },
   "LocatorConfig": {
-    "TimeoutMs": 20000,
-    "ShortWaitMs": 3000,
+    "TimeoutMs": 4000,
+    "ShortWaitMs": 1000,
     "HighlightActions": false
   }
 }

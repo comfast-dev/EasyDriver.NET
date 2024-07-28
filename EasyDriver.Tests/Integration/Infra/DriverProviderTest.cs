@@ -2,36 +2,43 @@
 using Comfast.EasyDriver.Models;
 using Comfast.EasyDriver.Se.Infra;
 using Comfast.EasyDriver.Ui;
+using EasyDriver.Tests.Util;
 using FluentAssertions;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using Xunit.Abstractions;
 using Configuration = Comfast.EasyDriver.Configuration;
 
-namespace EasyDriver.Tests.Integration;
+namespace EasyDriver.Tests.Integration.Infra;
 
-public class DriverProviderTest : IDisposable {
-    private readonly string _driverPath;
-    private readonly string _browserPath;
+public class DriverProviderTest : IntegrationBase, IDisposable {
+    public DriverProviderTest(ITestOutputHelper output, IntegrationFixture fix) : base(output, fix) { }
 
-    public DriverProviderTest() {
-        _driverPath = Configuration.DriverConfig.DriverPath;
-        _browserPath = Configuration.DriverConfig.BrowserPath;
-    }
+    private readonly string _driverPath = Configuration.DriverConfig.DriverPath;
+    private readonly string _browserPath = Configuration.DriverConfig.BrowserPath;
+    private IWebDriver? _driver;
 
     public void Dispose() {
         Configuration.DriverConfig.DriverPath = _driverPath;
         Configuration.DriverConfig.BrowserPath = _browserPath;
+        _driver?.Quit();
+        _driver?.Dispose();
     }
 
-    [Fact] public void ReconnectToSessionTest() {
+    // [Fact]
+    [Fact(Skip = "Need to run separately")]
+    public void ReconnectToSessionTest() {
         var conf = new DriverConfig() {
             Reconnect = true,
             Headless = true,
+            AutoClose = true,
             BrowserPath = Configuration.DriverConfig.BrowserPath,
             DriverPath = Configuration.DriverConfig.DriverPath,
         };
 
         var driverProvider1 = new DriverProvider(conf);
         var driver1 = driverProvider1.GetDriver();
+        _driver = driver1;
         var originalTitle = driver1.Title;
         var sessionId = driver1.ReadField<string>("SessionId.sessionOpaqueKey");
 

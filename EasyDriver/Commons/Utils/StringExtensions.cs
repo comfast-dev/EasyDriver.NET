@@ -2,26 +2,27 @@
 
 namespace Comfast.Commons.Utils;
 
+/// <summary>
+/// Extension methods for string
+/// </summary>
 public static class StringExtensions {
-    public static string LimitString(this string input, int maxLength) {
-        return input.Length > maxLength
-            ? input.Substring(0, maxLength) + "..."
-            : input;
-    }
+    /// <summary>
+    /// Replace regex matches with given replacement.
+    /// </summary>
+    public static string RgxReplace(this string str, string pattern, string replacement) =>
+        Regex.Replace(str, pattern, replacement);
 
-    public static string RgxReplace(this string str, string pattern, string replacement) {
-        return Regex.Replace(str, pattern, replacement);
-    }
-
+    /// <summary>
+    /// Match regex pattern. If matchGroup is set use nth capturing group.
+    /// </summary>
     public static string? RgxMatch(this string str, string pattern, int capturingGroup = 0) {
         var match = Regex.Match(str, pattern);
-
-        return match.Success
-            ? match.Groups[capturingGroup].Value
-            : null;
+        return match.Success ? match.Groups[capturingGroup].Value : null;
     }
 
-    public static string MaxLength(this string str, int length) {
-        return str.Length <= length ? str : str.Substring(0, length);
-    }
+    /// <summary>
+    /// Trim string if is longer than length
+    /// </summary>
+    public static string MaxLength(this string str, int length) =>
+        str.Length <= length ? str : str.Substring(0, length);
 }

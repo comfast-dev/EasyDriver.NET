@@ -1,16 +1,12 @@
 using Comfast.EasyDriver.Ui;
+using EasyDriver.Tests.Util;
+using FluentAssertions;
 using Xunit.Abstractions;
-using static Comfast.EasyDriver.DriverApi;
 
 namespace EasyDriver.Tests.Integration;
 
-public class AttributesTest {
-    private readonly ITestOutputHelper _output;
-
-    public AttributesTest(ITestOutputHelper output) {
-        new BrowserContent().OpenResourceFile("test.html");
-        _output = output;
-    }
+public class AttributesTest : IntegrationBase {
+    public AttributesTest(ITestOutputHelper output, IntegrationFixture fix) : base(output, fix) { }
 
     [Fact] public void TextAndHtml() {
         var p = S("#textAndHtml p");
@@ -22,6 +18,23 @@ public class AttributesTest {
         Assert.Equal($"<p> Hello <span>World</span>{Environment.NewLine}    !</p>", p.OuterHtml);
     }
 
+    [Fact] void TextsTest() {
+        var tds = S("tr > td:first-child");
+        tds.Texts.Length.Should().BeGreaterThan(40);
+    }
+
+    [Fact] void DomIdTest() {
+        S("#spawn").DomId.Length.Should().BeGreaterThan(20);
+    }
+
+    [Fact] void HighlightTest() {
+        S("#spawn").Highlight();
+        S("#spawn").GetCssValue("border").Should().Contain("2px solid");
+    }
+
+    [Fact] void ScrollIntoViewTest() {
+        S("#spawn").ScrollIntoView();
+    }
 
     [Fact] void IsDisplayed() {
         Assert.True(S("#isDisplayed .default").Exists);
@@ -47,7 +60,7 @@ public class AttributesTest {
         Assert.Null(input.GetAttribute("notattribute"));
 
         // JS attributes
-        Assert.False(input.GetAttribute("formAction").Length == 0, "formAction");
+        Assert.False(input.GetAttribute("formAction")!.Length == 0, "formAction");
         Assert.Equal("input", input.GetAttribute("localName"));
         Assert.Equal("inherit", input.GetAttribute("contentEditable"));
     }

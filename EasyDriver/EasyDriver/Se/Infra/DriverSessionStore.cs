@@ -9,7 +9,7 @@ namespace Comfast.EasyDriver.Se.Infra;
 /// </summary>
 public class DriverSessionStore {
     private const string Separator = "#";
-    private readonly TempFile _sessionTempFile = new("WebDriverSessionInfo.txt");
+    private readonly TempFile _sessionTempFile = new("EasyDriver/WebDriverSessionInfo.txt");
 
     // ReSharper disable once MemberCanBePrivate.Global
     /// <summary>

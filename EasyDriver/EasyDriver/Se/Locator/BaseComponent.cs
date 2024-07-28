@@ -170,6 +170,11 @@ public abstract class BaseComponent : ILocator {
     }
 
     /// <inheritdoc />
+    public ILocator ScrollIntoView() {
+        return ExecuteJs("el.scrollIntoView({behavior: 'smooth'})");
+    }
+
+    /// <inheritdoc />
     public virtual ILocator DragTo(ILocator target) {
         HighlightIfEnabled();
         IWebElement targetEl = target.DoFind();
@@ -184,7 +189,7 @@ public abstract class BaseComponent : ILocator {
     public ILocator ExecuteJs(string jsCode, params object[] jsArgs) {
         var jsDriver = (IJavaScriptExecutor)GetDriver();
 
-        jsArgs = FindAndAddToArgs(jsArgs);
+        jsArgs = new List<object>(jsArgs) { DoFind() }.ToArray();
         jsDriver.ExecuteScript($"const el = arguments[{jsArgs.Length - 1}];{jsCode}", jsArgs);
         return this;
     }
@@ -198,7 +203,7 @@ public abstract class BaseComponent : ILocator {
             jsCode = "return " + jsCode;
         }
 
-        jsArgs = FindAndAddToArgs(jsArgs);
+        jsArgs = new List<object>(jsArgs) { DoFind() }.ToArray();
         var result = jsDriver.ExecuteScript($"const el = arguments[{jsArgs.Length - 1}];{jsCode}", jsArgs);
         return (TReturnType)result;
     }
@@ -240,7 +245,7 @@ public abstract class BaseComponent : ILocator {
             try {
                 results.Add(func.Invoke(element));
             } catch (Exception e) {
-                var elementHtml = element.OuterHtml.LimitString(100);
+                var elementHtml = element.OuterHtml.MaxLength(100);
                 throw new Exception($"Mapping failed during processing element [{i}/{elements.Count}]: " + elementHtml,
                     e);
             }

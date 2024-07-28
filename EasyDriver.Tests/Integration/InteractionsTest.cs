@@ -1,16 +1,17 @@
 using Comfast.EasyDriver;
 using Comfast.EasyDriver.Ui;
-using EasyDriver.Tests.Integration.Infra;
-using EasyDriver.Tests.Util;
 using FluentAssertions;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
-using Xunit.Abstractions;
+using static Comfast.EasyDriver.DriverApi;
 
 namespace EasyDriver.Tests.Integration;
 
-public class InteractionsTest : IntegrationBase {
-    public InteractionsTest(ITestOutputHelper output, IntegrationFixture fix) : base(output, fix) { }
+public class InteractionsTest {
+
+    public InteractionsTest() {
+        new BrowserContent().OpenResourceFile("test.html");
+    }
 
     [Fact] public void Click() {
         var btn = S("#clicker button");
@@ -73,16 +74,4 @@ public class InteractionsTest : IntegrationBase {
     }
 
     [Fact(Skip = "todo")] public void DownloadFile() { }
-
-    [Fact] void ExecuteJsTest() {
-        var input = S("input");
-
-        input.SetValue("lol");
-
-        Assert.Equal("lol", input.ExecuteJs<string>("el.value"));
-        Assert.Equal("lol", input.ExecuteJs<string>("return el.value"));
-
-        input.ExecuteJs("document.querySelector('input').value = 'xd'");
-        Assert.Equal("xd", input.Value);
-    }
 }

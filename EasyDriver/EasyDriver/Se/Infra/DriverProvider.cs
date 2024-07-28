@@ -11,17 +11,14 @@ namespace Comfast.EasyDriver.Se.Infra;
 /// </summary>
 public class DriverProvider : IDriverProvider {
     private readonly ThreadLocal<IWebDriver> _instances;
-    private readonly DriverSessionStore _driverSessionStore = new();
     private readonly DriverConfig _driverConfig;
+    private readonly DriverSessionStore _driverSessionStore = new();
 
     /// <summary>
     /// Update this field to customize browser creation logic
     /// </summary>
     public IBrowserRunner BrowserRunner { get; set; }
 
-    /// <summary>
-    /// Create new instance based on config.
-    /// </summary>
     public DriverProvider(DriverConfig driverConfig) {
         _instances = new ThreadLocal<IWebDriver>(ProvideDriverInstance, true);
         _driverConfig = driverConfig;
@@ -38,20 +35,15 @@ public class DriverProvider : IDriverProvider {
     /// - Can be called multiple times.
     /// </summary>
     public IWebDriver GetDriver() {
-        //@formatter:off
-        if (_driverConfig.Reconnect && _instances.Values.Count > 1) throw new Exception(@"
+        if (_driverConfig.Reconnect && _instances.Values.Count > 1) {
+            throw new Exception(@"
 Reconnect feature isn't compatible with parallel runs. Possible solutions:
-- Set DriverConfig.Reconnect = false in AppConfig.json
-- Change runner configuration to run tests in one thread");
-        //@formatter:on
-        return _instances.Value!;
-    }
+- Set DriverConfig.Reconnect flag to false in AppConfig.json
+- Change runner configuration to run tests in one thread
+");
+        }
 
-    /// <summary>
-    /// Close all WebDrivers managed by this provider
-    /// </summary>
-    public void CloseAllDrivers() {
-        Parallel.ForEach(_instances.Values, driver => driver.Quit());
+        return _instances.Value!;
     }
 
     /// <summary>
@@ -61,5 +53,13 @@ Reconnect feature isn't compatible with parallel runs. Possible solutions:
         return _driverConfig.Reconnect
             ? _driverSessionStore.RestoreSessionOrElse(BrowserRunner.RunNewBrowser)
             : BrowserRunner.RunNewBrowser();
+    }
+
+    /// <summary>
+    /// Close all WebDrivers managed by this provider
+    /// </summary>
+    public void CloseAllDrivers() {
+        foreach (var webDriver in _instances.Values)
+            webDriver.Quit();
     }
 }

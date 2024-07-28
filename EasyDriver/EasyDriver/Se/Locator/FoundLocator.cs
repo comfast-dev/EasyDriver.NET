@@ -13,7 +13,7 @@ public class FoundLocator : SimpleLocator, IFoundLocator {
     /// </summary>
     public IWebElement FoundElement { get; }
 
-    public FoundLocator(string selector, string? description, IWebElement foundElement)
+     public FoundLocator(string selector, string? description, IWebElement foundElement)
         : base(selector, description) {
         FoundElement = foundElement;
     }

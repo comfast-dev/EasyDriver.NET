@@ -4,15 +4,14 @@ using FluentAssertions;
 namespace EasyDriver.Tests.Util;
 
 public static class Assertions {
-    public static void ShouldThrow(Action func, string expectedErrorMessage) {
+
+    public static void ShouldThrow<T>(Func<T> func, string expectedMessage) {
         func.Should().Throw<Exception>()
-            .Where(e => e.Message.Contains(expectedErrorMessage));
+            .Where(e => e.Message.Contains(expectedMessage));
     }
 
     public static void ShouldHaveValue(ILocator locator, string expectedValue) {
-        var value = locator.GetAttribute("value");
-        if (expectedValue.Length == 0) value.Should().BeEmpty();
-        else value.Should().Match(expectedValue);
+        locator.GetAttribute("value").Should().Match(expectedValue);
     }
 
     public static void ShouldHaveText(ILocator locator, string expectedText) {
@@ -25,32 +24,5 @@ public static class Assertions {
 
     public static void ShouldNotFind(ILocator locator) {
         Assert.False(locator.Exists, "should not find: " + locator);
-    }
-
-    public static void ShouldEqual(object actual, object expected) {
-        actual.Should().Be(expected);
-    }
-
-    public static double ShouldEndInTime(Action func, int minTimeMs, int maxTimeMs) {
-        var startedAt = DateTime.Now;
-        func.Should().NotThrow();
-
-        var executionTimeMs = DateTime.Now.Subtract(startedAt).TotalMilliseconds;
-        executionTimeMs.Should()
-            .BeGreaterThan(minTimeMs)
-            .And.BeLessThan(maxTimeMs);
-        return executionTimeMs;
-    }
-
-    public static double ShouldThrowInTime(Action func, int minTimeMs, int maxTimeMs, string expectedErrorMessage) {
-        var startedAt = DateTime.Now;
-        func.Should().Throw<Exception>()
-            .Where(e => e.Message.Contains(expectedErrorMessage));
-
-        var executionTimeMs = DateTime.Now.Subtract(startedAt).TotalMilliseconds;
-        executionTimeMs.Should()
-            .BeGreaterThan(minTimeMs)
-            .And.BeLessThan(maxTimeMs);
-        return executionTimeMs;
     }
 }

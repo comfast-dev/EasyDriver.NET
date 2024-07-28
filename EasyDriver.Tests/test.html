@@ -12,10 +12,6 @@
             padding: 7px;
         }
 
-        #spawn input, #respawn input, #redirect input, #download input {
-            width: 40px
-        }
-
         #testForm p {
             display: block;
             margin: 10px;
@@ -102,20 +98,20 @@
         <tr class="radio"><td> radio:</td><td>
             <fieldset>
                 <legend>Radio - Choose your destiny</legend>
-                <label><input type="radio" name="myRadio" value="radio1">Radio 1</label>
-                <label><input type="radio" name="myRadio" value="radio2" checked>Radio 2 checked</label>
-                <label><input type="radio" name="myRadio" value="radio3">Radio 3</label>
-                <label><input type="radio" name="myRadio" disabled>Radio 4 disabled</label>
+                <label><input type="radio" name="myRadio" value="liuKang">Liu Kang</label>
+                <label><input type="radio" name="myRadio" value="subZero" checked>Rayden</label>
+                <label><input type="radio" name="myRadio" value="johnyCage">Johny Cage</label>
+                <label><input type="radio" name="myRadio" disabled>Goro</label>
             </fieldset>
         </td></tr>
         <tr class="checkboxes"><td> checkboxes:</td><td>
             <fieldset>
                 <legend>Checkbox - Choose your team</legend>
-                <label><input type="checkbox" name="myCb" checked>Cb 1 checked</label>
-                <label><input type="checkbox" name="myCb">Cb 2</label>
-                <label><input type="checkbox" name="myCb">Cb 3</label>
-                <label><input type="checkbox" name="myCb" disabled>Cb 4 disabled</label>
-                <label><input type="checkbox" name="myCb" checked disabled>Cb checked disabled</label>
+                <label><input type="checkbox" name="myCb" checked>Tanya</label>
+                <label><input type="checkbox" name="myCb">Sonya</label>
+                <label><input type="checkbox" name="myCb">Jax</label>
+                <label><input type="checkbox" name="myCb" disabled>Goro</label>
+                <label><input type="checkbox" name="myCb" checked disabled>Shinnok</label>
             </fieldset>
         </td></tr>
         <tr><td> select:</td><td>
@@ -195,39 +191,21 @@
         <td>
             <button class="target" style="position: relative;left: 0;" onclick="increment('#movingButton .counter')">I am moving</button>
         </td></tr>
-    <tr id="spawn">
-        <td><h4>Spawn HTML after timeout</h4>
-            <textarea name="html_to_spawn"><h5>Hello world<h5></textarea><br>
-            <button name="spawnStart" onclick="spawn.startSpawn()">Spawn HTML After</button>
-            Timeout: <input name="timeout" value="500">[ms]<br><br>
-            <button name="reset" onclick="spawn.reset()">Reset</button>
+    <tr id="countdown">
+        <td>Spawn HTML after timeout<br>
+            <textarea name="html_to_spawn">Hello world</textarea><br>
+            <button name="start" onclick="countdown.start()">Countdown start</button>
+            <input name="timeout" style="width: 40px" value="500">[ms]<br>
+            <button name="reset" onclick="countdown.reset()">Reset</button>
         </td><td class="target">
     </td></tr>
-    <tr id="respawn">
-        <td>Respawn HTML in time<br>
-            Timeout: <input name="timeout" value="2000">[ms]<br>
-            Interval: <input name="interval" value="300">[ms]<br>
-            <button name="start" onclick="respawn.startRespawn()">Respawn start</button>
-            <button name="reset" onclick="respawn.reset()">Reset</button>
-        </td><td class="target">
-    </td></tr>
-    <tr id="download"><td>Download file <input name="fileName" style="width: auto" value="testFile.txt"><br><textarea name="fileContent">Some file content</textarea></td><td>
+    <tr id="download"><td>Download file <input name="fileName" value="testFile.txt"><br><textarea name="fileContent">Some file content</textarea></td><td>
         <button class="simple" onclick="download.simple()">Download</button><br>
         <button class="delay" onclick="download.afterDelay()">Download after</button><input class="delay" value="3000">ms<br>
         <button class="bigFile" onclick="download.bigFile()">Download big file</button><input name="fileSize" value="1">MB<br>
     </td></tr>
 </table>
-<table>
-    <tr><th colspan="2">Simulates Redirect page</th></tr>
-    <tr id="redirect"><td>
-        Redirects count: <input name="count" value="5"><br>
-        Redirects interval: <input name="interval" value="300">[ms]<br>
-    </td><td>
-<button onclick="handleRedirect(parseInt($('#redirect input[name=count]').value))">START</button>
-    </td></tr>
-</table>
-
-<table id="nestedElements">
+<table id="Nested elements">
     <tr><th colspan="2">Nested elements</th></tr>
     <tr id="iframes"><td>nested Iframes</td><td>
         <iframe id="myFrame"></iframe>
@@ -265,62 +243,36 @@
             e.target.appendChild(document.getElementById(data));
         }
     }
-
     const dragAndDrop = new DragAndDrop();
 
-    function setCountdown(timeoutInput, finishAction = null, button = null) {
-        if (timeoutInput.disabled) return
-        if (button) button.disabled = true
-
+    function setCountdown(timeoutInput, action, triggerButton = null) {
+        if(triggerButton) triggerButton.disabled = true
         timeoutInput.disabled = true
-        const startValue = timeoutInput.value
-        const timeoutMs = parseInt(timeoutInput.value)
-        const timestampEnd = Date.now() + timeoutMs
-
-        const intervalMs = 50;
+        const timeout = timeoutInput.value;
+        const updateInterval = 50;
         const interval = setInterval(() => {
-            const timeLeft = timestampEnd - Date.now();
-            if (timeLeft > 0) timeoutInput.value = timeLeft;
-        }, intervalMs)
+            const time = parseInt(timeoutInput.value);
+            if (time > 0) timeoutInput.value = time - updateInterval;
+        }, updateInterval);
+
         setTimeout(() => {
             clearInterval(interval);
+            timeoutInput.value = timeout;
             timeoutInput.disabled = false
-            timeoutInput.value = startValue;
-            if (button) button.disabled = false
-            if (finishAction) finishAction()
-        }, timeoutMs)
+            if(triggerButton) triggerButton.disabled = false
+            action()
+        }, timeout);
     }
 
-    function Spawn() {
-        const htmlTextarea = $('#spawn textarea[name=html_to_spawn]');
-        const timeoutInput = $('#spawn input[name=timeout]');
-        const target = $('#spawn .target');
-        const button = $('#spawn button[name=start]');
-        this.startSpawn = () => {
-            setCountdown(timeoutInput, () => target.innerHTML = htmlTextarea.value, button)
-        }
+    function Countdown() {
+        const htmlTextarea = $('#countdown textarea[name=html_to_spawn]');
+        const timeoutInput = $('#countdown input[name=timeout]');
+        const target = $('#countdown .target');
+        const button = $('#countdown button[name=start]');
+        this.start = () => setCountdown(timeoutInput, () => target.innerHTML = htmlTextarea.value, button)
         this.reset = () => target.innerHTML = ''
     }
-
-    const spawn = new Spawn();
-
-    function Respawn() {
-        const timeoutInput = $('#respawn input[name=timeout]');
-        const intervalInput = $('#respawn input[name=interval]');
-        const button = $('#respawn button[name=start]');
-        const target = $('#respawn .target');
-        this.startRespawn = () => {
-            button.enabled = false
-            const interval = setInterval(() => target.innerHTML = "<p>" + timeoutInput.value + "</p>", parseInt(intervalInput.value))
-            setCountdown(timeoutInput, () => {
-                clearInterval(interval)
-                button.enabled = true
-            })
-        }
-        this.reset = () => target.innerHTML = '<p></p>'
-    }
-
-    const respawn = new Respawn();
+    const countdown = new Countdown();
 
     //IFrame setup
     function fillIframe(iframeCss) {
@@ -364,29 +316,7 @@
             this.downloadFile(getInput("fileName"), text.repeat(bytesCount / text.length))
         }
     }
-
     const download = new Download();
-
-
-    /*
-     * Simulates page redirect if query parameter "redirect=..." is set.
-     */
-    function handleRedirect(redirectCount = null) {
-        const intervalMs = parseInt($("#redirect input[name=interval]").value)
-
-        const url = new URL(window.location.href)
-        if (redirectCount == null) {
-            redirectCount = parseInt(url.searchParams.get("redirect"));
-        }
-
-        if (redirectCount > 0) setTimeout(() => {
-            url.searchParams.set("redirect", redirectCount - 1);
-            window.location.replace(url.toString())
-        }, intervalMs)
-    }
-
-    handleRedirect();
-
 </script>
 </body>
 </html>

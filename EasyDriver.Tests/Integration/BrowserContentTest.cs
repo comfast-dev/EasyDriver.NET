@@ -1,13 +1,10 @@
-﻿using Comfast.EasyDriver.Ui;
-using EasyDriver.Tests.Util;
+﻿using Comfast.EasyDriver;
+using Comfast.EasyDriver.Ui;
 using FluentAssertions;
-using Xunit.Abstractions;
 
 namespace EasyDriver.Tests.Integration;
 
-public class BrowserContentTest : IntegrationBase {
-    public BrowserContentTest(ITestOutputHelper output, IntegrationFixture fix) : base(output, fix) { }
-
+public class BrowserContentTest {
     [Fact(Skip = "unstable on chrome")] void TrustedHtmlTest() {
         try {
             var func = () => {

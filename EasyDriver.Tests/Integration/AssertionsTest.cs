@@ -1,13 +1,10 @@
-﻿using EasyDriver.Tests.Util;
-using Xunit.Abstractions;
+﻿using FluentAssertions;
 
 namespace EasyDriver.Tests.Integration;
 
-public class AssertionsTest : IntegrationBase {
-    public AssertionsTest(ITestOutputHelper output, IntegrationFixture fix) : base(output, fix) { }
-
+public class AssertionsTest {
     [Fact] void WaitForFail() {
-        ShouldThrow(() => S("html >> lolz").WaitForAppear(100),
+        ShouldThrow(() => S("html >> lolz").WaitFor(100),
             "html >> lolz");
     }
 }

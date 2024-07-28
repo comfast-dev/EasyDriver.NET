@@ -3,22 +3,19 @@
 public class TempFile {
     public string FilePath { get; }
 
-    /// <summary> Initialize, prepare file directory.</summary>
-    public TempFile(string nameOrPath) {
-        FilePath = Path.Combine(Path.GetTempPath(), nameOrPath);
-
-        var dir = Path.GetDirectoryName(FilePath) ?? throw new(
-            "Invalid file directory: " + FilePath);
-        if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
-        if (!File.Exists(FilePath)) File.Create(FilePath);
+    public TempFile(string name) {
+        FilePath = Path.Combine(Path.GetTempPath(), name);
     }
 
-    /// <summary>Write content to file. Replace all. </summary>
-    public void Write(string content) => File.WriteAllText(FilePath, content);
+    public void Write(string content) {
+        // Directory.CreateDirectory(Path.GetDirectoryName(FilePath));
+        // if (!File.Exists(FilePath)) File.Create(FilePath);
+        using var sw = new StreamWriter(FilePath);
+        sw.Write(content);
+    }
 
-    /// <summary> Read file text.</summary>
-    public string Read() => File.ReadAllText(FilePath);
-
-    /// <summary> Delete temp file </summary>
-    public void Delete() => File.Delete(FilePath);
+    public string Read() {
+        using var sr = new StreamReader(FilePath);
+        return sr.ReadToEnd();
+    }
 }

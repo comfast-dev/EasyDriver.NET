@@ -1,6 +1,7 @@
 namespace Comfast.EasyDriver.Ui;
 
 public class BrowserContent {
+
     /// <summary>
     /// Copy given resource file to temp folder and open it in browser.
     /// </summary>

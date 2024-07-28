@@ -22,8 +22,6 @@ public class BrowserRunner : IBrowserRunner {
     public IWebDriver RunNewBrowser() {
         AssertFileExists(_config.DriverPath, "DriverConfig.DriverPath");
         AssertFileExists(_config.BrowserPath, "DriverConfig.BrowserPath");
-        // AssertLocation(_config.DownloadPath, "DriverConfig.DownloadPath");
-        if (_config.ProxyUrl != null) AssertUrl(_config.ProxyUrl, "ProxyUrl");
 
         var browserName = _config.BrowserName;
         return browserName switch {
@@ -34,22 +32,18 @@ public class BrowserRunner : IBrowserRunner {
         };
     }
 
-    private void AssertUrl(string url, string title) {
-        if (!Uri.IsWellFormedUriString(url, UriKind.Absolute))
-            throw new(
-                $"Invalid URL: {title}: {url}");
-    }
-
     private void AssertFileExists(string filePath, string fieldName) {
         if (!File.Exists(filePath))
-            throw new($@"Not found file path: {fieldName}: '{filePath}'. Check your configuration.");
+            throw new($@"
+Not found file path: {fieldName}: '{filePath}'. Check your configuration.
+
+Download links for Chrome + Chromedriver here:
+https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json
+");
     }
 
     private ChromeDriver RunChromium() {
         var options = new ChromeOptions();
-
-        //proxy
-        if (_config.ProxyUrl != null) options.AddArgument($"--proxy-server=" + _config.ProxyUrl);
 
         //download
         options.AddUserProfilePreference("download.default_directory", _config.DownloadPath);

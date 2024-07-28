@@ -16,18 +16,18 @@ namespace Comfast.EasyDriver.Se.Locator;
 /// </summary>
 public abstract class BaseComponent : ILocator {
     /// <summary>
-    /// Css / Xpath selector
-    /// or both delimited with ' >> ' like:
-    /// "form.focused >> //input[@name='user']"
-    /// </summary>
-    public abstract string Selector { get; }
-
-    /// <summary>
     /// Create new Child selector based on this as parent.
     /// </summary>
     public ILocator _S(string cssOrXpath) {
         return new SimpleLocator(Selector + SelectorChain.SelectorSeparator + cssOrXpath);
     }
+
+    /// <summary>
+    /// Css / Xpath selector
+    /// or both delimited with ' >> ' like:
+    /// "form.focused >> //input[@name='user']"
+    /// </summary>
+    public abstract string Selector { get; }
 
     /// <summary>
     /// Description for this Component / Locator
@@ -93,9 +93,6 @@ public abstract class BaseComponent : ILocator {
 
     /// <inheritdoc />
     public virtual string Value => GetAttribute("value");
-
-    /// <inheritdoc />
-    public string DomId => DoFind().ReadField<string>("elementId") ?? throw new("Fatal error: field elementId is null");
 
     /// <inheritdoc />
     public virtual bool HasClass(string cssClass) => GetAttribute("class").Split(" ").Contains(cssClass);
@@ -170,11 +167,6 @@ public abstract class BaseComponent : ILocator {
     }
 
     /// <inheritdoc />
-    public ILocator ScrollIntoView() {
-        return ExecuteJs("el.scrollIntoView({behavior: 'smooth'})");
-    }
-
-    /// <inheritdoc />
     public virtual ILocator DragTo(ILocator target) {
         HighlightIfEnabled();
         IWebElement targetEl = target.DoFind();
@@ -189,7 +181,7 @@ public abstract class BaseComponent : ILocator {
     public ILocator ExecuteJs(string jsCode, params object[] jsArgs) {
         var jsDriver = (IJavaScriptExecutor)GetDriver();
 
-        jsArgs = new List<object>(jsArgs) { DoFind() }.ToArray();
+        jsArgs = FindAndAddToArgs(jsArgs);
         jsDriver.ExecuteScript($"const el = arguments[{jsArgs.Length - 1}];{jsCode}", jsArgs);
         return this;
     }
@@ -203,25 +195,17 @@ public abstract class BaseComponent : ILocator {
             jsCode = "return " + jsCode;
         }
 
-        jsArgs = new List<object>(jsArgs) { DoFind() }.ToArray();
+        jsArgs = FindAndAddToArgs(jsArgs);
         var result = jsDriver.ExecuteScript($"const el = arguments[{jsArgs.Length - 1}];{jsCode}", jsArgs);
         return (TReturnType)result;
     }
 
-    /// <inheritdoc />
-    public ILocator WaitFor(int? timeoutMs = null, bool throwIfFail = true) {
-        try {
-            return GetWaiter(timeoutMs).WaitFor("Element exist.", Find);
-        } catch (Exception) {
-            if (throwIfFail) throw;
-            return this;
-        }
-    }
+    private object[] FindAndAddToArgs(object[] jsArgs) => new List<object>(jsArgs) { DoFind() }.ToArray();
 
     /// <inheritdoc />
-    public virtual ILocator WaitForAppear(int? timeoutMs = null, bool throwIfFail = true) {
+    public virtual ILocator WaitFor(int? timeoutMs = null, bool throwIfFail = true) {
         try {
-            GetWaiter(timeoutMs).WaitFor($"Element appear: \n{Selector}", () => Find().IsDisplayed);
+            WaitUtils.WaitFor(() => Find().IsDisplayed, "Element displayed.", timeoutMs);
         } catch (Exception) {
             if (throwIfFail) throw;
         }
@@ -231,7 +215,7 @@ public abstract class BaseComponent : ILocator {
 
     /// <inheritdoc />
     public virtual ILocator WaitForDisappear(int? timeoutMs = null) {
-        GetWaiter(timeoutMs).WaitFor($"Element disappear: \n{Selector}", () => !IsDisplayed);
+        WaitUtils.WaitFor(() => !IsDisplayed, $"Element disappear: \n{Selector}", timeoutMs);
         return this;
     }
 
@@ -245,7 +229,7 @@ public abstract class BaseComponent : ILocator {
             try {
                 results.Add(func.Invoke(element));
             } catch (Exception e) {
-                var elementHtml = element.OuterHtml.MaxLength(100);
+                var elementHtml = element.OuterHtml.LimitString(100);
                 throw new Exception($"Mapping failed during processing element [{i}/{elements.Count}]: " + elementHtml,
                     e);
             }

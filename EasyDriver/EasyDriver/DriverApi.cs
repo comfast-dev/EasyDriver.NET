@@ -1,5 +1,5 @@
-﻿using Comfast.EasyDriver.Models;
-using Comfast.EasyDriver.Se;
+﻿using Comfast.Commons.Utils;
+using Comfast.EasyDriver.Models;
 using Comfast.EasyDriver.Se.Locator;
 using OpenQA.Selenium;
 
@@ -35,7 +35,9 @@ public static class DriverApi {
     }
 
     /// <summary>
-    /// Provides waiting methods
+    /// Wait for any action to return true. Ignore Exceptions.
     /// </summary>
-    public static Waiter GetWaiter(int? timeoutMs = null) => new(timeoutMs ?? Configuration.LocatorConfig.TimeoutMs);
+    public static void WaitFor(Func<bool> action, string? description = null, int? timeoutMs = null) {
+        WaitUtils.WaitFor(action, description, timeoutMs);
+    }
 }

@@ -7,8 +7,7 @@ namespace Comfast.EasyDriver.Models;
 /// </summary>
 public interface IDriverProvider {
     /// <summary>
-    /// Return WebDriver instance. Will be called many times.
-    /// Implementing class should manage which instance to return.
+    /// Return WebDriver instance
     /// </summary>
     IWebDriver GetDriver();
 }

@@ -1,20 +1,20 @@
+using Comfast.EasyDriver.Models;
 using Comfast.EasyDriver.Ui;
-using EasyDriver.Tests.Util;
 using FluentAssertions;
-using Xunit.Abstractions;
+using static Comfast.EasyDriver.DriverApi;
 
 namespace EasyDriver.Tests.Integration;
 
-public class FindTest : IntegrationBase {
-    public FindTest(ITestOutputHelper output, IntegrationFixture fix) : base(output, fix) {
+public class FindTest {
+    private const string InputValue = "some input";
+    private const string OptionValue = "some option";
+
+    public FindTest() {
         new BrowserContent().SetBody($@"
 <form id='inputForm'><input value='{InputValue}'/></form>
 <form id='selectForm'><select><option value='{OptionValue}'>some select</option></select></form>
 <form id='thirdForm'><input/></form>");
     }
-
-    private const string InputValue = "some input";
-    private const string OptionValue = "some option";
 
     [Fact] public void FindCss() {
         ShouldFindCount(S("input"), 2);
@@ -97,15 +97,6 @@ public class FindTest : IntegrationBase {
         ShouldFindCount(S("form")._S("input"), 1);
         ShouldFindCount(S("form")._S(".//input"), 1);
         ShouldFindCount(S("form")._S("article"), 0);
-    }
-
-    [Fact] void Nth() {
-        var input = S("input");
-        ShouldHaveValue(input.Nth(1), InputValue);
-        ShouldHaveValue(input.Nth(2), "");
-
-        ShouldThrow(() => input.Nth(5), "Not found element #5. There are 2 matched");
-        ShouldThrow(() => input.Nth(0), "Invalid number: 0. Nth is indexed from 1");
     }
 
     [Fact] void AutoAddDotInNestedXpath() {

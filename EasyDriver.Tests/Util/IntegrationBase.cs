@@ -1,5 +1,4 @@
-﻿using Comfast.EasyDriver.Ui;
-using Xunit.Abstractions;
+﻿using Xunit.Abstractions;
 using Xunit.Extensions.AssemblyFixture;
 
 [assembly: TestFramework(AssemblyFixtureFramework.TypeName, AssemblyFixtureFramework.AssemblyName)]
@@ -13,13 +12,11 @@ public class IntegrationBase : IAssemblyFixture<IntegrationFixture> {
     public IntegrationBase(ITestOutputHelper output, IntegrationFixture fix) {
         _output = output;
         _fix = fix;
-        new BrowserContent().OpenResourceFile("test.html");
     }
 }
 
 public class IntegrationFixture : IDisposable {
     //Before all hook
-    public IntegrationFixture() { }
 
     //After all hook
     public void Dispose() {

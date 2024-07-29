@@ -1,5 +1,5 @@
 ﻿using Comfast.EasyDriver.Se.Finder;
-using EasyDriver.Tests.Integration.Infra;
+using Comfast.EasyDriver.Ui;
 using EasyDriver.Tests.Util;
 using FluentAssertions;
 using OpenQA.Selenium;
@@ -8,14 +8,16 @@ using Xunit.Abstractions;
 namespace EasyDriver.Tests.Integration;
 
 public class FinderTest : IntegrationBase {
-    public FinderTest(ITestOutputHelper output, IntegrationFixture fix) : base(output, fix) { }
+    public FinderTest(ITestOutputHelper output, IntegrationFixture fix) : base(output, fix) {
+        new BrowserContent().OpenResourceFile("test.html");
+    }
 
-    private string _expectedText1 = "HTML with newlines:";
-    private string _expectedText2 = "Hello World !";
-    private string _css = "#textAndHtml td";
-    private string _xpath = "//*[@id='textAndHtml']//td";
-    private string _extendedCss = " body >> #textAndHtml td";
-    private string _extendedXpath = "//body >> //*[@id='textAndHtml']//td";
+    private readonly string _expectedText1 = "HTML with newlines:";
+    private readonly string _expectedText2 = "Hello World !";
+    private readonly string _css = "#textAndHtml td";
+    private readonly string _xpath = "//*[@id='textAndHtml']//td";
+    private readonly string _extendedCss = " body >> #textAndHtml td";
+    private readonly string _extendedXpath = "//body >> //*[@id='textAndHtml']//td";
 
     private readonly IWebDriver _driver = GetDriver();
 

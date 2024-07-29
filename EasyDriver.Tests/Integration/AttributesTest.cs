@@ -6,7 +6,9 @@ using Xunit.Abstractions;
 namespace EasyDriver.Tests.Integration;
 
 public class AttributesTest : IntegrationBase {
-    public AttributesTest(ITestOutputHelper output, IntegrationFixture fix) : base(output, fix) { }
+    public AttributesTest(ITestOutputHelper output, IntegrationFixture fix) : base(output, fix) {
+        new BrowserContent().OpenResourceFile("test.html");
+    }
 
     [Fact] public void TextAndHtml() {
         var p = S("#textAndHtml p");

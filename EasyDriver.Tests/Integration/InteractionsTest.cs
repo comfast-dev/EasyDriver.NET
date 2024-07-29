@@ -1,6 +1,4 @@
-using Comfast.EasyDriver;
 using Comfast.EasyDriver.Ui;
-using EasyDriver.Tests.Integration.Infra;
 using EasyDriver.Tests.Util;
 using FluentAssertions;
 using OpenQA.Selenium;
@@ -10,7 +8,9 @@ using Xunit.Abstractions;
 namespace EasyDriver.Tests.Integration;
 
 public class InteractionsTest : IntegrationBase {
-    public InteractionsTest(ITestOutputHelper output, IntegrationFixture fix) : base(output, fix) { }
+    public InteractionsTest(ITestOutputHelper output, IntegrationFixture fix) : base(output, fix) {
+        new BrowserContent().OpenResourceFile("test.html");
+    }
 
     [Fact] public void Click() {
         var btn = S("#clicker button");

@@ -269,24 +269,24 @@
     const dragAndDrop = new DragAndDrop();
 
     function setCountdown(timeoutInput, finishAction = null, button = null) {
-        if (timeoutInput.disabled) return
-        if (button) button.disabled = true
+        if (timeoutInput.disabled) return;
+        if (button) button.disabled = true;
 
-        timeoutInput.disabled = true
-        const startValue = timeoutInput.value
-        const timeoutMs = parseInt(timeoutInput.value)
-        const timestampEnd = Date.now() + timeoutMs
+        timeoutInput.disabled = true;
+        const startValue = timeoutInput.value;
+        const timeoutMs = parseInt(timeoutInput.value);
+        const timestampEnd = Date.now() + timeoutMs;
 
         const intervalMs = 50;
         const interval = setInterval(() => {
             const timeLeft = timestampEnd - Date.now();
             if (timeLeft > 0) timeoutInput.value = timeLeft;
-        }, intervalMs)
+        }, intervalMs);
         setTimeout(() => {
             clearInterval(interval);
-            timeoutInput.disabled = false
+            timeoutInput.disabled = false;
             timeoutInput.value = startValue;
-            if (button) button.disabled = false
+            if (button) button.disabled = false;
             if (finishAction) finishAction()
         }, timeoutMs)
     }
@@ -296,9 +296,7 @@
         const timeoutInput = $('#spawn input[name=timeout]');
         const target = $('#spawn .target');
         const button = $('#spawn button[name=start]');
-        this.startSpawn = () => {
-            setCountdown(timeoutInput, () => target.innerHTML = htmlTextarea.value, button)
-        }
+        this.startSpawn = () => setCountdown(timeoutInput, () => target.innerHTML = htmlTextarea.value, button);
         this.reset = () => target.innerHTML = ''
     }
 
@@ -310,13 +308,13 @@
         const button = $('#respawn button[name=start]');
         const target = $('#respawn .target');
         this.startRespawn = () => {
-            button.enabled = false
-            const interval = setInterval(() => target.innerHTML = "<p>" + timeoutInput.value + "</p>", parseInt(intervalInput.value))
+            button.enabled = false;
+            const interval = setInterval(() => target.innerHTML = "<p>" + timeoutInput.value + "</p>", parseInt(intervalInput.value));
             setCountdown(timeoutInput, () => {
-                clearInterval(interval)
+                clearInterval(interval);
                 button.enabled = true
             })
-        }
+        };
         this.reset = () => target.innerHTML = '<p></p>'
     }
 
@@ -334,7 +332,7 @@
         nestedIframe.close();
     }
 
-    fillIframe("myFrame")
+    fillIframe("myFrame");
 
     //Shadow DOM setup
     class MyDiv extends HTMLElement {
@@ -355,12 +353,12 @@
             element.target = '_blank';
             element.download = fileName;
             element.click();
-        }
-        this.simple = () => this.downloadFile(getInput("fileName"), getInput("fileContent"))
-        this.afterDelay = () => setCountdown($("#download input.delay"), this.simple, $("#download button.delay"))
+        };
+        this.simple = () => this.downloadFile(getInput("fileName"), getInput("fileContent"));
+        this.afterDelay = () => setCountdown($("#download input.delay"), this.simple, $("#download button.delay"));
         this.bigFile = () => {
-            const text = "lol "
-            const bytesCount = parseInt(getInput("fileSize")) * 1024 * 1024
+            const text = "lol ";
+            const bytesCount = parseInt(getInput("fileSize")) * 1024 * 1024;
             this.downloadFile(getInput("fileName"), text.repeat(bytesCount / text.length))
         }
     }
@@ -372,9 +370,9 @@
      * Simulates page redirect if query parameter "redirect=..." is set.
      */
     function handleRedirect(redirectCount = null) {
-        const intervalMs = parseInt($("#redirect input[name=interval]").value)
+        const intervalMs = parseInt($("#redirect input[name=interval]").value);
 
-        const url = new URL(window.location.href)
+        const url = new URL(window.location.href);
         if (redirectCount == null) {
             redirectCount = parseInt(url.searchParams.get("redirect"));
         }

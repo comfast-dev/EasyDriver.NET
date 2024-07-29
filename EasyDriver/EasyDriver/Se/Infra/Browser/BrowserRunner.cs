@@ -67,8 +67,7 @@ public class BrowserRunner : IBrowserRunner {
 
         //window size
         var match = ValidateWindowSize();
-        if(match.Value == "default") {}
-        else if(match.Value == "maximized") options.AddArgument("--start-maximized");
+        if (match.Value == "default") { } else if (match.Value == "maximized") options.AddArgument("--start-maximized");
         else options.AddArgument($"--window-size={match.Groups[1]},{match.Groups[2]}");
 
         options.BinaryLocation = _config.BrowserPath;
@@ -88,8 +87,7 @@ public class BrowserRunner : IBrowserRunner {
 
         //window size
         var match = ValidateWindowSize();
-        if(match.Value == "default") {}
-        else if(match.Value == "maximized") options.AddArgument("--start-maximized");
+        if (match.Value == "default") { } else if (match.Value == "maximized") options.AddArgument("--start-maximized");
         else {
             options.AddArgument($"--width={match.Groups[1]}");
             options.AddArgument($"--height={match.Groups[2]}");
@@ -113,8 +111,7 @@ public class BrowserRunner : IBrowserRunner {
 
         //window size
         var match = ValidateWindowSize();
-        if(match.Value == "default") {}
-        else if(match.Value == "maximized") options.AddArgument("--start-maximized");
+        if (match.Value == "default") { } else if (match.Value == "maximized") options.AddArgument("--start-maximized");
         else options.AddArgument($"--window-size={match.Groups[1]},{match.Groups[2]}");
 
         options.BinaryLocation = _config.BrowserPath;

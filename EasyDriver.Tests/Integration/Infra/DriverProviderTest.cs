@@ -28,7 +28,7 @@ public class DriverProviderTest : IntegrationBase, IDisposable {
     // [Fact]
     [Fact(Skip = "Need to run separately")]
     public void ReconnectToSessionTest() {
-        var conf = new DriverConfig() {
+        var conf = new DriverConfig {
             Reconnect = true,
             Headless = true,
             AutoClose = true,
@@ -53,7 +53,7 @@ public class DriverProviderTest : IntegrationBase, IDisposable {
     [Fact] public void CustomBrowserRunnerTest() {
         //prepare browser
         const string pageTitle = "Lol page";
-        var options = new ChromeOptions() { BinaryLocation = Configuration.DriverConfig.BrowserPath };
+        var options = new ChromeOptions { BinaryLocation = Configuration.DriverConfig.BrowserPath };
         options.AddArgument("headless");
         var myChrome = new ChromeDriver(Configuration.DriverConfig.DriverPath, options);
         new BrowserContent().SetBody($"<h1>{pageTitle}</h1>");

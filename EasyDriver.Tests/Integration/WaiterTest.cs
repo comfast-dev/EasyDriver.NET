@@ -1,13 +1,15 @@
 ﻿using Comfast.EasyDriver.Models;
 using Comfast.EasyDriver.Se;
-using EasyDriver.Tests.Integration.Infra;
+using Comfast.EasyDriver.Ui;
 using EasyDriver.Tests.Util;
 using Xunit.Abstractions;
 
 namespace EasyDriver.Tests.Integration;
 
 public class WaiterTest : IntegrationBase {
-    public WaiterTest(ITestOutputHelper output, IntegrationFixture fix) : base(output, fix) { }
+    public WaiterTest(ITestOutputHelper output, IntegrationFixture fix) : base(output, fix) {
+        new BrowserContent().OpenResourceFile("test.html");
+    }
 
     private const int Time = 100; // for success waits
     private const int ShortTime = 50; // for failed waits

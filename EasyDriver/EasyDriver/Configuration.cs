@@ -47,6 +47,7 @@ public static class Configuration {
     /// Not recommended, suggest to use "SetCustomBrowser" method.
     /// </summary>
     public static void SetCustomDriverProvider(DriverProvider driverProvider) {
+        DriverProvider.CloseAllDrivers();
         DriverProvider = driverProvider;
     }
 

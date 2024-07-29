@@ -12,6 +12,15 @@ public static class ReflectionUtils {
                                                   BindingFlags.Instance | BindingFlags.IgnoreCase;
 
     /// <summary>
+    /// Copy all fields of object. Not deep copy. Require simple constructor
+    /// </summary>
+    public static T Copy<T>(this T from) {
+        T to = (T)(Activator.CreateInstance(typeof(T)) ?? throw new Exception("Invalid constructor"));
+
+        return to.RewriteFrom(from);
+    }
+
+    /// <summary>
     /// Rewrite all fields from source to target object.
     /// </summary>
     public static T RewriteFrom<T>(this T target, T source) {

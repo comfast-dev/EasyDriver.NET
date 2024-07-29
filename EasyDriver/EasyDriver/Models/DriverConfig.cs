@@ -48,5 +48,10 @@ public class DriverConfig {
     /// <summary>
     /// If set - Proxy will be used while browser creation
     /// </summary>
-    public string? ProxyUrl { get; set; } = null;
+    public string? ProxyUrl { get; set; }
+
+    /// <summary>
+    /// Browser screen size in format e.g. "1250x850" | "fullscreen" | "default"
+    /// </summary>
+    public string WindowSize { get; set; } = "default";
 }

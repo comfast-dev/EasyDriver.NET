@@ -6,7 +6,11 @@
 - [ ] Logger compatible with Xunit
 - [ ] Auto download browser using selenium-manager
 
+### [0.3.1]
+- [x] Add DriverConfig.WindowSize functionality
+
 ### [0.3.0]
+
 - [x] Validation of browser path and driver path
 - [x] Optional (virtual) Description field in BaseComponent
 - [x] Second parameter for description in `DriverApi.S("", "description")`

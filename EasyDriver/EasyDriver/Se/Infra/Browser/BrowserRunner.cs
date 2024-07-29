@@ -1,4 +1,5 @@
-﻿using Comfast.EasyDriver.Models;
+﻿using System.Text.RegularExpressions;
+using Comfast.EasyDriver.Models;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Edge;
@@ -64,6 +65,12 @@ public class BrowserRunner : IBrowserRunner {
         // options.AddExcludedArgument("enable-automation"); //infobar 1
         options.AddArgument("--disable-infobars");
 
+        //window size
+        var match = ValidateWindowSize();
+        if(match.Value == "default") {}
+        else if(match.Value == "maximized") options.AddArgument("--start-maximized");
+        else options.AddArgument($"--window-size={match.Groups[1]},{match.Groups[2]}");
+
         options.BinaryLocation = _config.BrowserPath;
         return new ChromeDriver(_config.DriverPath, options);
     }
@@ -78,6 +85,15 @@ public class BrowserRunner : IBrowserRunner {
 
         //headless
         if (_config.Headless) options.AddArguments("--headless");
+
+        //window size
+        var match = ValidateWindowSize();
+        if(match.Value == "default") {}
+        else if(match.Value == "maximized") options.AddArgument("--start-maximized");
+        else {
+            options.AddArgument($"--width={match.Groups[1]}");
+            options.AddArgument($"--height={match.Groups[2]}");
+        }
 
         options.BinaryLocation = _config.BrowserPath;
         return new FirefoxDriver(_config.DriverPath, options);
@@ -95,7 +111,24 @@ public class BrowserRunner : IBrowserRunner {
         //headless
         if (_config.Headless) options.AddArguments("headless");
 
+        //window size
+        var match = ValidateWindowSize();
+        if(match.Value == "default") {}
+        else if(match.Value == "maximized") options.AddArgument("--start-maximized");
+        else options.AddArgument($"--window-size={match.Groups[1]},{match.Groups[2]}");
+
         options.BinaryLocation = _config.BrowserPath;
         return new EdgeDriver(_config.DriverPath, options);
+    }
+
+    /// <summary>
+    /// Validate WindowSize variable
+    /// </summary>
+    /// <returns>validated match</returns>
+    private Match ValidateWindowSize() {
+        var size = _config.WindowSize;
+        var match = Regex.Match(size ?? "", @"(\d+)x(\d+)|default|maximized");
+        if (!match.Success) throw new($"Invalid ScreenSize='{size}', accept 1234x567 | default | maximized");
+        return match;
     }
 }

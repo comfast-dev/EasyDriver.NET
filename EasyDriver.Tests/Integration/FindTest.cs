@@ -16,6 +16,11 @@ public class FindTest : IntegrationBase {
     private const string InputValue = "some input";
     private const string OptionValue = "some option";
 
+    [Fact] void FindUsingFullAlias() {
+        ShouldHaveValue(Locator("//html//input"), InputValue);
+        ShouldHaveValue(Locator("//html").SubLocator("//input"), InputValue);
+    }
+
     [Fact] public void FindCss() {
         ShouldFindCount(S("input"), 2);
         ShouldFindCount(S("html input"), 2);

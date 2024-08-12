@@ -6,10 +6,16 @@ namespace Comfast.EasyDriver.Models;
 /// Main locator interface
 /// </summary>
 public interface ILocator {
+    /// <summary>Alias to <see cref="SubLocator"/></summary>
+    public ILocator _S(string cssOrXpath, string? description = null);
+
     /// <summary>
-    /// Create new child locator.
+    /// Creates new SubLocator
     /// </summary>
-    public ILocator _S(string cssOrXpath);
+    /// <param name="cssOrXpath">CSS / XPATH selector</param>
+    /// <param name="description">used in error messages and logs</param>
+    /// <returns></returns>
+    public ILocator SubLocator(string cssOrXpath, string? description = null);
 
     /// <summary>
     /// Element selector
@@ -192,12 +198,12 @@ public interface ILocator {
     /// <summary>
     /// Finds Selenium WebElement.
     /// </summary>
-    public IWebElement DoFind();
+    public IWebElement FindElement();
 
     /// <summary>
     /// Finds all elements matched by locator
     /// </summary>
-    public IList<IWebElement> DoFindAll();
+    public IList<IWebElement> FindElements();
 
     /// <summary>
     /// Perform action on all found elements.<br/>

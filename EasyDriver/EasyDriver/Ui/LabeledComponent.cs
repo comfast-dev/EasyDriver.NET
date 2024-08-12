@@ -30,9 +30,9 @@ public abstract class LabeledComponent : BaseComponent {
     /// <summary>
     /// Add details to error message
     /// </summary>
-    public override IWebElement DoFind() {
+    public override IWebElement FindElement() {
         try {
-            return base.DoFind();
+            return base.FindElement();
         } catch (Exception e) {
             var labels = string.Join("\", \"", AllLabels);
             throw new(e.Message + $"\nAvailable {GetType().Name} labels are: \"{labels}\" \n");

@@ -5,6 +5,7 @@
 - [ ] Auto generating markdown docs
 - [ ] Logger compatible with Xunit
 - [ ] Auto download browser using selenium-manager
+- [x] Rename `S() -> Locator()`, `_S() -> SubLocator()` keeping aliases: `S`, `_S`
 
 ### [0.3.1]
 - [x] Add DriverConfig.WindowSize functionality

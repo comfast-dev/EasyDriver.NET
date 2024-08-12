@@ -19,12 +19,15 @@ public static class DriverApi {
     /// </summary>
     public static void NavigateTo(string url) => GetDriver().Url = url;
 
+    /// <see cref="Locator"/>
+    public static ILocator S(string cssOrXpath, string description = "") => new SimpleLocator(cssOrXpath, description);
+
     /// <summary>
     /// Creates locator instance
     /// </summary>
     /// <param name="cssOrXpath">Any selector</param>
     /// <param name="description"></param>
-    public static ILocator S(string cssOrXpath, string description = "") => new SimpleLocator(cssOrXpath, description);
+    public static ILocator Locator(string cssOrXpath, string description = "") => new SimpleLocator(cssOrXpath, description);
 
     /// <summary>
     /// Executes JavaScript from browser console.

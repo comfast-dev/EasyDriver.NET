@@ -12,8 +12,8 @@ public class SimpleLocator : BaseComponent {
 
     /// <param name="selector">CSS or XPATH</param>
     /// <param name="description">Locator description for logs</param>
-    public SimpleLocator(string selector, string description = "SimpleLocator") {
+    public SimpleLocator(string selector, string? description = null) {
         Selector = selector;
-        Description = description;
+        Description = description ?? "Locator";
     }
 }

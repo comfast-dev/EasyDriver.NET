@@ -63,7 +63,7 @@ function find(cssOrXpathArgs) {
 }
 
 /**
-* @param cssOrXpathArgs {IArguments}
+* @param cssOrXpathArgs {IArguments|string[]}
 * @returns {(number|*)[]|Document}
 */
 function findAll(cssOrXpathArgs) {
@@ -92,5 +92,25 @@ function findAll(cssOrXpathArgs) {
         if (result is ReadOnlyCollection<IWebElement> foundElements) return foundElements.ToList();
 
         throw new Exception("Internal error: Invalid return from Javascript console. Actual: " + result.GetType().Name);
+    }
+
+    /// <summary>
+    /// Executes given JS Code on every result.
+    /// </summary>
+    /// <param name="jsCode">Executes this code on every element, where el is element variable</param>
+    /// <typeparam name="T">return type of given function</typeparam>
+    /// <returns>Array of results</returns>
+    public IList<T> FindAllAndMap<T>(string jsCode) {
+        //language=JavaScript
+        var funcCode = $@"
+function func(el) {{
+    {jsCode}
+}}
+
+";
+        var result = _jsDriver.ExecuteScript(_js + funcCode +  "return Array.from(findAll(arguments)).map(func)", _selectors);
+        if (result == null) throw new("Internal Error: null response from JS");
+        var arr = ((ReadOnlyCollection<object>)result);
+        return arr.Select(el => (T)el).ToList();
     }
 }

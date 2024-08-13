@@ -210,11 +210,23 @@ public interface ILocator {
     /// It is equivalent to:<br/>
     /// - C# LINQ .Select() method<br/>
     /// - JAVA / JavaScript .map() method.<br/>
-    /// Example:<br/>
-    /// string[] allLinksInTable = S("table.myTable a").Map(el => el.GetAttribute("href")).ToArray();
     /// </summary>
+    /// <example><code>
+    /// string[] allLinksInTable = S("table.myTable a").Map(el => el.GetAttribute("href")).ToArray();
+    /// </code></example>
     public List<T> Map<T>(Func<IFoundLocator, T> func);
-    // public ILocator ForEach(Action<ILocator> func);
+
+    /// <summary>
+    /// Map every found element using JavaScript code.
+    /// Works faster than standard mapping. Calls one Selenium request.
+    /// <example>
+    /// var htmls = Locator("td").MapUsingJs("return el.innerHTML");
+    /// </example>
+    /// </summary>
+    /// <param name="jsMappingCode"> js code where current element is defined as: 'el'</param>
+    /// <typeparam name="T">Return type of js code</typeparam>
+    /// <returns>List of all mapped elements</returns>
+    public IList<T> MapUsingJs<T>(string jsMappingCode);
 
     /// <summary>
     /// Find all elements and return nth found DOM element.<br/>

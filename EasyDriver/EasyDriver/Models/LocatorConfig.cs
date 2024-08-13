@@ -18,4 +18,20 @@ public class LocatorConfig {
     /// Default timeout for locating elements.
     /// </summary>
     public int? ShortWaitMs { get; set; } = 4000;
+
+    /// <summary>
+    /// Experimental flags
+    /// </summary>
+    public ExperimentalFeatures Experimental { get; set; } = new();
+}
+
+/// <summary>
+/// Experimental configuration flags. Use with caution.
+/// Not guaranteed that it works at every situation.
+/// </summary>
+public class ExperimentalFeatures {
+    /// <summary>
+    /// Use one call to JavaScript to get all texts instead of multiple Selenium calls.
+    /// </summary>
+    public bool GetTextsUsingJs { get; set; } = false;
 }

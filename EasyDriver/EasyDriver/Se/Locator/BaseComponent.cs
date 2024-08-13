@@ -77,7 +77,9 @@ public abstract class BaseComponent : ILocator {
     public virtual string Text => ExecuteJs<string>("return el.innerText");
 
     /// <inheritdoc />
-    public virtual string[] Texts => Map(el => el.Text).ToArray();
+    public virtual string[] Texts => Configuration.LocatorConfig.Experimental.GetTextsUsingJs
+        ? MapUsingJs<string>("return el.innerText").ToArray()
+        :  Map(el => el.Text).ToArray();
 
     /// <inheritdoc />
     public virtual int Count => FindAll().Count;
@@ -251,6 +253,14 @@ public abstract class BaseComponent : ILocator {
         return this;
     }
 
+    /// <summary>
+    /// Map every found element using JavaScript code.
+    /// </summary>
+    /// <param name="jsMappingCode"> js code where current element is defined as: 'el'</param>
+    /// <typeparam name="T">Return type of js code</typeparam>
+    /// <returns>List of all mapped elements</returns>
+    public virtual IList<T> MapUsingJs<T>(string jsMappingCode) => JsFinder.FindAllAndMap<T>(jsMappingCode);
+
     /// <inheritdoc />
     public virtual List<T> Map<T>(Func<IFoundLocator, T> func) {
         var elements = FindAll().ToList();
@@ -276,6 +286,7 @@ public abstract class BaseComponent : ILocator {
     private string ReadJsFile(string jsFileName) => File.ReadAllText("EasyDriver\\Js\\" + jsFileName);
 
     private WebElementFinder Finder => new(GetDriver(), Selector);
+    private JsFinder JsFinder => new(GetDriver(), Selector);
 
     private void HighlightIfEnabled() {
         if (Configuration.LocatorConfig.HighlightActions) {

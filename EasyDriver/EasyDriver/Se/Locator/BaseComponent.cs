@@ -16,18 +16,16 @@ namespace Comfast.EasyDriver.Se.Locator;
 /// </summary>
 public abstract class BaseComponent : ILocator {
     /// <summary>
-    /// Css / Xpath selector
-    /// or both delimited with ' >> ' like:
-    /// "form.focused >> //input[@name='user']"
+    /// Css / Xpath selector<br/>
+    /// or <i>Selector >> SubSelector >> ...</i> chain delimited with ' >> '
+    ///
+    /// <example><code>
+    /// XPATH: "//input[@name='user']"
+    /// CSS: "form.focused"
+    /// CHAIN: "form.focused >> //input[@name='user'] >> //span"
+    /// </code></example>
     /// </summary>
     public abstract string Selector { get; }
-
-    /// <summary>
-    /// Create new Child selector based on this as parent.
-    /// </summary>
-    public ILocator _S(string cssOrXpath) {
-        return new SimpleLocator(Selector + SelectorChain.SelectorSeparator + cssOrXpath);
-    }
 
     /// <summary>
     /// Description for this Component / Locator
@@ -36,17 +34,25 @@ public abstract class BaseComponent : ILocator {
     public abstract string Description { get; }
 
     /// <inheritdoc />
-    public virtual IWebElement DoFind() => Finder.Find();
+    public ILocator _S(string cssOrXpath, string? description) => SubLocator(cssOrXpath, description);
 
     /// <inheritdoc />
-    public virtual IList<IWebElement> DoFindAll() => Finder.FindAll();
+    public ILocator SubLocator(string cssOrXpath, string? description) {
+        return new SimpleLocator(Selector + SelectorChain.SelectorSeparator + cssOrXpath, description);
+    }
 
     /// <inheritdoc />
-    public virtual IFoundLocator Find() => new FoundLocator(Selector, Description, DoFind());
+    public virtual IWebElement FindElement() => Finder.Find();
+
+    /// <inheritdoc />
+    public virtual IList<IWebElement> FindElements() => Finder.FindAll();
+
+    /// <inheritdoc />
+    public virtual IFoundLocator Find() => new FoundLocator(Selector, Description, FindElement());
 
     /// <inheritdoc />
     public virtual IList<IFoundLocator> FindAll() =>
-        DoFindAll().Select(webEl => (IFoundLocator)new FoundLocator(Selector, Description, webEl)).ToList();
+        FindElements().Select(webEl => (IFoundLocator)new FoundLocator(Selector, Description, webEl)).ToList();
 
     /// <inheritdoc />
     public virtual IFoundLocator? TryFind() {
@@ -60,7 +66,7 @@ public abstract class BaseComponent : ILocator {
     /// <inheritdoc />
     public virtual IFoundLocator Nth(int number) {
         if (number < 1) throw new Exception($"Invalid number: {number}. Nth is indexed from 1");
-        var all = DoFindAll();
+        var all = FindElements();
         if (all.Count < number)
             throw new Exception($"Not found element #{number}. There are {all.Count} matched by:\n{Selector}");
 
@@ -80,7 +86,7 @@ public abstract class BaseComponent : ILocator {
     public virtual bool IsDisplayed {
         get {
             try {
-                return DoFind().Displayed;
+                return FindElement().Displayed;
             } catch (ElementFindFail) {
                 return false;
             } catch (StaleElementReferenceException) {
@@ -93,7 +99,7 @@ public abstract class BaseComponent : ILocator {
     public virtual bool Exists => TryFind() != null;
 
     /// <inheritdoc />
-    public virtual string TagName => DoFind().TagName;
+    public virtual string TagName => FindElement().TagName;
 
     /// <inheritdoc />
     public virtual string InnerHtml => GetAttribute("innerHTML");
@@ -105,33 +111,33 @@ public abstract class BaseComponent : ILocator {
     public virtual string Value => GetAttribute("value");
 
     /// <inheritdoc />
-    public string DomId => DoFind().ReadField<string>("elementId") ?? throw new("Fatal error: field elementId is null");
+    public string DomId => FindElement().ReadField<string>("elementId") ?? throw new("Fatal error: field elementId is null");
 
     /// <inheritdoc />
     public virtual bool HasClass(string cssClass) => GetAttribute("class").Split(" ").Contains(cssClass);
 
     /// <inheritdoc />
     public virtual string GetCssValue(string cssPropertyName) {
-        return DoFind().GetCssValue(cssPropertyName);
+        return FindElement().GetCssValue(cssPropertyName);
     }
 
     /// <inheritdoc />
-    public virtual string GetAttribute(string name) => DoFind().GetAttribute(name);
+    public virtual string GetAttribute(string name) => FindElement().GetAttribute(name);
 
     /// <inheritdoc />
-    public bool HasAttribute(string name) => DoFind().GetAttribute(name) != null;
+    public bool HasAttribute(string name) => FindElement().GetAttribute(name) != null;
 
     /// <inheritdoc />
     public virtual ILocator Click() {
         HighlightIfEnabled();
-        DoFind().Click();
+        FindElement().Click();
         return this;
     }
 
     /// <inheritdoc />
     public virtual ILocator SendKeys(string text) {
         HighlightIfEnabled();
-        DoFind().SendKeys(text);
+        FindElement().SendKeys(text);
         return this;
     }
 
@@ -161,7 +167,7 @@ public abstract class BaseComponent : ILocator {
     /// <inheritdoc />
     public virtual ILocator Hover() {
         HighlightIfEnabled();
-        new Actions(GetDriver()).MoveToElement(DoFind()).Perform();
+        new Actions(GetDriver()).MoveToElement(FindElement()).Perform();
         return this;
     }
 
@@ -175,7 +181,7 @@ public abstract class BaseComponent : ILocator {
     /// <inheritdoc />
     public virtual ILocator Clear() {
         HighlightIfEnabled();
-        DoFind().Clear();
+        FindElement().Clear();
         return this;
     }
 
@@ -187,7 +193,7 @@ public abstract class BaseComponent : ILocator {
     /// <inheritdoc />
     public virtual ILocator DragTo(ILocator target) {
         HighlightIfEnabled();
-        IWebElement targetEl = target.DoFind();
+        IWebElement targetEl = target.FindElement();
         ExecuteJs(ReadJsFile("dragAndDrop.js") + "executeDragAndDrop(el, arguments[0])", targetEl);
 
         return this;
@@ -199,7 +205,7 @@ public abstract class BaseComponent : ILocator {
     public ILocator ExecuteJs(string jsCode, params object[] jsArgs) {
         var jsDriver = (IJavaScriptExecutor)GetDriver();
 
-        jsArgs = new List<object>(jsArgs) { DoFind() }.ToArray();
+        jsArgs = new List<object>(jsArgs) { FindElement() }.ToArray();
         jsDriver.ExecuteScript($"const el = arguments[{jsArgs.Length - 1}];{jsCode}", jsArgs);
         return this;
     }
@@ -213,7 +219,7 @@ public abstract class BaseComponent : ILocator {
             jsCode = "return " + jsCode;
         }
 
-        jsArgs = new List<object>(jsArgs) { DoFind() }.ToArray();
+        jsArgs = new List<object>(jsArgs) { FindElement() }.ToArray();
         var result = jsDriver.ExecuteScript($"const el = arguments[{jsArgs.Length - 1}];{jsCode}", jsArgs);
         return (TReturnType)result;
     }

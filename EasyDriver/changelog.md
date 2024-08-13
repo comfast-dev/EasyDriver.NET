@@ -5,6 +5,8 @@
 - [ ] Auto generating markdown docs
 - [ ] Logger compatible with Xunit
 - [ ] Auto download browser using selenium-manager
+- [ ] Get Texts using Js experimental option
+- [ ] Add method: MapUsingJs
 
 ### [0.3.1]
 - [x] Add DriverConfig.WindowSize functionality

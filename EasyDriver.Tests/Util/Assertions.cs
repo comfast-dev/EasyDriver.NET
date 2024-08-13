@@ -8,6 +8,14 @@ public static class Assertions {
         func.Should().Throw<Exception>()
             .Where(e => e.Message.Contains(expectedErrorMessage));
     }
+    public static void ShouldThrow<T>(Func<T> func, string expectedErrorMessage) {
+        func.Should().Throw<Exception>()
+            .Where(e => e.Message.Contains(expectedErrorMessage));
+    }
+
+    public static void ShouldNotThrow<T>(Func<T> func) {
+        func.Should().NotThrow();
+    }
 
     public static void ShouldHaveValue(ILocator locator, string expectedValue) {
         var value = locator.GetAttribute("value");

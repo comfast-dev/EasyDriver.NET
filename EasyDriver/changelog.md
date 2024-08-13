@@ -5,6 +5,7 @@
 - [ ] Auto generating markdown docs
 - [ ] Logger compatible with Xunit
 - [ ] Auto download browser using selenium-manager
+- [x] Fix IsDisplayed throwing StaleElementReference exception
 
 ### [0.3.1]
 - [x] Add DriverConfig.WindowSize functionality

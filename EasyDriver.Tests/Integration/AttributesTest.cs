@@ -1,3 +1,4 @@
+using Comfast.EasyDriver.Models;
 using Comfast.EasyDriver.Ui;
 using EasyDriver.Tests.Util;
 using FluentAssertions;
@@ -48,9 +49,24 @@ public class AttributesTest : IntegrationBase {
         Assert.True(S("#isDisplayed .opacity01").Exists);
         Assert.True(S("#isDisplayed .opacity01").IsDisplayed, "opacity > 0");
 
+        Assert.True(S("#isDisplayed .size0").Exists, "size = 0");
+        //not working
+        // Assert.False(S("#isDisplayed .size0").IsDisplayed, "size = 0");
+
         //playwright returns true, selenium false here
         Assert.True(S("#isDisplayed .opacity0").Exists);
         Assert.False(S("#isDisplayed .opacity0").IsDisplayed, "opacity == 0");
+    }
+
+    [Fact] void IsDisplayedIgnoreStaleElementReference() {
+        //given
+        IFoundLocator found = S("#isDisplayed .default").Find();
+        found.ExecuteJs("el.outerHTML = el.outerHTML");
+
+        //expect
+        ShouldThrow(() => found.Text, "stale element reference");
+        ShouldNotThrow(() => found.IsDisplayed);
+        ShouldEqual(found.IsDisplayed, false);
     }
 
     [Fact] void Attribute() {

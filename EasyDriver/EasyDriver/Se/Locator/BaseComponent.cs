@@ -77,7 +77,17 @@ public abstract class BaseComponent : ILocator {
     public virtual int Count => FindAll().Count;
 
     /// <inheritdoc />
-    public virtual bool IsDisplayed => Exists && DoFind().Displayed;
+    public virtual bool IsDisplayed {
+        get {
+            try {
+                return DoFind().Displayed;
+            } catch (ElementFindFail) {
+                return false;
+            } catch (StaleElementReferenceException) {
+                return false;
+            }
+        }
+    }
 
     /// <inheritdoc />
     public virtual bool Exists => TryFind() != null;

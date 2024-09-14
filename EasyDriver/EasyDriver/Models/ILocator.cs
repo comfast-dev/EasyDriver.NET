@@ -171,7 +171,7 @@ public interface ILocator {
     public ILocator ScrollIntoView();
 
     /// <summary>
-    /// Drag & Drop this element over another element
+    /// Drag and Drop this element over another element
     /// </summary>
     /// <param name="target">target locator</param>
     public ILocator DragTo(ILocator target);

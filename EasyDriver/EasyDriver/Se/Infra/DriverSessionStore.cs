@@ -41,7 +41,7 @@ public class DriverSessionStore {
 
             recreatedDriver.FindElements(By.CssSelector("html"));
             return recreatedDriver;
-        } catch (Exception e) {
+        } catch (Exception) {
             var newDriver = newDriverProvider.Invoke();
             StoreSessionInfo(newDriver);
             return newDriver;

@@ -12,6 +12,9 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <IncludeContentFilesProjectOutputGroup>true</IncludeContentFilesProjectOutputGroup>
+        <NoWarn>
+            CS1591; <!-- Missing XML comment for publicly visible type-->
+        </NoWarn>
     </PropertyGroup>
 
     <ItemGroup>

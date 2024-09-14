@@ -13,13 +13,13 @@ public class DriverConfig {
     /// <summary>
     /// e.g. c:/browsers/chrome120/chrome.exe
     /// </summary>
-    public string BrowserPath { get; set; }
+    public string BrowserPath { get; set; } = null!;
 
     /// <summary>
     /// Path to chromedriver.exe / firefoxdriver.exe / ...
     /// e.g. c:/drivers/chromedriver120
     /// </summary>
-    public string DriverPath { get; set; }
+    public string DriverPath { get; set; } = null!;
 
     /// <summary>
     /// If true DriverProvider will try to reconnect to running browser

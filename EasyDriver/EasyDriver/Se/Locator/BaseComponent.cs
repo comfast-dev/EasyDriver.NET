@@ -42,17 +42,26 @@ public abstract class BaseComponent : ILocator {
     }
 
     /// <inheritdoc />
-    public virtual IWebElement FindElement() => Finder.Find();
+    public virtual IWebElement FindElement() {
+        return WebElementFinder.Find();
+    }
 
     /// <inheritdoc />
-    public virtual IList<IWebElement> FindElements() => Finder.FindAll();
+    public virtual IList<IWebElement> FindElements() {
+        return WebElementFinder.FindAll();
+    }
 
     /// <inheritdoc />
-    public virtual IFoundLocator Find() => new FoundLocator(Selector, Description, FindElement());
+    public virtual IFoundLocator Find() {
+        return new FoundLocator(Selector, Description, FindElement());
+    }
 
     /// <inheritdoc />
-    public virtual IList<IFoundLocator> FindAll() =>
-        FindElements().Select(webEl => (IFoundLocator)new FoundLocator(Selector, Description, webEl)).ToList();
+    public virtual IList<IFoundLocator> FindAll() {
+        return FindElements()
+            .Select(webEl => (IFoundLocator)new FoundLocator(Selector, Description, webEl))
+            .ToList();
+    }
 
     /// <inheritdoc />
     public virtual IFoundLocator? TryFind() {
@@ -77,25 +86,16 @@ public abstract class BaseComponent : ILocator {
     public virtual string Text => ExecuteJs<string>("return el.innerText");
 
     /// <inheritdoc />
-    public virtual string[] Texts => Configuration.LocatorConfig.Experimental.GetTextsUsingJs
-        ? MapUsingJs<string>("return el.innerText").ToArray()
-        :  Map(el => el.Text).ToArray();
+    public virtual string[] Texts =>
+        Configuration.LocatorConfig.Experimental.GetTextsUsingJs
+            ? MapUsingJs<string>("return el.innerText").ToArray()
+            : Map(el => el.Text).ToArray();
 
     /// <inheritdoc />
     public virtual int Count => FindAll().Count;
 
     /// <inheritdoc />
-    public virtual bool IsDisplayed {
-        get {
-            try {
-                return FindElement().Displayed;
-            } catch (ElementFindFail) {
-                return false;
-            } catch (StaleElementReferenceException) {
-                return false;
-            }
-        }
-    }
+    public virtual bool IsDisplayed => TryGet(el => el.Displayed);
 
     /// <inheritdoc />
     public virtual bool Exists => TryFind() != null;
@@ -113,10 +113,14 @@ public abstract class BaseComponent : ILocator {
     public virtual string Value => GetAttribute("value");
 
     /// <inheritdoc />
-    public string DomId => FindElement().ReadField<string>("elementId") ?? throw new("Fatal error: field elementId is null");
+    public string DomId =>
+        FindElement().ReadField<string>("elementId")
+        ?? throw new("Fatal error: field elementId is null");
 
     /// <inheritdoc />
-    public virtual bool HasClass(string cssClass) => GetAttribute("class").Split(" ").Contains(cssClass);
+    public virtual bool HasClass(string cssClass) {
+        return GetAttribute("class").Split(" ").Contains(cssClass);
+    }
 
     /// <inheritdoc />
     public virtual string GetCssValue(string cssPropertyName) {
@@ -124,10 +128,14 @@ public abstract class BaseComponent : ILocator {
     }
 
     /// <inheritdoc />
-    public virtual string GetAttribute(string name) => FindElement().GetAttribute(name);
+    public virtual string GetAttribute(string name) {
+        return FindElement().GetAttribute(name);
+    }
 
     /// <inheritdoc />
-    public bool HasAttribute(string name) => FindElement().GetAttribute(name) != null;
+    public bool HasAttribute(string name) {
+        return FindElement().GetAttribute(name) != null;
+    }
 
     /// <inheritdoc />
     public virtual ILocator Click() {
@@ -145,15 +153,12 @@ public abstract class BaseComponent : ILocator {
 
     /// <inheritdoc />
     public virtual ILocator SetValue(string text) {
-        //todo use more logic, handle Inputs, Selects, Checkboxes
-        // new AnyInput(DoFind()).SetValue(text)
-
-        var found = Find();
+        var found = FindElement();
         var tag = found.TagName;
         if (tag != "input" && tag != "textarea")
             throw new NotImplementedException($"SetValue doesn't handle {tag}. Handle only input / textarea.");
 
-        var el = found.FoundElement;
+        var el = found;
         HighlightIfEnabled();
         el.Clear();
         el.SendKeys(text);
@@ -259,7 +264,9 @@ public abstract class BaseComponent : ILocator {
     /// <param name="jsMappingCode"> js code where current element is defined as: 'el'</param>
     /// <typeparam name="T">Return type of js code</typeparam>
     /// <returns>List of all mapped elements</returns>
-    public virtual IList<T> MapUsingJs<T>(string jsMappingCode) => JsFinder.FindAllAndMap<T>(jsMappingCode);
+    public virtual IList<T> MapUsingJs<T>(string jsMappingCode) {
+        return JsFinder.FindAllAndMap<T>(jsMappingCode);
+    }
 
     /// <inheritdoc />
     public virtual List<T> Map<T>(Func<IFoundLocator, T> func) {
@@ -281,17 +288,29 @@ public abstract class BaseComponent : ILocator {
     }
 
     /// <inheritdoc />
-    public override string ToString() => Description ?? "??";
+    public override string ToString() => Description;
 
-    private string ReadJsFile(string jsFileName) => File.ReadAllText("EasyDriver\\Js\\" + jsFileName);
+    private string ReadJsFile(string jsFileName) {
+        return File.ReadAllText("EasyDriver\\Js\\" + jsFileName);
+    }
 
-    private WebElementFinder Finder => new(GetDriver(), Selector);
+    private WebElementFinder WebElementFinder => new(GetDriver(), Selector);
     private JsFinder JsFinder => new(GetDriver(), Selector);
 
     private void HighlightIfEnabled() {
         if (Configuration.LocatorConfig.HighlightActions) {
             var found = TryFind();
             if (found != null) found.Highlight();
+        }
+    }
+
+    private T? TryGet<T>(Func<IWebElement, T> func) {
+        try {
+            return func.Invoke(FindElement());
+        } catch (ElementFindFail) {
+            return default;
+        } catch (StaleElementReferenceException) {
+            return default;
         }
     }
 }

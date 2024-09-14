@@ -88,7 +88,7 @@ public static class Waiter {
             stableTimeMs = (int)(DateTime.Now - lastFailAt).TotalMilliseconds;
             var totalTimeMs = (int)(DateTime.Now - startedAt).TotalMilliseconds;
             if (totalTimeMs > timeout) {
-                throw new($"Page is unstable, loading every <{minimumStableTimeMs}ms. Timed out after {timeout}ms.");
+                throw new($"Page is unstable, reloading every <{minimumStableTimeMs}ms. Timed out after {timeout}ms.");
             }
         }
     }

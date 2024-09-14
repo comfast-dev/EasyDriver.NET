@@ -30,7 +30,7 @@ public class WaiterTest : IntegrationBase {
     private readonly ILocator _p = S("#spawn .target p");
 
     [Fact] void WaitForTest() {
-        SheduleSpawnAfterMs(H5DisplayNone, SuccessTime);
+        ScheduleReloadHtmlAfter(H5DisplayNone, SuccessTime);
         ShouldEndInTime(() => _h5.WaitFor(), SuccessTime, SuccessTimeMax);
 
         ShouldThrowInTime(() => _h3.WaitFor(ShortTime), ShortTime, ShortTime + TimeMargin,
@@ -38,10 +38,10 @@ public class WaiterTest : IntegrationBase {
     }
 
     [Fact] void WaitForAppearTest() {
-        SheduleSpawnAfterMs(H5Html, SuccessTime);
+        ScheduleReloadHtmlAfter(H5Html, SuccessTime);
         ShouldEndInTime(() => _h5.WaitForAppear(), SuccessTime, SuccessTimeMax);
 
-        SpawnHtml(H5DisplayNone);
+        ReloadHtml(H5DisplayNone);
         ShouldThrowInTime(() => _h5.WaitForAppear(ShortTime), ShortTime, ShortTimeMax,
             $"Wait failed after {ShortTime}ms for action: Element appear");
         ShouldThrowInTime(() => _h3.WaitForAppear(ShortTime), ShortTime, ShortTimeMax,
@@ -49,8 +49,8 @@ public class WaiterTest : IntegrationBase {
     }
 
     [Fact] void WaitForDisappearTest() {
-        SpawnHtml(H5Html);
-        SheduleSpawnAfterMs("<p>Nothing to do here</p>", SuccessTime);
+        ReloadHtml(H5Html);
+        ScheduleReloadHtmlAfter("<p>Nothing to do here</p>", SuccessTime);
 
         ShouldEndInTime(() => _h5.WaitForDisappear(), SuccessTime, SuccessTimeMax);
 
@@ -59,7 +59,7 @@ public class WaiterTest : IntegrationBase {
     }
 
     [Fact] void WaitForAnyTest() {
-        SheduleSpawnAfterMs(H5Html, SuccessTime);
+        ScheduleReloadHtmlAfter(H5Html, SuccessTime);
 
         ShouldEndInTime(() => Waiter.WaitForAny(_h3, _h4, _h5), SuccessTime, SuccessTimeMax);
         ShouldEqual(Waiter.WaitForAny(_h3, _h4, _h5), 2);
@@ -69,11 +69,13 @@ public class WaiterTest : IntegrationBase {
     }
 
     [Fact] void WaitForReloadTest() {
-        SpawnHtml(H5Html);
-        ShouldEndInTime(() => _h5.WaitForReload(
-            () => SheduleSpawnAfterMs(H5Html, SuccessTime)), SuccessTime, SuccessTimeMax);
+        ReloadHtml(H5Html);
 
-        ShouldThrowInTime(() => _h5.WaitForReload(), ShortTime, ShortTimeMax,
+        var reloadAfterTimeAction = () => ScheduleReloadHtmlAfter(H5Html, SuccessTime);
+        ShouldEndInTime(() => _h5.WaitForReload(reloadAfterTimeAction), SuccessTime, SuccessTimeMax);
+
+        var dontReloadAction = () => { };
+        ShouldThrowInTime(() => _h5.WaitForReload(dontReloadAction, ShortTime), ShortTime, ShortTimeMax,
             $"Wait failed after {ShortTime}ms for action: Reload element:");
     }
 
@@ -89,16 +91,16 @@ public class WaiterTest : IntegrationBase {
         ShouldEndInTime(() => Waiter.WaitForStablePage(stableTime), stableTime, stableTime + TimeMargin);
 
         S("#redirect button").Click();
-        ShouldThrowInTime(() => Waiter.WaitForStablePage(500), ShortTime, ShortTimeMax,
-            $"Page is unstable, loading every <500ms. Timed out after {ShortTime}ms.");
+        ShouldThrowInTime(() => Waiter.WaitForStablePage(500, ShortTime), ShortTime, ShortTimeMax,
+            $"Page is unstable, reloading every <500ms. Timed out after {ShortTime}ms.");
     }
 
-    private void SpawnHtml(string html) {
+    private void ReloadHtml(string html) {
         _driver.ExecuteJs<string>("document.querySelector('#spawn .target').innerHTML = arguments[0]",
             html);
     }
 
-    private void SheduleSpawnAfterMs(string html, int timeoutMs) {
+    private void ScheduleReloadHtmlAfter(string html, int timeoutMs) {
         _driver.ExecuteJs<string>(
             "setTimeout(() => document.querySelector('#spawn .target').innerHTML = arguments[0], arguments[1])",
             html, timeoutMs);

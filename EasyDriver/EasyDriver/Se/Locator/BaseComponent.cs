@@ -261,10 +261,10 @@ public abstract class BaseComponent : ILocator {
     }
 
     /// <inheritdoc />
-    public ILocator WaitForReload(Action? actionThatTriggerReload = null) {
+    public ILocator WaitForReload(Action? actionThatTriggerReload = null, int? timeoutMs = null) {
         var beforeDomId = DomId;
         if(actionThatTriggerReload != null) actionThatTriggerReload.Invoke();
-        Waiter.WaitFor("Reload element: " + Selector, () => DomId != beforeDomId);
+        Waiter.WaitFor("Reload element: " + Selector, () => DomId != beforeDomId, timeoutMs);
         return this;
     }
 

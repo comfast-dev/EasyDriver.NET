@@ -147,7 +147,8 @@ public interface ILocator {
     /// Executes action and wait until given locator reload
     /// </summary>
     /// <param name="actionThatTriggerReload">OPTIONAL: Action that should trigger reload</param>
-    public ILocator WaitForReload(Action? actionThatTriggerReload = null);
+    /// <param name="timeoutMs">custom timeout</param>
+    public ILocator WaitForReload(Action? actionThatTriggerReload = null, int? timeoutMs = null);
 
     /// <summary>
     /// Does keyboard input

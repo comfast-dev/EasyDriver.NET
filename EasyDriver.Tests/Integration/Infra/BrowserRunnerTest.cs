@@ -9,7 +9,7 @@ using Xunit.Abstractions;
 namespace EasyDriver.Tests.Integration.Infra;
 
 public class BrowserRunnerTest : IntegrationBase, IDisposable {
-    private IWebDriver? _driver;
+    private IWebDriver? _currentDriver;
     public BrowserRunnerTest(ITestOutputHelper output, IntegrationFixture fix) : base(output, fix) { }
 
     [Fact] void ScreenSizeTest() {
@@ -18,10 +18,10 @@ public class BrowserRunnerTest : IntegrationBase, IDisposable {
         int width = 888;
         int height = 444;
         conf.WindowSize = $"{width}x{height}";
-        _driver = new BrowserRunner(conf).RunNewBrowser();
+        _currentDriver = new BrowserRunner(conf).RunNewBrowser();
 
         //expect
-        var actualSize = _driver.Manage().Window.Size;
+        var actualSize = _currentDriver.Manage().Window.Size;
         ShouldEqual(actualSize.Height, height);
         ShouldEqual(actualSize.Width, width);
     }
@@ -30,12 +30,12 @@ public class BrowserRunnerTest : IntegrationBase, IDisposable {
         //given
         var conf = Configuration.DriverConfig.Copy();
         conf.WindowSize = "maximized";
-        _driver = new BrowserRunner(conf).RunNewBrowser();
+        _currentDriver = new BrowserRunner(conf).RunNewBrowser();
 
         //expect
-        var actualSize = _driver.Manage().Window.Size;
-        _driver.Manage().Window.Maximize();
-        var maximizedSize = _driver.Manage().Window.Size;
+        var actualSize = _currentDriver.Manage().Window.Size;
+        _currentDriver.Manage().Window.Maximize();
+        var maximizedSize = _currentDriver.Manage().Window.Size;
 
         ShouldEqual(actualSize, maximizedSize);
     }
@@ -55,7 +55,7 @@ public class BrowserRunnerTest : IntegrationBase, IDisposable {
         conf.WindowSize = "";
         ShouldThrow(() => runner.RunNewBrowser(), $"Invalid ScreenSize='{conf.WindowSize}'");
 
-        conf.WindowSize = null;
+        conf.WindowSize = null!;
         ShouldThrow(() => runner.RunNewBrowser(), $"Invalid ScreenSize='{conf.WindowSize}'");
     }
 
@@ -69,13 +69,13 @@ public class BrowserRunnerTest : IntegrationBase, IDisposable {
         conf.Headless = false;
         conf.ProxyUrl = proxyUrl.OriginalString;
 
-        _driver = new BrowserRunner(conf).RunNewBrowser();
-        _driver.Url = "http://ident.me";
+        _currentDriver = new BrowserRunner(conf).RunNewBrowser();
+        _currentDriver.Url = "http://ident.me";
 
-        _driver.Find("body").Text.Should().Be(proxyUrl.Host);
+        _currentDriver.Find("body").Text.Should().Be(proxyUrl.Host);
     }
 
     public void Dispose() {
-        _driver?.Dispose();
+        _currentDriver?.Dispose();
     }
 }

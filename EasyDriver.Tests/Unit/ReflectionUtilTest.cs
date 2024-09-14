@@ -50,6 +50,9 @@ public class ReflectionUtilTest {
         ShouldReadField(_test, "PublicField",               "PublicField value");
         ShouldReadField(_test, "ProtectedField",            "ProtectedField value");
         ShouldReadField(_test, "_privateField",             "_privateField value");
+        ShouldReadField(_test, "ProtectedField",             "ProtectedField value");
+        ShouldReadField(_test, "nullClass",                  null);
+        ShouldReadField(_test, "nullField",                  null);
         //@formatter:on
     }
 

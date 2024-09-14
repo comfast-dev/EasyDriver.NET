@@ -9,7 +9,7 @@ namespace EasyDriver.Tests.Integration;
 
 public class WaiterTest : IntegrationBase {
     public WaiterTest(ITestOutputHelper output, IntegrationFixture fix) : base(output, fix) {
-        new BrowserContent().OpenResourceFile("test.html");
+        _browserContent.OpenResourceFile("test.html");
         Configuration.LocatorConfig.TimeoutMs = LongTime;
     }
 
@@ -94,12 +94,12 @@ public class WaiterTest : IntegrationBase {
     }
 
     private void SpawnHtml(string html) {
-        ExecuteJs<string>("document.querySelector('#spawn .target').innerHTML = arguments[0]",
+        _driver.ExecuteJs<string>("document.querySelector('#spawn .target').innerHTML = arguments[0]",
             html);
     }
 
-    private void SpawnHtmlAfterMs(string html, int timeoutMs) {
-        ExecuteJs<string>(
+    private void SheduleSpawnAfterMs(string html, int timeoutMs) {
+        _driver.ExecuteJs<string>(
             "setTimeout(() => document.querySelector('#spawn .target').innerHTML = arguments[0], arguments[1])",
             html, timeoutMs);
     }

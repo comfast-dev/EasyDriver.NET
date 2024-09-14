@@ -11,12 +11,12 @@ public class BrowserContentTest : IntegrationBase {
     [Fact(Skip = "unstable on chrome")] void TrustedHtmlTest() {
         try {
             var func = () => {
-                NavigateTo("chrome://settings/privacy");
-                new BrowserContent().SetBody("<ul><li>xxx</li></ul>");
+                GetDriver().Url ="chrome://settings/privacy";
+                _browserContent.SetBody("<ul><li>xxx</li></ul>");
             };
             func.Should().NotThrow();
         } finally {
-            NavigateTo("about:blank");
+            GetDriver().Url = "about:blank";
         }
     }
 }

@@ -8,7 +8,7 @@ namespace EasyDriver.Tests.Integration;
 
 public class AttributesTest : IntegrationBase {
     public AttributesTest(ITestOutputHelper output, IntegrationFixture fix) : base(output, fix) {
-        new BrowserContent().OpenResourceFile("test.html");
+        _browserContent.OpenResourceFile("test.html");
     }
 
     [Fact] public void TextAndHtml() {
@@ -88,7 +88,7 @@ public class AttributesTest : IntegrationBase {
     }
 
     [Fact] public void HasAttribute() {
-        new BrowserContent().SetBody("<input type='text' value='' required>");
+        _browserContent.SetBody("<input type='text' value='' required>");
 
         Assert.True(S("input").HasAttribute("type"));
         Assert.True(S("input").HasAttribute("value"));
@@ -97,7 +97,7 @@ public class AttributesTest : IntegrationBase {
     }
 
     [Fact] public void HasClass() {
-        new BrowserContent().SetBody("<input class='myclass disabled' />");
+        _browserContent.SetBody("<input class='myclass disabled' />");
 
         var input = S("input");
         Assert.True(input.HasClass("myclass"));

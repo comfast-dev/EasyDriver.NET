@@ -7,7 +7,7 @@ namespace EasyDriver.Tests.Integration;
 
 public class FindTest : IntegrationBase {
     public FindTest(ITestOutputHelper output, IntegrationFixture fix) : base(output, fix) {
-        new BrowserContent().SetBody($@"
+        _browserContent.SetBody($@"
 <form id='inputForm'><input value='{InputValue}'/></form>
 <form id='selectForm'><select><option value='{OptionValue}'>some select</option></select></form>
 <form id='thirdForm'><input/></form>");
@@ -127,13 +127,13 @@ public class FindTest : IntegrationBase {
     }
 
     [Fact] public void OpenShadowDom() {
-        new BrowserContent().OpenResourceFile("test.html");
+        _browserContent.OpenResourceFile("test.html");
         S("my-div >> h3").Text.Should().Match("Hello from shadow");
         S("my-div >> my-div >> h5").Text.Should().Match("We need go deeper");
     }
 
     [Fact(Skip = "not yet handled")] public void OpenIframe() {
-        new BrowserContent().OpenResourceFile("test.html");
+        _browserContent.OpenResourceFile("test.html");
         S("#myframe >> h3").Text.Should().Match("Hello from iframe");
         S("#myframe >> #nestedIframe >> h3").Text.Should().Match("We need go deeper");
     }

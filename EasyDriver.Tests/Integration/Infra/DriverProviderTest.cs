@@ -16,13 +16,13 @@ public class DriverProviderTest : IntegrationBase, IDisposable {
 
     private readonly string _driverPath = Configuration.DriverConfig.DriverPath;
     private readonly string _browserPath = Configuration.DriverConfig.BrowserPath;
-    private IWebDriver? _driver;
+    private IWebDriver? _currentDriver;
 
     public void Dispose() {
         Configuration.DriverConfig.DriverPath = _driverPath;
         Configuration.DriverConfig.BrowserPath = _browserPath;
-        _driver?.Quit();
-        _driver?.Dispose();
+        _currentDriver?.Quit();
+        _currentDriver?.Dispose();
     }
 
     // [Fact]
@@ -38,7 +38,7 @@ public class DriverProviderTest : IntegrationBase, IDisposable {
 
         var driverProvider1 = new DriverProvider(conf);
         var driver1 = driverProvider1.GetDriver();
-        _driver = driver1;
+        _currentDriver = driver1;
         var originalTitle = driver1.Title;
         var sessionId = driver1.ReadField<string>("SessionId.sessionOpaqueKey");
 
@@ -56,7 +56,7 @@ public class DriverProviderTest : IntegrationBase, IDisposable {
         var options = new ChromeOptions { BinaryLocation = Configuration.DriverConfig.BrowserPath };
         options.AddArgument("headless");
         var myChrome = new ChromeDriver(Configuration.DriverConfig.DriverPath, options);
-        new BrowserContent().SetBody($"<h1>{pageTitle}</h1>");
+        _browserContent.SetBody($"<h1>{pageTitle}</h1>");
         Configuration.DriverConfig.AutoClose = true;
 
         //set configuration

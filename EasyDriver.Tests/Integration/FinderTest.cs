@@ -9,7 +9,7 @@ namespace EasyDriver.Tests.Integration;
 
 public class FinderTest : IntegrationBase {
     public FinderTest(ITestOutputHelper output, IntegrationFixture fix) : base(output, fix) {
-        new BrowserContent().OpenResourceFile("test.html");
+        _browserContent.OpenResourceFile("test.html");
     }
 
     private readonly string _expectedText1 = "HTML with newlines:";
@@ -18,8 +18,6 @@ public class FinderTest : IntegrationBase {
     private readonly string _xpath = "//*[@id='textAndHtml']//td";
     private readonly string _extendedCss = " body >> #textAndHtml td";
     private readonly string _extendedXpath = "//body >> //*[@id='textAndHtml']//td";
-
-    private readonly IWebDriver _driver = GetDriver();
 
     [Fact] void FinderFindTest() {
         ShouldFindPass(new WebElementFinder(_driver, _css).Find(), _expectedText1);

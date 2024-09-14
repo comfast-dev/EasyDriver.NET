@@ -9,7 +9,7 @@ namespace EasyDriver.Tests.Integration;
 
 public class InteractionsTest : IntegrationBase {
     public InteractionsTest(ITestOutputHelper output, IntegrationFixture fix) : base(output, fix) {
-        new BrowserContent().OpenResourceFile("test.html");
+        _browserContent.OpenResourceFile("test.html");
     }
 
     [Fact] public void Click() {

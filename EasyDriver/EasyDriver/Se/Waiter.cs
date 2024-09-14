@@ -1,45 +1,41 @@
 ﻿using Comfast.EasyDriver.Models;
+using Comfast.EasyDriver.Se.Finder;
+using OpenQA.Selenium;
 
 namespace Comfast.EasyDriver.Se;
 
 /// <summary>
 /// Provides waiting methods
 /// </summary>
-public class Waiter {
-    private readonly int _timeoutMs;
-    private readonly int _poolingMs;
-
-    /// <summary>
-    /// Create new instance
-    /// </summary>
-    public Waiter(int timeoutMs, int poolingMs = 50) {
-        _timeoutMs = timeoutMs;
-        _poolingMs = poolingMs;
-    }
+public static class Waiter {
+    private static int DefaultTimeoutMs => Configuration.LocatorConfig.TimeoutMs;
+    private static int PoolingTimeMs => Configuration.LocatorConfig.PoolingTimeMs;
 
     /// <summary>
     /// Wait for any locator. Return index of first found one.
     /// </summary>
     /// <param name="locators">array of locators to check</param>
     /// <returns>index of found locator</returns>
-    public int WaitForAny(params ILocator[] locators) =>
-        WaitFor<int?>("Any element of these:\n- " + string.Join("\n- ", locators.Select(l => l.Selector)), () => {
-            for (var i = 0; i < locators.Length; i++) {
-                if (locators[i].Exists) return i;
-            }
-
-            return null;
-        }) ?? throw new("never happen");
+    public static int WaitForAny(params ILocator[] locators) => WaitForAny(null, locators);
 
     /// <summary>
-    /// Executes action and wait until given locator reload
+    /// Wait for any locator. Return index of first found one.
     /// </summary>
-    /// <param name="locator">locator that reloads</param>
-    /// <param name="duringAction">Action that trigger change</param>
-    public void WaitForReload(ILocator locator, Action? duringAction = null) {
-        var beforeDomId = locator.DomId;
-        if (duringAction != null) duringAction.Invoke();
-        WaitFor("Reload element: " + locator.Selector, () => locator.DomId != beforeDomId);
+    /// <param name="locators">array of locators to check</param>
+    /// <returns>index of found locator</returns>
+    /// <param name="timeoutMs">max wait time, null value uses default from Configuration</param>
+    public static int WaitForAny(int? timeoutMs = null, params ILocator[] locators) {
+        string description = "Any element of these:\n- " + string.Join("\n- ", locators.Select(l => l.Selector));
+        var foundIndex = WaitFor(description, () => {
+            for (var i = 0; i < locators.Length; i++) {
+                if (locators[i].Exists) {
+                    return i;
+                }
+            }
+            throw new("not found any");
+        }, timeoutMs ?? DefaultTimeoutMs);
+
+        return foundIndex;
     }
 
     /// <summary>
@@ -47,11 +43,13 @@ public class Waiter {
     /// </summary>
     /// <param name="actionName">for log info</param>
     /// <param name="action">should return true</param>
-    public T WaitFor<T>(string actionName, Func<T?> action) {
-        var timeout = DateTime.Now.AddMilliseconds(_timeoutMs);
+    /// <param name="timeoutMs">max wait time, null value uses default from Configuration</param>
+    public static T WaitFor<T>(string actionName, Func<T?> action, int? timeoutMs = null) {
+        var timeout = timeoutMs ?? DefaultTimeoutMs;
+        var timeEnd = DateTime.Now.AddMilliseconds(timeout);
         T? result = default(T);
         Exception? lastError = null;
-        while (DateTime.Now < timeout) {
+        while (DateTime.Now < timeEnd) {
             lastError = null;
             try {
                 result = action.Invoke();
@@ -60,10 +58,10 @@ public class Waiter {
                 lastError = e;
             }
 
-            Thread.Sleep(_poolingMs);
+            Thread.Sleep(PoolingTimeMs);
         }
 
-        var msg = $"Wait failed after {_timeoutMs}ms for action: {actionName}";
+        var msg = $"Wait failed after {timeout}ms for action: {actionName}";
         if (lastError != null) {
             throw new(msg + $"\nLast error: '{lastError.Message}'", lastError);
         }
@@ -71,23 +69,26 @@ public class Waiter {
         throw new(msg + $"\nLast result: '{result}'");
     }
 
+
     /// <summary>
     /// Wait for page redirections till page is stable for minimum time.
     /// </summary>
     /// <param name="minimumStableTimeMs">Minimum time without redirect or loading state</param>
-    public void WaitForStablePage(int minimumStableTimeMs = 1000) {
+    /// <param name="timeoutMs">max wait time, null value uses default from Configuration</param>
+    public static void WaitForStablePage(int minimumStableTimeMs = 1000, int? timeoutMs = null) {
+        var timeout = timeoutMs ?? DefaultTimeoutMs;
         var startedAt = DateTime.Now;
         var lastFailAt = DateTime.Now;
         int stableTimeMs = 0;
 
         while (stableTimeMs < minimumStableTimeMs) {
-            Thread.Sleep(_poolingMs);
+            Thread.Sleep(PoolingTimeMs);
             if (!IsPageReady()) lastFailAt = DateTime.Now;
 
             stableTimeMs = (int)(DateTime.Now - lastFailAt).TotalMilliseconds;
             var totalTimeMs = (int)(DateTime.Now - startedAt).TotalMilliseconds;
-            if (totalTimeMs > _timeoutMs) {
-                throw new($"Page is unstable, loading every <{minimumStableTimeMs}ms. Timed out after {_timeoutMs}ms.");
+            if (totalTimeMs > timeout) {
+                throw new($"Page is unstable, loading every <{minimumStableTimeMs}ms. Timed out after {timeout}ms.");
             }
         }
     }
@@ -98,12 +99,12 @@ public class Waiter {
     /// Second call will return true if readyState is 'complete'
     /// </summary>
     private static bool IsPageReady() =>
-        DriverApi.ExecuteJs<bool>(@"
+        GetDriver().ExecuteJs<bool>(@"
 if(document.prevReadyState == 'complete') return true;
 document.prevReadyState = document.readyState;
 return false;");
 
-    private bool IsTruthly(object? obj) =>
+    private static bool IsTruthly(object? obj) =>
         obj switch {
             null => false,
             bool objBool => objBool,

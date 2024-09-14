@@ -144,6 +144,12 @@ public interface ILocator {
     public ILocator WaitForDisappear(int? timeoutMs = null);
 
     /// <summary>
+    /// Executes action and wait until given locator reload
+    /// </summary>
+    /// <param name="actionThatTriggerReload">OPTIONAL: Action that should trigger reload</param>
+    public ILocator WaitForReload(Action? actionThatTriggerReload = null);
+
+    /// <summary>
     /// Does keyboard input
     /// </summary>
     public ILocator SendKeys(string text);

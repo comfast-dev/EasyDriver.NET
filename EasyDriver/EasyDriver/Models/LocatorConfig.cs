@@ -14,6 +14,9 @@ public class LocatorConfig {
     /// </summary>
     public int TimeoutMs { get; set; } = 20000;
 
+    /// <summary> Time between retries during Wait methods </summary>
+    public int PoolingTimeMs { get; set; } = 100;
+
     /// <summary>
     /// Default timeout for locating elements.
     /// </summary>

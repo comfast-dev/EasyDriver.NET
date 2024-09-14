@@ -234,7 +234,7 @@ public abstract class BaseComponent : ILocator {
     /// <inheritdoc />
     public ILocator WaitFor(int? timeoutMs = null, bool throwIfFail = true) {
         try {
-            return GetWaiter(timeoutMs).WaitFor("Element exist.", Find);
+            return Waiter.WaitFor("Element exist.", Find, timeoutMs);
         } catch (Exception) {
             if (throwIfFail) throw;
             return this;
@@ -244,7 +244,7 @@ public abstract class BaseComponent : ILocator {
     /// <inheritdoc />
     public virtual ILocator WaitForAppear(int? timeoutMs = null, bool throwIfFail = true) {
         try {
-            GetWaiter(timeoutMs).WaitFor($"Element appear: \n{Selector}", () => Find().IsDisplayed);
+            Waiter.WaitFor($"Element appear: \n{Selector}", () => Find().IsDisplayed, timeoutMs);
         } catch (Exception) {
             if (throwIfFail) throw;
         }
@@ -254,7 +254,17 @@ public abstract class BaseComponent : ILocator {
 
     /// <inheritdoc />
     public virtual ILocator WaitForDisappear(int? timeoutMs = null) {
-        GetWaiter(timeoutMs).WaitFor($"Element disappear: \n{Selector}", () => !IsDisplayed);
+        Waiter.WaitFor($"Element disappear: \n{Selector}",
+            () => !IsDisplayed,
+            timeoutMs);
+        return this;
+    }
+
+    /// <inheritdoc />
+    public ILocator WaitForReload(Action? actionThatTriggerReload = null) {
+        var beforeDomId = DomId;
+        if(actionThatTriggerReload != null) actionThatTriggerReload.Invoke();
+        Waiter.WaitFor("Reload element: " + Selector, () => DomId != beforeDomId);
         return this;
     }
 

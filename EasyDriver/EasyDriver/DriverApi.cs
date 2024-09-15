@@ -15,13 +15,13 @@ public static class DriverApi {
     public static IWebDriver GetDriver() => Configuration.DriverProvider.GetDriver();
 
     /// <see cref="Locator"/>
-    public static ILocator S(string cssOrXpath, string description = "") => new SimpleLocator(cssOrXpath, description);
+    public static ILocator S(string cssOrXpath, string description = "Locator") => new SimpleLocator(cssOrXpath, description);
 
     /// <summary>
     /// Creates locator instance
     /// </summary>
     /// <param name="cssOrXpath">Any selector</param>
     /// <param name="description"></param>
-    public static ILocator Locator(string cssOrXpath, string description = "") => new SimpleLocator(cssOrXpath, description);
+    public static ILocator Locator(string cssOrXpath, string description = "Locator") => new SimpleLocator(cssOrXpath, description);
 
 }

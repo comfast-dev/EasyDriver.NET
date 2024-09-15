@@ -14,18 +14,17 @@
 /// //table >> tr.selected >> .//td[.='some text']<br/>
 /// </para>
 /// </summary>
-public static class SelectorChain {
+public class SelectorChain {
     /// <summary>
     /// used to separate sub-selectors
     /// </summary>
     public const string SelectorSeparator = " >> ";
 
-    /// <summary>
-    /// Split chain into array of simple cssOrXpath selectors
-    /// </summary>
-    /// <param name="selector"></param>
-    /// <returns></returns>
-    public static string[] SplitChain(this string selector) {
-        return selector.Split(SelectorSeparator);
+    private readonly string _selectorString;
+
+    public SelectorChain(string selectorString) {
+        _selectorString = selectorString;
     }
+
+    public string[] SelectorsArray => _selectorString.Split(SelectorSeparator);
 }

@@ -7,8 +7,8 @@ public class StringExtensionsTest {
     [Fact] void MaxLengthTest() {
         var tenCharString = "1234567890";
 
-        tenCharString.MaxLength(5).Should().Be("12345");
-        tenCharString.MaxLength(15).Should().Be(tenCharString);
+        tenCharString.TrimToMaxLength(5).Should().Be("12345...");
+        tenCharString.TrimToMaxLength(15).Should().Be(tenCharString);
     }
 
     [Fact] void RgxReplaceTest() {
@@ -26,7 +26,4 @@ public class StringExtensionsTest {
         test.RgxMatch("xd").Should().BeNull();
         test.RgxMatch("xd", 2).Should().BeNull();
     }
-    // [Fact] void Aaa() {}
-    // [Fact] void Aaa() {}
-    // [Fact] void Aaa() {}
 }

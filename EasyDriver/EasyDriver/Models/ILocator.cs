@@ -1,3 +1,4 @@
+using Comfast.EasyDriver.Se.Finder;
 using OpenQA.Selenium;
 
 namespace Comfast.EasyDriver.Models;
@@ -21,6 +22,16 @@ public interface ILocator {
     /// Element selector
     /// </summary>
     public string Selector { get; }
+
+    /// <summary>
+    /// Element description (as metadata used for error messages and logs)
+    /// </summary>
+    public string Description { get; }
+
+    /// <summary>
+    /// Get SelectorChain component
+    /// </summary>
+    public SelectorChain SelectorChain => new(Selector);
 
     /// <summary>
     /// Element text

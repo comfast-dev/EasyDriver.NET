@@ -6,7 +6,7 @@ namespace Comfast.EasyDriver.Ui;
 /// Example implementation of LabeledComponent
 /// </summary>
 public class LinkByText : LabeledComponent {
-    public override string[] AllLabels => DriverApi.S("//a").Texts;
+    public override string[] AllLabels => S("//a").Texts;
     public override string Selector => $"//a[.={Label.EscapeXpath()}]";
 
     public LinkByText(string label) : base(label) { }

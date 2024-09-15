@@ -20,6 +20,6 @@ public class ConfigLoader {
         }
 
         return JsonConvert.DeserializeObject<T>(inputJson)
-               ?? throw new Exception($"Failed to deserialize JSON: '{inputJson.MaxLength(500)}'");
+               ?? throw new Exception($"Failed to deserialize JSON: '{inputJson.TrimToMaxLength(500)}'");
     }
 }

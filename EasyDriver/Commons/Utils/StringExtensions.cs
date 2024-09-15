@@ -23,6 +23,6 @@ public static class StringExtensions {
     /// <summary>
     /// Trim string if is longer than length
     /// </summary>
-    public static string MaxLength(this string str, int length) =>
-        str.Length <= length ? str : str.Substring(0, length);
+    public static string TrimToMaxLength(this string str, int maxLength) =>
+        str.Length <= maxLength ? str : str.Substring(0, maxLength) + "...";
 }

@@ -123,7 +123,7 @@ public class FindTest : IntegrationBase {
 
     [Fact] void FailedFindError() {
         ShouldThrow(() => S("#selectForm >> xdxd").Find(),
-            "#selectForm >> xdxd\n               ^");
+            "#selectForm >> xdxd");
     }
 
     [Fact] public void OpenShadowDom() {

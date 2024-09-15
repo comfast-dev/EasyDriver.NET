@@ -1,4 +1,7 @@
 using System.Collections.ObjectModel;
+using Comfast.EasyDriver.Models;
+using Comfast.EasyDriver.Se.Errors;
+using Comfast.EasyDriver.Se.Locator;
 using OpenQA.Selenium;
 using Exception = System.Exception;
 
@@ -21,13 +24,18 @@ namespace Comfast.EasyDriver.Se.Finder;
 public class JsFinder : IFinder<IWebElement> {
     private readonly IJavaScriptExecutor _jsDriver;
     private readonly string[] _selectors;
+    private readonly ILocator _locator;
 
-    public JsFinder(IWebDriver webDriver, string selector) {
+    public JsFinder(IWebDriver webDriver, string selector) : this(webDriver, new SimpleLocator(selector, "Element")) { }
+
+    public JsFinder(IWebDriver webDriver, ILocator locator) {
         _jsDriver = (IJavaScriptExecutor)webDriver;
-        _selectors = selector.SplitChain();
+        _selectors = locator.SelectorChain.SelectorsArray;
+        _locator = locator;
     }
 
     //language=JavaScript
+
     private readonly string _js = @"
 const isXpath = cssOrXpath => /^([\(\.]{0,3}\/|\.\.)/.test(cssOrXpath)
 const fixXpath = xpath => xpath.replace(/^\//, ""./"")
@@ -81,7 +89,7 @@ function findAll(cssOrXpathArgs) {
         var result = _jsDriver.ExecuteScript(_js + "return find(arguments)", _selectors);
         if (result is IWebElement foundElement) return foundElement;
 
-        throw new ElementFindFail(_selectors, (int)(long)result, new Exception("Not found"));
+        throw new LocatorNotFoundException(_locator, (int)(long)result);
     }
 
     /// <summary>

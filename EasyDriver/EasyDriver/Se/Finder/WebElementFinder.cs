@@ -1,3 +1,6 @@
+using Comfast.EasyDriver.Models;
+using Comfast.EasyDriver.Se.Errors;
+using Comfast.EasyDriver.Se.Locator;
 using OpenQA.Selenium;
 
 namespace Comfast.EasyDriver.Se.Finder;
@@ -19,10 +22,15 @@ namespace Comfast.EasyDriver.Se.Finder;
 public class WebElementFinder : IFinder<IWebElement> {
     private readonly IWebDriver _webDriver;
     private readonly string[] _selectors;
+    private readonly ILocator _locator;
 
-    public WebElementFinder(IWebDriver webDriver, string selector) {
+    public WebElementFinder(IWebDriver webDriver, string selector)
+        : this(webDriver, new SimpleLocator(selector, "Element")) { }
+
+    public WebElementFinder(IWebDriver webDriver, ILocator locator) {
         _webDriver = webDriver;
-        _selectors = selector.SplitChain();
+        _selectors = locator.SelectorChain.SelectorsArray;
+        _locator = locator;
     }
 
     /// <summary>
@@ -59,7 +67,7 @@ public class WebElementFinder : IFinder<IWebElement> {
             // } catch(InvalidSelectorException | NoSuchElementException | InvalidArgumentException | JavascriptException ex) {
         } catch (Exception ex) {
             if (!throwIfNotFound) return null!;
-            throw new ElementFindFail(selectors, i, ex);
+            throw new LocatorNotFoundException(_locator, i, ex);
         }
     }
 

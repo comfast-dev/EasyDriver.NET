@@ -5,6 +5,9 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <IsPackable>false</IsPackable>
+        <NoWarn>
+            xUnit1041; <!-- Fixture argument 'fix' does not have a fixture source-->
+        </NoWarn>
     </PropertyGroup>
 
     <ItemGroup>

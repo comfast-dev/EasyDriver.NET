@@ -53,7 +53,7 @@ public static class LabeledComponentUtils {
         return string.Join("\n",
             FindAll(type).Select(el => {
                 if (highlightColor != null) el.Highlight(highlightColor);
-                var fieldName = el.Label.ToPascalCase().MaxLength(25);
+                var fieldName = el.Label.ToPascalCase().TrimToMaxLength(25);
                 return $"{type.Name} {fieldName} = new(\"{el.Label}\");";
             }));
     }

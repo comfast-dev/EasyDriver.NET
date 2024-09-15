@@ -1,11 +1,11 @@
 using System.Text.RegularExpressions;
 using Comfast.Commons.Utils;
 using Comfast.EasyDriver.Models;
+using Comfast.EasyDriver.Se.Errors;
 using Comfast.EasyDriver.Se.Finder;
 using Comfast.EasyDriver.Ui;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
-using static Comfast.EasyDriver.DriverApi;
 
 namespace Comfast.EasyDriver.Se.Locator;
 
@@ -27,10 +27,7 @@ public abstract class BaseComponent : ILocator {
     /// </summary>
     public abstract string Selector { get; }
 
-    /// <summary>
-    /// Description for this Component / Locator
-    /// Used in logs / error messages
-    /// </summary>
+    /// <inheritdoc />
     public abstract string Description { get; }
 
     /// <inheritdoc />
@@ -95,7 +92,7 @@ public abstract class BaseComponent : ILocator {
     public virtual int Count => FindAll().Count;
 
     /// <inheritdoc />
-    public virtual bool IsDisplayed => TryGet(el => el.Displayed);
+    public virtual bool IsDisplayed => TryExecuteOnElement(el => el.Displayed);
 
     /// <inheritdoc />
     public virtual bool Exists => TryFind() != null;
@@ -288,7 +285,7 @@ public abstract class BaseComponent : ILocator {
             try {
                 results.Add(func.Invoke(element));
             } catch (Exception e) {
-                var elementHtml = element.OuterHtml.MaxLength(100);
+                var elementHtml = element.OuterHtml.TrimToMaxLength(100);
                 throw new Exception($"Mapping failed during processing element [{i}/{elements.Count}]: " + elementHtml,
                     e);
             }
@@ -304,8 +301,8 @@ public abstract class BaseComponent : ILocator {
         return File.ReadAllText("EasyDriver\\Js\\" + jsFileName);
     }
 
-    private WebElementFinder WebElementFinder => new(GetDriver(), Selector);
-    private JsFinder JsFinder => new(GetDriver(), Selector);
+    private WebElementFinder WebElementFinder => new(GetDriver(), this);
+    private JsFinder JsFinder => new(GetDriver(), this);
 
     private void HighlightIfEnabled() {
         if (Configuration.LocatorConfig.HighlightActions) {
@@ -314,10 +311,10 @@ public abstract class BaseComponent : ILocator {
         }
     }
 
-    private T? TryGet<T>(Func<IWebElement, T> func) {
+    private T? TryExecuteOnElement<T>(Func<IWebElement, T> func) {
         try {
             return func.Invoke(FindElement());
-        } catch (ElementFindFail) {
+        } catch (LocatorException) {
             return default;
         } catch (StaleElementReferenceException) {
             return default;

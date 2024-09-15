@@ -6,7 +6,7 @@ namespace EasyDriver.Tests.Unit;
 public class ReflectionUtilTest {
     private readonly TestClass _test = new();
     private readonly ParentClass _parent = new();
-
+#pragma warning disable CS0414
     class TestClass {
         public string PublicProp { get; set; } = "PublicProp value";
         protected string ProtectedProp { get; set; } = "ProtectedProp value";
@@ -18,8 +18,8 @@ public class ReflectionUtilTest {
         protected string ProtectedField = "ProtectedField value";
         private string _privateField = "_privateField value";
         private NestedClass _nested = new();
-        public NestedClass? nullClass = null;
-        public string? nullField = null;
+        public NestedClass? NullClass = null;
+        public string? NullField = null;
         private string NoSetterProp { get; } = "NoSetterProp value";
     }
 
@@ -38,6 +38,7 @@ public class ReflectionUtilTest {
         private string ReadonlyPrivateProp { get; } = "ReadonlyPrivateProp value";
         private string PublicProp { get; set; } = "PublicProp value";
     }
+#pragma warning restore CS0414
 
     [Fact] void ReadFieldTest() {
         //@formatter:off

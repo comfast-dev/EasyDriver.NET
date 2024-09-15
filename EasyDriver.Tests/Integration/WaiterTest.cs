@@ -34,7 +34,7 @@ public class WaiterTest : IntegrationBase {
         ShouldEndInTime(() => _h5.WaitFor(), SuccessTime, SuccessTimeMax);
 
         ShouldThrowInTime(() => _h3.WaitFor(ShortTime), ShortTime, ShortTime + TimeMargin,
-            "Element find fail:\n#spawn .target h3");
+            "Last error: 'Not found element:");
     }
 
     [Fact] void WaitForAppearTest() {

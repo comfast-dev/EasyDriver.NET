@@ -8,7 +8,7 @@ namespace Comfast.EasyDriver;
 /// <summary>
 /// Main API of framework
 /// </summary>
-public static class DriverApi {
+public static class EasyDriverApi {
     /// <summary>
     /// Returns current WebDriver instance.
     /// </summary>

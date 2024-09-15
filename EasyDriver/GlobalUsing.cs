@@ -1,1 +1,1 @@
-﻿global using static Comfast.EasyDriver.DriverApi;
+﻿global using static Comfast.EasyDriver.EasyDriverApi;

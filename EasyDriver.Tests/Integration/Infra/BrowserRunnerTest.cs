@@ -14,7 +14,7 @@ public class BrowserRunnerTest : IntegrationBase, IDisposable {
 
     [Fact] void ScreenSizeTest() {
         //given
-        var conf = Configuration.DriverConfig.Copy();
+        var conf = EasyDriverConfig.BrowserConfig.Copy();
         int width = 888;
         int height = 444;
         conf.WindowSize = $"{width}x{height}";
@@ -28,7 +28,7 @@ public class BrowserRunnerTest : IntegrationBase, IDisposable {
 
     [Fact] void ScreenMaximizedTest() {
         //given
-        var conf = Configuration.DriverConfig.Copy();
+        var conf = EasyDriverConfig.BrowserConfig.Copy();
         conf.WindowSize = "maximized";
         _currentDriver = new BrowserRunner(conf).RunNewBrowser();
 
@@ -42,7 +42,7 @@ public class BrowserRunnerTest : IntegrationBase, IDisposable {
 
     [Fact] void ScreenSizeInvalidTest() {
         //given
-        var conf = Configuration.DriverConfig.Copy();
+        var conf = EasyDriverConfig.BrowserConfig.Copy();
         var runner = new BrowserRunner(conf);
 
         conf.WindowSize = "xd";
@@ -65,7 +65,7 @@ public class BrowserRunnerTest : IntegrationBase, IDisposable {
         // find some proxy here https://free-proxy-list.net/
         Uri proxyUrl = new Uri("http://155.94.241.134:3128");
 
-        var conf = Configuration.DriverConfig;
+        var conf = EasyDriverConfig.BrowserConfig;
         conf.Headless = false;
         conf.ProxyUrl = proxyUrl.OriginalString;
 

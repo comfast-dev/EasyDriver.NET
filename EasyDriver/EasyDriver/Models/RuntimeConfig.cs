@@ -3,7 +3,7 @@
 /// <summary>
 /// Configuration for locating elements logic
 /// </summary>
-public class LocatorConfig {
+public class RuntimeConfig {
     /// <summary>
     /// If true - elements will be highlighted after actions like Click, SetValue, etc.
     /// </summary>

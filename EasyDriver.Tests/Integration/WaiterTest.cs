@@ -10,7 +10,7 @@ namespace EasyDriver.Tests.Integration;
 public class WaiterTest : IntegrationBase {
     public WaiterTest(ITestOutputHelper output, IntegrationFixture fix) : base(output, fix) {
         _browserContent.OpenResourceFile("test.html");
-        Configuration.LocatorConfig.TimeoutMs = LongTime;
+        EasyDriverConfig.RuntimeConfig.TimeoutMs = LongTime;
     }
 
     private const int SuccessTime = 100; // for success waits

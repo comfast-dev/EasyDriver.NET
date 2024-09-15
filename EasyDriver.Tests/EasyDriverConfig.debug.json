@@ -1,15 +1,15 @@
 {
-    "DriverConfig": {
+    "BrowserConfig": {
         "BrowserName": "chromium",
         "BrowserPath": "C:\\bin\\124\\chromium\\chrome.exe",
         "DriverPath": "C:\\bin\\124\\chromedriver.exe",
-        "Reconnect": false,
-        "AutoClose": true,
-        "Headless": true
+        "Reconnect": true,
+        "AutoClose": false,
+        "Headless": false
     },
-    "LocatorConfig": {
-        "TimeoutMs": 4000,
-        "ShortWaitMs": 1000,
+    "RuntimeConfig": {
+        "TimeoutMs": 20000,
+        "ShortWaitMs": 0,
         "HighlightActions": false
     }
 }

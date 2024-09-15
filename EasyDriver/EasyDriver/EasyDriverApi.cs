@@ -1,5 +1,4 @@
 ﻿using Comfast.EasyDriver.Models;
-using Comfast.EasyDriver.Se;
 using Comfast.EasyDriver.Se.Locator;
 using OpenQA.Selenium;
 
@@ -12,7 +11,7 @@ public static class EasyDriverApi {
     /// <summary>
     /// Returns current WebDriver instance.
     /// </summary>
-    public static IWebDriver GetDriver() => Configuration.DriverProvider.GetDriver();
+    public static IWebDriver GetDriver() => EasyDriverConfig.DriverProvider.GetDriver();
 
     /// <see cref="Locator"/>
     public static ILocator S(string cssOrXpath, string description = "Locator") => new SimpleLocator(cssOrXpath, description);

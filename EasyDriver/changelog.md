@@ -1,7 +1,8 @@
 ﻿# Changelog
 
-[NOT RELEASED]
+[TODO List]
 
+- [ ] Add configuration json's json-schema documentation
 - [ ] Auto generating markdown docs
 - [ ] Logger compatible with Xunit
 - [ ] Auto download browser using selenium-manager
@@ -9,6 +10,18 @@
 - [x] Add method: MapUsingJs
 - [x] Rename `S() -> Locator()`, `_S() -> SubLocator()` keeping aliases: `S`, `_S`
 - [x] Fix IsDisplayed throwing StaleElementReference exception
+
+### [0.4.x] - NOT RELEASED
+BREAKING CHANGES:
+- [x] Rename config file to EasyDriverConfig.json
+- [x] Change API: FindElement, FindElements,
+- [x] Change DriverApi -> EasyDriverApi
+- [x] Change AppConfig.json -> EasyDriverConfig.json
+- [x] Change Configuration -> EasyDriverConfig
+- [ ] Change ILocator interface:
+  - [ ] Selector -> LocatorString
+    - [ ] Description -> NamesChain
+    - [ ] LocatorName
 
 ### [0.3.1]
 - [x] Add DriverConfig.WindowSize functionality

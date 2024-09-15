@@ -1,12 +1,11 @@
 ﻿namespace Comfast.EasyDriver.Models;
 
 /// <summary>
-/// All information required used to run the browser
+/// All information required to run the browser
 /// </summary>
-public class DriverConfig {
+public class BrowserConfig {
     /// <summary>
-    /// Used to differentiate which driver to run.
-    /// e.g. "chrome", "firefox", "edge"
+    /// Used to differentiate which driver to run. e.g. "chrome", "firefox", "edge"
     /// </summary>
     public string BrowserName { get; set; } = "chrome";
 
@@ -16,8 +15,7 @@ public class DriverConfig {
     public string BrowserPath { get; set; } = null!;
 
     /// <summary>
-    /// Path to chromedriver.exe / firefoxdriver.exe / ...
-    /// e.g. c:/drivers/chromedriver120
+    /// Path to chromedriver.exe / firefoxdriver.exe e.g. c:/drivers/chromedriver120/chromedriver.exe
     /// </summary>
     public string DriverPath { get; set; } = null!;
 
@@ -40,10 +38,6 @@ public class DriverConfig {
     /// Where the browser should download files
     /// </summary>
     public string DownloadPath { get; set; } = Path.Combine(Path.GetTempPath(), "EasyDriver", "downloads");
-
-    // public string? Proxy { get; set; } = null;
-    // public string? ProxyUser { get; set; } = null;
-    // public string? ProxyPassword { get; set; } = null;
 
     /// <summary>
     /// If set - Proxy will be used while browser creation

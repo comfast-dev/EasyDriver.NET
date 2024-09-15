@@ -9,27 +9,27 @@ namespace Comfast.EasyDriver;
 
 /// <summary>
 /// Main source of truth for framework.
-/// Internal fields of DriverConfig/LocatorConfig can be edited in runtime.
+/// Internal fields of BrowserConfig/RuntimeConfig can be edited in runtime.
 /// </summary>
-public static class Configuration {
+public static class EasyDriverConfig {
     /// <summary>
     /// Options that define way how WebDriver managed browser is created/managed
     /// </summary>
-    public static DriverConfig DriverConfig { get; } = new();
+    public static BrowserConfig BrowserConfig { get; } = new();
 
     /// <summary>
-    /// Feature flags / timeouts for locators
+    /// Feature flags / timeouts
     /// </summary>
-    public static LocatorConfig LocatorConfig { get; } = new();
+    public static RuntimeConfig RuntimeConfig { get; } = new();
 
     /// <summary>
     /// Main logic that manages WebDriver creation
     /// </summary>
     public static DriverProvider DriverProvider { get; private set; }
 
-    static Configuration() {
-        ReloadConfig("AppConfig.json");
-        DriverProvider = new(DriverConfig);
+    static EasyDriverConfig() {
+        ReloadConfig("EasyDriverConfig.json");
+        DriverProvider = new(BrowserConfig);
     }
 
     /// <summary>
@@ -52,7 +52,7 @@ public static class Configuration {
     }
 
     /// <summary>
-    /// Reloads Configuration from given AppConfig file.
+    /// Reloads Configuration from given Config file.
     /// </summary>
     /// <param name="filePath"> e.g. MyAppConfig.json</param>
     public static void ReloadConfig(string filePath) {
@@ -66,7 +66,7 @@ public static class Configuration {
     public static void ReloadConfig(IConfiguration conf) {
         // todo if DriverProvider.Instances.Count > 0 - show warning/throw
 
-        DriverConfig.RewriteFrom(conf.GetSection("DriverConfig").Get<DriverConfig>());
-        LocatorConfig.RewriteFrom(conf.GetSection("LocatorConfig").Get<LocatorConfig>());
+        BrowserConfig.RewriteFrom(conf.GetSection("BrowserConfig").Get<BrowserConfig>());
+        RuntimeConfig.RewriteFrom(conf.GetSection("RuntimeConfig").Get<RuntimeConfig>());
     }
 }

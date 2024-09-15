@@ -12,7 +12,7 @@ namespace Comfast.EasyDriver.Se.Infra;
 public class DriverProvider : IDriverProvider {
     private readonly ThreadLocal<IWebDriver> _instances;
     private readonly DriverSessionStore _driverSessionStore = new();
-    private readonly DriverConfig _driverConfig;
+    private readonly BrowserConfig _browserConfig;
 
     /// <summary>
     /// Update this field to customize browser creation logic
@@ -22,13 +22,13 @@ public class DriverProvider : IDriverProvider {
     /// <summary>
     /// Create new instance based on config.
     /// </summary>
-    public DriverProvider(DriverConfig driverConfig) {
+    public DriverProvider(BrowserConfig browserConfig) {
         _instances = new ThreadLocal<IWebDriver>(ProvideDriverInstance, true);
-        _driverConfig = driverConfig;
-        BrowserRunner = new BrowserRunner(driverConfig);
+        _browserConfig = browserConfig;
+        BrowserRunner = new BrowserRunner(browserConfig);
 
         AppDomain.CurrentDomain.ProcessExit += (s, e) => {
-            if (_driverConfig.AutoClose) CloseAllDrivers();
+            if (_browserConfig.AutoClose) CloseAllDrivers();
         };
     }
 
@@ -39,9 +39,9 @@ public class DriverProvider : IDriverProvider {
     /// </summary>
     public IWebDriver GetDriver() {
         //@formatter:off
-        if (_driverConfig.Reconnect && _instances.Values.Count > 1) throw new Exception(@"
+        if (_browserConfig.Reconnect && _instances.Values.Count > 1) throw new Exception(@"
 Reconnect feature isn't compatible with parallel runs. Possible solutions:
-- Set DriverConfig.Reconnect = false in AppConfig.json
+- Set BrowserConfig.Reconnect = false in EasyDriverConfig.json
 - Change runner configuration to run tests in one thread");
         //@formatter:on
         return _instances.Value!;
@@ -58,7 +58,7 @@ Reconnect feature isn't compatible with parallel runs. Possible solutions:
     /// Run/reconnect to Browser instance
     /// </summary>
     private IWebDriver ProvideDriverInstance() {
-        return _driverConfig.Reconnect
+        return _browserConfig.Reconnect
             ? _driverSessionStore.RestoreSessionOrElse(BrowserRunner.RunNewBrowser)
             : BrowserRunner.RunNewBrowser();
     }

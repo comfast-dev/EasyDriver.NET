@@ -7,8 +7,8 @@ namespace Comfast.EasyDriver.Se;
 /// Provides waiting methods
 /// </summary>
 public static class Waiter {
-    private static int DefaultTimeoutMs => Configuration.LocatorConfig.TimeoutMs;
-    private static int PoolingTimeMs => Configuration.LocatorConfig.PoolingTimeMs;
+    private static int DefaultTimeoutMs => EasyDriverConfig.RuntimeConfig.TimeoutMs;
+    private static int PoolingTimeMs => EasyDriverConfig.RuntimeConfig.PoolingTimeMs;
 
     /// <summary>
     /// Wait for any locator. Return index of first found one.

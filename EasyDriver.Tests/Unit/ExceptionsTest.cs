@@ -44,8 +44,9 @@ Snapshot: c:/some/path.html".Trim());
 
     [Fact] public void ClearNewLines() {
         var ex = new LocatorActionFailedException(S("//html"), "Click", new Exception("example"));
-        Assert.Equal(ex.Message, @"Action 'Click' failed at element: 'SimpleLocator'
+        Assert.Equal(ex.Message, @"
+Action 'Click' failed at element: 'Locator'
 Locator: //html
-Cause: example");
+Cause: example".Trim());
     }
 }

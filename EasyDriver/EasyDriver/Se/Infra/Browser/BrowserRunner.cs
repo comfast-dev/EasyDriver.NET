@@ -11,19 +11,19 @@ namespace Comfast.EasyDriver.Se.Infra.Browser;
 /// Covers logic of running different browsers.
 /// </summary>
 public class BrowserRunner : IBrowserRunner {
-    private readonly DriverConfig _config;
+    private readonly BrowserConfig _config;
 
-    public BrowserRunner(DriverConfig driverConfig) {
-        _config = driverConfig;
+    public BrowserRunner(BrowserConfig browserConfig) {
+        _config = browserConfig;
     }
 
     /// <summary>
     ///  Run new WebDriver instance
     /// </summary>
     public IWebDriver RunNewBrowser() {
-        AssertFileExists(_config.DriverPath, "DriverConfig.DriverPath");
-        AssertFileExists(_config.BrowserPath, "DriverConfig.BrowserPath");
-        // AssertLocation(_config.DownloadPath, "DriverConfig.DownloadPath");
+        AssertFileExists(_config.DriverPath, "BrowserConfig.DriverPath");
+        AssertFileExists(_config.BrowserPath, "BrowserConfig.BrowserPath");
+        // AssertLocation(_config.DownloadPath, "BrowserConfig.DownloadPath");
         if (_config.ProxyUrl != null) AssertUrl(_config.ProxyUrl, "ProxyUrl");
 
         var browserName = _config.BrowserName;

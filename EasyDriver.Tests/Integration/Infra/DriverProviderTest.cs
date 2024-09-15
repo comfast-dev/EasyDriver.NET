@@ -7,20 +7,19 @@ using FluentAssertions;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using Xunit.Abstractions;
-using Configuration = Comfast.EasyDriver.Configuration;
 
 namespace EasyDriver.Tests.Integration.Infra;
 
 public class DriverProviderTest : IntegrationBase, IDisposable {
     public DriverProviderTest(ITestOutputHelper output, IntegrationFixture fix) : base(output, fix) { }
 
-    private readonly string _driverPath = Configuration.DriverConfig.DriverPath;
-    private readonly string _browserPath = Configuration.DriverConfig.BrowserPath;
+    private readonly string _driverPath = EasyDriverConfig.BrowserConfig.DriverPath;
+    private readonly string _browserPath = EasyDriverConfig.BrowserConfig.BrowserPath;
     private IWebDriver? _currentDriver;
 
     public void Dispose() {
-        Configuration.DriverConfig.DriverPath = _driverPath;
-        Configuration.DriverConfig.BrowserPath = _browserPath;
+        EasyDriverConfig.BrowserConfig.DriverPath = _driverPath;
+        EasyDriverConfig.BrowserConfig.BrowserPath = _browserPath;
         _currentDriver?.Quit();
         _currentDriver?.Dispose();
     }
@@ -28,12 +27,12 @@ public class DriverProviderTest : IntegrationBase, IDisposable {
     // [Fact]
     [Fact(Skip = "Need to run separately")]
     public void ReconnectToSessionTest() {
-        var conf = new DriverConfig {
+        var conf = new BrowserConfig {
             Reconnect = true,
             Headless = true,
             AutoClose = true,
-            BrowserPath = Configuration.DriverConfig.BrowserPath,
-            DriverPath = Configuration.DriverConfig.DriverPath,
+            BrowserPath = EasyDriverConfig.BrowserConfig.BrowserPath,
+            DriverPath = EasyDriverConfig.BrowserConfig.DriverPath,
         };
 
         var driverProvider1 = new DriverProvider(conf);
@@ -53,14 +52,14 @@ public class DriverProviderTest : IntegrationBase, IDisposable {
     [Fact] public void CustomBrowserRunnerTest() {
         //prepare browser
         const string pageTitle = "Lol page";
-        var options = new ChromeOptions { BinaryLocation = Configuration.DriverConfig.BrowserPath };
+        var options = new ChromeOptions { BinaryLocation = EasyDriverConfig.BrowserConfig.BrowserPath };
         options.AddArgument("headless");
-        var myChrome = new ChromeDriver(Configuration.DriverConfig.DriverPath, options);
+        var myChrome = new ChromeDriver(EasyDriverConfig.BrowserConfig.DriverPath, options);
         _browserContent.SetBody($"<h1>{pageTitle}</h1>");
-        Configuration.DriverConfig.AutoClose = true;
+        EasyDriverConfig.BrowserConfig.AutoClose = true;
 
         //set configuration
-        Configuration.SetCustomBrowser(() => myChrome);
+        EasyDriverConfig.SetCustomBrowser(() => myChrome);
 
         //assert
         ShouldHaveText(S("h1"), pageTitle);
@@ -71,7 +70,7 @@ public class DriverProviderTest : IntegrationBase, IDisposable {
     }
 
     // [Fact] public void InvalidBrowserPath() {
-    //     Configuration.DriverConfig.BrowserPath = "lol";
+    //     EasyDriverConfig.BrowserConfig.BrowserPath = "lol";
     //
     //     var action = () => DriverApi.Driver;
     //     action.Should().Throw<Exception>()

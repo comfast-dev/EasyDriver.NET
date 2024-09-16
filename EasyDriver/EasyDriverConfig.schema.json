@@ -1,0 +1,83 @@
+﻿{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "id": "https://raw.githubusercontent.com/comfast-dev/EasyDriver.NET/main/EasyDriver/EasyDriver/EasyDriverConfig.schema.json",
+    "title": "EasyDriver framework configuration",
+    "description": "Configuration file for test projects using EasyDriver",
+    "type": "object",
+    "properties": {
+        "BrowserConfig": {
+            "description": "Options that define way how WebDriver managed browser is created/managed",
+            "type": "object",
+            "properties": {
+                "BrowserName": {
+                    "description":"Used to differentiate which driver to run. e.g. 'chrome'",
+                    "default": "chrome",
+                    "enum": [ "chrome", "chromium", "firefox", "edge" ]
+                },
+                "BrowserPath": {
+                    "description":"Path to browser executable e.g. c:/browsers/myChromium/chrome.exe",
+                    "type": "string"
+                },
+                "DriverPath": {
+                    "description": "Path to driver executable e.g. c:/drivers/chromedriver.exe",
+                    "type": "string"
+                },
+                "Reconnect": {
+                    "description": "If true: Framework will try to reconnect to already running browser",
+                    "default:": false,
+                    "type": "boolean"
+                },
+                "AutoClose": {
+                    "description": "If true - browser will be automatically closed after end of main process. - Effectively after all tests.",
+                    "default:": true,
+                    "type": "boolean"
+                },
+                "Headless": {
+                    "description":"If true - browser will run without UI.",
+                    "default:": false,
+                    "type": "boolean"
+                },
+                "DownloadPath": {
+                    "description":"Where the browser should download files.",
+                    "type": "string"
+                },
+                "ProxyUrl": {
+                    "description": "If set - Proxy will be used while browser creation.",
+                    "type": "string"
+                },
+                "WindowSize": {
+                    "description":"Browser window size in format e.g. 1250x850 | maximized | default",
+                    "type": "string",
+                    "default": "default",
+                    "pattern": "^(\\d+)[ x,-](\\d+)|default|maximized$"
+                }
+            }
+        },
+        "RuntimeConfig": {
+            "description": "Feature flags / timeouts",
+            "type": "object",
+            "properties": {
+                "TimeoutMs": {
+                    "description": "Default timeout used in wait functions.",
+                    "type": "integer"
+                },
+                "PoolingTimeMs": {
+                    "description": "Time between retries during wait methods.",
+                    "type": "integer"
+                },
+                "ShortWaitMs": {
+                    "description": "Default timeout for locating elements.",
+                    "type": "integer"
+                },
+                "HighlightActions": {
+                    "description": "If true - elements will be highlighted before UI actions to indicate them.",
+                    "type": "boolean"
+                },
+                "ExperimentalGetTextUsingJs": {
+                    "description": "Much faster ILocator.Texts implementation. Use one call to Selenium (using JS) to get all texts.",
+                    "type": "boolean"
+                }
+            }
+        }
+    }
+}

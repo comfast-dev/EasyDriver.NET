@@ -1,4 +1,4 @@
-# EasyDriver 
+# EasyDriver
 It is library on top of Selenium WebDriver that that solves common problems and let write short and concise code.
 Main features:
 - Manages browser / WebDriver instances: One thread => one browser
@@ -12,7 +12,7 @@ Main features:
   - Sub-selectors like `S("//table")._s("td.selected")`
 
 ### Locators:
-Main entrypoint is `DriverApi `. 
+Main entrypoint is `DriverApi `.
 ```csharp
 using Comfast.EasyDriver.DriverApi
 ```
@@ -23,7 +23,7 @@ ILocator MyButton = DriverApi.S("css or xpath selector here");
 MyButton.Click();
 var text = MyButton.Text
 
-// there are always option to get native selenium WebElements/WebDriver: 
+// there are always option to get native selenium WebElements/WebDriver:
 IWebDriver driver = DriverApi.GetDriver();
 IWebElement foundButton = MyButton.DoFind();
 ```
@@ -46,7 +46,7 @@ btn.Click(); //this code will find element by CSS selector and click
 class MyForm {
     ILocator nameInput = S("//input[@name='name']");
     ILocator submitBtn = S("button[type=submit]");
-    
+
     public Send(string name) {
         nameInput.SetValue(name);
         submitBtn.Click();
@@ -57,24 +57,22 @@ form.Send("John"); //now all browser actions will be called
 ```
 
 ## Configuration
-Here is example `AppConfig.json` that need to be in project root path:
+Here is example `EasyDriverConfig.json` that need to be in project root path:
 ```json
 {
-  "DriverConfig": {
+  "BrowserConfig": {
     "BrowserPath": "c:\\some\\chromium\\path\\chrome.exe",
     "DriverPath": "c:\\some\\chromedriver\\path\\chromedriver.exe",
     "Reconnect": false,
     "AutoClose": true,
     "Headless": false
   },
-  "LocatorConfig": {
-    "TimeoutMs": 20000,
-    "ShortWaitMs": 3000,
-    "HighlightActions": false
+  "RuntimeConfig": {
+    "TimeoutMs": 20000
   }
 }
 ```
-Where: 
+Where:
 - **Reconnect** - should try to reuse same browser between runs.
 - **AutoClose** - should browser be closed after test run - if you use reconnect, set it to false
 - **Headless** - makes tests faster, but don't show browser UI

@@ -1,4 +1,5 @@
 {
+    "$schema": "https://raw.githubusercontent.com/comfast-dev/EasyDriver.NET/main/EasyDriver/EasyDriver/EasyDriverConfig.schema.json",
     "BrowserConfig": {
         "BrowserName": "chromium",
         "BrowserPath": "C:\\bin\\124\\chromium\\chrome.exe",

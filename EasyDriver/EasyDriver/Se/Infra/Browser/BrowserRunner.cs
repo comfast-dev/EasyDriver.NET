@@ -7,9 +7,7 @@ using OpenQA.Selenium.Firefox;
 
 namespace Comfast.EasyDriver.Se.Infra.Browser;
 
-/// <summary>
-/// Covers logic of running different browsers.
-/// </summary>
+/// <summary> Covers logic of running different browsers.</summary>
 public class BrowserRunner : IBrowserRunner {
     private readonly BrowserConfig _config;
 
@@ -17,9 +15,7 @@ public class BrowserRunner : IBrowserRunner {
         _config = browserConfig;
     }
 
-    /// <summary>
-    ///  Run new WebDriver instance
-    /// </summary>
+    /// <summary>  Run new WebDriver instance</summary>
     public IWebDriver RunNewBrowser() {
         AssertFileExists(_config.DriverPath, "BrowserConfig.DriverPath");
         AssertFileExists(_config.BrowserPath, "BrowserConfig.BrowserPath");
@@ -67,7 +63,8 @@ public class BrowserRunner : IBrowserRunner {
 
         //window size
         var match = ValidateWindowSize();
-        if (match.Value == "default") { } else if (match.Value == "maximized") options.AddArgument("--start-maximized");
+        if (match.Value == "default") { }
+        else if (match.Value == "maximized") options.AddArgument("--start-maximized");
         else options.AddArgument($"--window-size={match.Groups[1]},{match.Groups[2]}");
 
         options.BinaryLocation = _config.BrowserPath;
@@ -87,7 +84,8 @@ public class BrowserRunner : IBrowserRunner {
 
         //window size
         var match = ValidateWindowSize();
-        if (match.Value == "default") { } else if (match.Value == "maximized") options.AddArgument("--start-maximized");
+        if (match.Value == "default") { }
+        else if (match.Value == "maximized") options.AddArgument("--start-maximized");
         else {
             options.AddArgument($"--width={match.Groups[1]}");
             options.AddArgument($"--height={match.Groups[2]}");
@@ -111,21 +109,23 @@ public class BrowserRunner : IBrowserRunner {
 
         //window size
         var match = ValidateWindowSize();
-        if (match.Value == "default") { } else if (match.Value == "maximized") options.AddArgument("--start-maximized");
-        else options.AddArgument($"--window-size={match.Groups[1]},{match.Groups[2]}");
+        if (match.Value == "default") { }
+        else if (match.Value == "maximized") {
+            options.AddArgument("--start-maximized");
+        } else {
+            options.AddArgument($"--window-size={match.Groups[1]},{match.Groups[2]}");
+        }
 
         options.BinaryLocation = _config.BrowserPath;
         return new EdgeDriver(_config.DriverPath, options);
     }
 
-    /// <summary>
-    /// Validate WindowSize variable
-    /// </summary>
+    /// <summary> Validate WindowSize variable</summary>
     /// <returns>validated match</returns>
     private Match ValidateWindowSize() {
         var size = _config.WindowSize;
-        var match = Regex.Match(size ?? "", @"(\d+)x(\d+)|default|maximized");
-        if (!match.Success) throw new($"Invalid ScreenSize='{size}', accept 1234x567 | default | maximized");
+        var match = Regex.Match(size ?? "", @"(\d+)[x- ,](\d+)|default|maximized");
+        if (!match.Success) throw new($"Invalid WindowSize='{size}', accepted are: 1234x567 | default | maximized");
         return match;
     }
 }

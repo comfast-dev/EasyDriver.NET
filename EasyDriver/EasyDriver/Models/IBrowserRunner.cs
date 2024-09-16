@@ -2,9 +2,7 @@
 
 namespace Comfast.EasyDriver.Models;
 
-/// <summary>
-/// Implement it to customize running browser logic
-/// </summary>
+/// <summary> Implement it to customize running browser logic</summary>
 public interface IBrowserRunner {
     /// <summary>
     /// This method will be used to create new Browser when need.

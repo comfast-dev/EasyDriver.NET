@@ -13,7 +13,7 @@ public static class Xpath {
     /// how to use:
     /// string xpath = $"//a[text()={EscapeXpath("It's \"hard\" text to match")}]"
     /// </summary>
-    public static string EscapeXpath(this string text) {
+    public static string EscapeQuotesInXpath(this string text) {
         var parts = text.Split("'");
         if (parts.Length == 1) return $"'{text}'";
         if (!text.Contains('"')) return $"\"{text}\"";

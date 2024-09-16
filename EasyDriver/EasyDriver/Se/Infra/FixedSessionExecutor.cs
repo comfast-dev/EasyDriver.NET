@@ -3,9 +3,7 @@ using OpenQA.Selenium.Remote;
 
 namespace Comfast.EasyDriver.Se.Infra;
 
-/// <summary>
-/// Replace NewSession command with fixed SessionId/Url to trick RemoteWebDriver constructor to reconnect to same browser.
-/// </summary>
+/// <summary> Replace NewSession command with fixed SessionId/Url to trick RemoteWebDriver constructor to reconnect to same browser.</summary>
 internal class FixedSessionExecutor : HttpCommandExecutor {
     private readonly string _sessionId;
 

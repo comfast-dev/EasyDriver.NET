@@ -11,18 +11,14 @@ public static class ReflectionUtils {
     private static BindingFlags _universalFlags = BindingFlags.Public | BindingFlags.NonPublic |
                                                   BindingFlags.Instance | BindingFlags.IgnoreCase;
 
-    /// <summary>
-    /// Copy all fields of object. Not deep copy. Require simple constructor
-    /// </summary>
+    /// <summary> Copy all fields of object. Not deep copy. Require simple constructor</summary>
     public static T Copy<T>(this T from) {
         T to = (T)(Activator.CreateInstance(typeof(T)) ?? throw new Exception("Invalid constructor"));
 
         return to.RewriteFrom(from);
     }
 
-    /// <summary>
-    /// Rewrite all fields from source to target object.
-    /// </summary>
+    /// <summary> Rewrite all fields from source to target object.</summary>
     public static T RewriteFrom<T>(this T target, T source) {
         foreach (var prop in typeof(T).GetProperties(_universalFlags)) {
             prop.SetValue(target, prop.GetValue(source));
@@ -31,18 +27,14 @@ public static class ReflectionUtils {
         return target;
     }
 
-    /// <summary>
-    /// Read any nested any nested private/public Property or Field.
-    /// </summary>
+    /// <summary> Read any nested any nested private/public Property or Field.</summary>
     /// <param name="target">object to get field from</param>
     /// <param name="fieldPath">field name or dotSeparated._nested.Path</param>
     /// <typeparam name="T">field type</typeparam>
     /// <returns>Field value</returns>
     public static T? ReadField<T>(this object target, string fieldPath) => target.ReadField<T>(fieldPath.Split('.'));
 
-    /// <summary>
-    /// Write any nested any nested private/public Property or Field.
-    /// </summary>
+    /// <summary> Write any nested any nested private/public Property or Field.</summary>
     /// <param name="target">object to get field from</param>
     /// <param name="fieldPath">field name or dotSeparated._nested.Path</param>
     /// <param name="valueToSet">Value to be set in field</param>
@@ -74,7 +66,7 @@ public static class ReflectionUtils {
         getOneMember(parent.GetType(), fieldPath.Last()).SetValue(parent, valueToSet);
     }
 
-    public static void SetValue(this MemberInfo memberInfo, object target, object? value) {
+    private static void SetValue(this MemberInfo memberInfo, object target, object? value) {
         switch (memberInfo) {
             case FieldInfo f:
                 f.SetValue(target, value);
@@ -87,7 +79,7 @@ public static class ReflectionUtils {
         }
     }
 
-    public static object? GetValue(this MemberInfo memberInfo, object target) {
+    private static object? GetValue(this MemberInfo memberInfo, object target) {
         return memberInfo switch {
             FieldInfo f => f.GetValue(target),
             PropertyInfo p => p.GetValue(target),

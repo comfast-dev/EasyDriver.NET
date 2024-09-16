@@ -2,9 +2,7 @@
 
 namespace Comfast.EasyDriver.Ui;
 
-/// <summary>
-/// Example implementation of Component
-/// </summary>
+/// <summary> Example implementation of Component</summary>
 public class LinkByHref : BaseComponent {
     private readonly string _href;
 

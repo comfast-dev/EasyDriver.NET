@@ -11,17 +11,13 @@ namespace Comfast.EasyDriver.Se.Infra;
 /// </summary>
 public class DriverProvider : IDriverProvider {
     private readonly ThreadLocal<IWebDriver> _instances;
-    private readonly DriverSessionStore _driverSessionStore = new();
+    private readonly WebDriverSessionStore _webDriverSessionStore = new();
     private readonly BrowserConfig _browserConfig;
 
-    /// <summary>
-    /// Update this field to customize browser creation logic
-    /// </summary>
+    /// <summary> Update this field to customize browser creation logic</summary>
     public IBrowserRunner BrowserRunner { get; set; }
 
-    /// <summary>
-    /// Create new instance based on config.
-    /// </summary>
+    /// <summary> Create new instance based on config.</summary>
     public DriverProvider(BrowserConfig browserConfig) {
         _instances = new ThreadLocal<IWebDriver>(ProvideDriverInstance, true);
         _browserConfig = browserConfig;
@@ -47,19 +43,15 @@ Reconnect feature isn't compatible with parallel runs. Possible solutions:
         return _instances.Value!;
     }
 
-    /// <summary>
-    /// Close all WebDrivers managed by this provider
-    /// </summary>
+    /// <summary> Close all WebDrivers managed by this provider</summary>
     public void CloseAllDrivers() {
         Parallel.ForEach(_instances.Values, driver => driver.Quit());
     }
 
-    /// <summary>
-    /// Run/reconnect to Browser instance
-    /// </summary>
+    /// <summary> Run/reconnect to Browser instance</summary>
     private IWebDriver ProvideDriverInstance() {
         return _browserConfig.Reconnect
-            ? _driverSessionStore.RestoreSessionOrElse(BrowserRunner.RunNewBrowser)
+            ? _webDriverSessionStore.RestoreSessionOrRunNewDriver(BrowserRunner.RunNewBrowser)
             : BrowserRunner.RunNewBrowser();
     }
 }

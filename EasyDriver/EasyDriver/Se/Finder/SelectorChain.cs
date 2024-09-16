@@ -15,9 +15,7 @@
 /// </para>
 /// </summary>
 public class SelectorChain {
-    /// <summary>
-    /// used to separate sub-selectors
-    /// </summary>
+    /// <summary> used to separate sub-selectors</summary>
     public const string SelectorSeparator = " >> ";
 
     private readonly string _selectorString;

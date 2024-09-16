@@ -12,19 +12,13 @@ namespace Comfast.EasyDriver;
 /// Internal fields of BrowserConfig/RuntimeConfig can be edited in runtime.
 /// </summary>
 public static class EasyDriverConfig {
-    /// <summary>
-    /// Options that define way how WebDriver managed browser is created/managed
-    /// </summary>
+    /// <summary> Options that define way how WebDriver managed browser is created/managed</summary>
     public static BrowserConfig BrowserConfig { get; } = new();
 
-    /// <summary>
-    /// Feature flags / timeouts
-    /// </summary>
+    /// <summary> Feature flags / timeouts</summary>
     public static RuntimeConfig RuntimeConfig { get; } = new();
 
-    /// <summary>
-    /// Main logic that manages WebDriver creation
-    /// </summary>
+    /// <summary> Main logic that manages WebDriver creation</summary>
     public static DriverProvider DriverProvider { get; private set; }
 
     static EasyDriverConfig() {
@@ -42,26 +36,13 @@ public static class EasyDriverConfig {
         DriverProvider.BrowserRunner = new SimpleBrowserRunner(runBrowser);
     }
 
-    /// <summary>
-    /// Override DriverProvider including Reconnect, AutoClose and Multi-thread handling.
-    /// Not recommended, suggest to use "SetCustomBrowser" method.
-    /// </summary>
-    public static void SetCustomDriverProvider(DriverProvider driverProvider) {
-        DriverProvider.CloseAllDrivers();
-        DriverProvider = driverProvider;
-    }
-
-    /// <summary>
-    /// Reloads Configuration from given Config file.
-    /// </summary>
+    /// <summary> Reloads Configuration from given Config file.</summary>
     /// <param name="filePath"> e.g. MyAppConfig.json</param>
     public static void ReloadConfig(string filePath) {
         ReloadConfig(new ConfigurationBuilder().AddJsonFile(filePath).Build());
     }
 
-    /// <summary>
-    /// Reloads configuration.
-    /// </summary>
+    /// <summary> Reloads configuration.</summary>
     /// <param name="conf">IConfiguration object</param>
     public static void ReloadConfig(IConfiguration conf) {
         // todo if DriverProvider.Instances.Count > 0 - show warning/throw

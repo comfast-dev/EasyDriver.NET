@@ -3,23 +3,17 @@ using Comfast.EasyDriver.Se.Finder;
 
 namespace Comfast.EasyDriver.Se;
 
-/// <summary>
-/// Provides waiting methods
-/// </summary>
+/// <summary> Provides waiting methods</summary>
 public static class Waiter {
     private static int DefaultTimeoutMs => EasyDriverConfig.RuntimeConfig.TimeoutMs;
     private static int PoolingTimeMs => EasyDriverConfig.RuntimeConfig.PoolingTimeMs;
 
-    /// <summary>
-    /// Wait for any locator. Return index of first found one.
-    /// </summary>
+    /// <summary> Wait for any locator. Return index of first found one.</summary>
     /// <param name="locators">array of locators to check</param>
     /// <returns>index of found locator</returns>
     public static int WaitForAny(params ILocator[] locators) => WaitForAny(null, locators);
 
-    /// <summary>
-    /// Wait for any locator. Return index of first found one.
-    /// </summary>
+    /// <summary> Wait for any locator. Return index of first found one.</summary>
     /// <param name="locators">array of locators to check</param>
     /// <returns>index of found locator</returns>
     /// <param name="timeoutMs">max wait time, null value uses default from Configuration</param>
@@ -37,9 +31,7 @@ public static class Waiter {
         return foundIndex;
     }
 
-    /// <summary>
-    /// Wait until action returns true or non-zero / empty
-    /// </summary>
+    /// <summary> Wait until action returns true or non-zero / empty</summary>
     /// <param name="actionName">for log info</param>
     /// <param name="action">should return true</param>
     /// <param name="timeoutMs">max wait time, null value uses default from Configuration</param>
@@ -69,9 +61,7 @@ public static class Waiter {
     }
 
 
-    /// <summary>
-    /// Wait for page redirections till page is stable for minimum time.
-    /// </summary>
+    /// <summary> Wait for page redirections till page is stable for minimum time.</summary>
     /// <param name="minimumStableTimeMs">Minimum time without redirect or loading state</param>
     /// <param name="timeoutMs">max wait time, null value uses default from Configuration</param>
     public static void WaitForStablePage(int minimumStableTimeMs = 1000, int? timeoutMs = null) {

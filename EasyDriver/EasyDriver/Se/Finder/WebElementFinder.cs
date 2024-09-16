@@ -33,16 +33,12 @@ public class WebElementFinder : IFinder<IWebElement> {
         _locator = locator;
     }
 
-    /// <summary>
-    /// Find first matched element
-    /// </summary>
+    /// <summary> Find first matched element</summary>
     public IWebElement Find() {
         return DoFind(true, _selectors);
     }
 
-    /// <summary>
-    /// Find all matched elements
-    /// </summary>
+    /// <summary> Find all matched elements</summary>
     public IList<IWebElement> FindAll() {
         var selectors = _selectors;
         if (selectors.Length == 0) throw new Exception("Empty chain, require at least 1 item");
@@ -71,9 +67,7 @@ public class WebElementFinder : IFinder<IWebElement> {
         }
     }
 
-    /// <summary>
-    /// Find child of parent element, includes shadow dom
-    /// </summary>
+    /// <summary> Find child of parent element, includes shadow dom</summary>
     private IWebElement FindChild(ISearchContext parent, string selector) {
         By by = String2By(selector, true);
         try {

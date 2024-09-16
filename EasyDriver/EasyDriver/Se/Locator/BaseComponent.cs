@@ -84,7 +84,7 @@ public abstract class BaseComponent : ILocator {
 
     /// <inheritdoc />
     public virtual string[] Texts =>
-        EasyDriverConfig.RuntimeConfig.Experimental.GetTextsUsingJs
+        EasyDriverConfig.RuntimeConfig.ExperimentalGetTextUsingJs
             ? MapUsingJs<string>("return el.innerText").ToArray()
             : Map(el => el.Text).ToArray();
 
@@ -265,9 +265,7 @@ public abstract class BaseComponent : ILocator {
         return this;
     }
 
-    /// <summary>
-    /// Map every found element using JavaScript code.
-    /// </summary>
+    /// <summary> Map every found element using JavaScript code.</summary>
     /// <param name="jsMappingCode"> js code where current element is defined as: 'el'</param>
     /// <typeparam name="T">Return type of js code</typeparam>
     /// <returns>List of all mapped elements</returns>

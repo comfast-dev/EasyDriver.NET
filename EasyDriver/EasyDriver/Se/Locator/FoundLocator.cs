@@ -8,9 +8,7 @@ namespace Comfast.EasyDriver.Se.Locator;
 /// Using this class is faster, but may cause StaleElementReferenceException.
 /// </summary>
 public class FoundLocator : SimpleLocator, IFoundLocator {
-    /// <summary>
-    /// Represent DOM element found in browser
-    /// </summary>
+    /// <summary> Represent DOM element found in browser</summary>
     public IWebElement FoundElement { get; }
 
     public FoundLocator(string selector, string? description, IWebElement foundElement)
@@ -18,8 +16,6 @@ public class FoundLocator : SimpleLocator, IFoundLocator {
         FoundElement = foundElement;
     }
 
-    /// <summary>
-    /// Override DoFind with same instance
-    /// </summary>
+    /// <summary> Override DoFind with same instance</summary>
     public override IWebElement FindElement() => FoundElement;
 }

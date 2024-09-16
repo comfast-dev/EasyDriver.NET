@@ -1,8 +1,6 @@
 namespace Comfast.EasyDriver.Se.Locator;
 
-/// <summary>
-/// Basic locator
-/// </summary>
+/// <summary> Basic locator</summary>
 public class SimpleLocator : BaseComponent {
     /// <inheritdoc />
     public override string Selector { get; }

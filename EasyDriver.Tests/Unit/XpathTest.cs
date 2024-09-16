@@ -13,6 +13,6 @@ public class XpathTest {
     }
 
     private void DoTest(string inputText, string expectedEscapedXpathText) {
-        Assert.Equal(expectedEscapedXpathText, inputText.EscapeXpath());
+        Assert.Equal(expectedEscapedXpathText, inputText.EscapeQuotesInXpath());
     }
 }

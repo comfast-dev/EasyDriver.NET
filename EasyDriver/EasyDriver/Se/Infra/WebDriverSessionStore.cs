@@ -4,27 +4,27 @@ using OpenQA.Selenium.Remote;
 
 namespace Comfast.EasyDriver.Se.Infra;
 
-/// <summary>
-/// Stores WebDriver session in temp file and restores it in new process.
-/// </summary>
-public class DriverSessionStore {
+/// <summary> Stores WebDriver session in temp file and restores it in new process.</summary>
+public class WebDriverSessionStore {
     private const string Separator = "#";
-    private readonly TempFile _sessionTempFile = new("EasyDriver/WebDriverSessionInfo.txt");
+    private readonly string _tempFilePath = Path.Combine(Path.GetTempPath(), "EasyDriver/WebDriverSessionInfo.txt");
 
-    // ReSharper disable once MemberCanBePrivate.Global
-    /// <summary>
-    /// 1. Extract data needed to connect to the browser: SessionId and driver Url
-    /// 2. Store it in temp file.
-    /// </summary>
+    public WebDriverSessionStore() {
+        var dir = Path.GetDirectoryName(_tempFilePath) ?? throw new("Invalid file directory: " + _tempFilePath);
+        if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+        if (!File.Exists(_tempFilePath)) File.Create(_tempFilePath);
+    }
+
+    /// <summary> Extract data: SessionId, DriverUrl needed to connect to the browser in temp file.</summary>
     /// <param name="driver"></param>
     public void StoreSessionInfo(IWebDriver driver) {
         var ssid = driver.ReadField<string>("SessionId.sessionOpaqueKey");
         var uri = driver.ReadField<string>("CommandExecutor.HttpExecutor.remoteServerUri.AbsoluteUri");
-        _sessionTempFile.Write($"{uri}{Separator}{ssid}");
+         File.WriteAllText(_tempFilePath, $"{uri}{Separator}{ssid}");
     }
 
     /// <summary>
-    /// Tries to restore WebDriver session..
+    /// Tries to restore WebDriver session.
     /// It is only possible when:
     /// 1. driver process still running e.g. chromedriver.exe
     /// 2. browser still running
@@ -32,9 +32,9 @@ public class DriverSessionStore {
     /// </summary>
     /// <param name="newDriverProvider">WebDriver provider in case of restore fail</param>
     /// <returns></returns>
-    public IWebDriver RestoreSessionOrElse(Func<IWebDriver> newDriverProvider) {
+    public IWebDriver RestoreSessionOrRunNewDriver(Func<IWebDriver> newDriverProvider) {
         try {
-            var sessionInfo = _sessionTempFile.Read().Split(Separator);
+            var sessionInfo = File.ReadAllText(_tempFilePath).Split(Separator);
             var recreatedDriver = new RemoteWebDriver(
                 new FixedSessionExecutor(sessionInfo[0], sessionInfo[1]),
                 new RemoteSessionSettings());

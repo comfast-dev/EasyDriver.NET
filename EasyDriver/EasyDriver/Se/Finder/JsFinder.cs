@@ -82,9 +82,7 @@ function findAll(cssOrXpathArgs) {
 }
 ";
 
-    /// <summary>
-    /// Find first matched element
-    /// </summary>
+    /// <summary> Find first matched element</summary>
     public IWebElement Find() {
         var result = _jsDriver.ExecuteScript(_js + "return find(arguments)", _selectors);
         if (result is IWebElement foundElement) return foundElement;
@@ -92,9 +90,7 @@ function findAll(cssOrXpathArgs) {
         throw new LocatorNotFoundException(_locator, (int)(long)result);
     }
 
-    /// <summary>
-    /// Find all matched elements
-    /// </summary>
+    /// <summary> Find all matched elements</summary>
     public IList<IWebElement> FindAll() {
         var result = _jsDriver.ExecuteScript(_js + "return findAll(arguments)", _selectors);
         if (result is ReadOnlyCollection<IWebElement> foundElements) return foundElements.ToList();
@@ -102,9 +98,7 @@ function findAll(cssOrXpathArgs) {
         throw new Exception("Internal error: Invalid return from Javascript console. Actual: " + result.GetType().Name);
     }
 
-    /// <summary>
-    /// Executes given JS Code on every result.
-    /// </summary>
+    /// <summary> Executes given JS Code on every result.</summary>
     /// <param name="jsCode">Executes this code on every element, where el is element variable</param>
     /// <typeparam name="T">return type of given function</typeparam>
     /// <returns>Array of results</returns>

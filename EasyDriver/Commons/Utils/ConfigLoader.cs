@@ -3,9 +3,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Comfast.Commons.Utils;
 
-/// <summary>
-/// Reads JSON file and sub objects
-/// </summary>
+/// <summary> Reads JSON file and sub objects</summary>
 public class ConfigLoader {
     public static T Load<T>(string configFilePath, string? configKey) {
         var inputJson = File.ReadAllText(configFilePath);

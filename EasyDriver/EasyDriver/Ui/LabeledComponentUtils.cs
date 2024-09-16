@@ -4,18 +4,12 @@ using Comfast.Commons.Utils;
 
 namespace Comfast.EasyDriver.Ui;
 
-/// <summary>
-/// Extension to recognize elements of type: LabeledComponent
-/// </summary>
+/// <summary> Extension to recognize elements of type: LabeledComponent</summary>
 public static class LabeledComponentUtils {
-    /// <summary>
-    /// Find all components of given type in current page
-    /// </summary>
+    /// <summary> Find all components of given type in current page</summary>
     public static T[] FindAll<T>() where T : LabeledComponent => (T[])FindAll(typeof(T));
 
-    /// <summary>
-    /// Find all components of given type in current page
-    /// </summary>
+    /// <summary> Find all components of given type in current page</summary>
     public static LabeledComponent[] FindAll(Type type) =>
         CreateInstance(type, "").AllLabels
             .Where(label => label.Trim().Length > 0)
@@ -23,9 +17,7 @@ public static class LabeledComponentUtils {
             .Where(el => el.IsDisplayed)
             .ToArray();
 
-    /// <summary>
-    /// Recognize given elements by highlighting them and prepare console summary.
-    /// </summary>
+    /// <summary> Recognize given elements by highlighting them and prepare console summary.</summary>
     /// <param name="types">List of LabeledComponent types to recognize.</param>
     /// <returns>string summary for print in console</returns>
     public static string RecognizeTypes(params Type[] types) {
@@ -43,9 +35,7 @@ public static class LabeledComponentUtils {
         return str.ToString();
     }
 
-    /// <summary>
-    /// Recognize all elements of LabeledComponent type
-    /// </summary>
+    /// <summary> Recognize all elements of LabeledComponent type</summary>
     /// <param name="type">LabeledComponent type</param>
     /// <param name="highlightColor">if set - add border in this color to component</param>
     /// <returns>string summary for print in console</returns>

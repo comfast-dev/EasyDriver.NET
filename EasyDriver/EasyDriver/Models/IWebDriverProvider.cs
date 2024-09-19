@@ -3,7 +3,7 @@
 namespace Comfast.EasyDriver.Models;
 
 /// <summary> Implement this interface and put in Configuration to control WebDriver creation.</summary>
-public interface IDriverProvider {
+public interface IWebDriverProvider {
     /// <summary> Return WebDriver instance. Can be called many times. </summary>
     IWebDriver GetDriver();
 }

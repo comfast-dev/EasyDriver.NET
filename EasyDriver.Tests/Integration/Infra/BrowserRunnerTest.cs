@@ -12,9 +12,9 @@ public class BrowserRunnerTest : IntegrationBase, IDisposable {
     private IWebDriver? _currentDriver;
     public BrowserRunnerTest(ITestOutputHelper output, IntegrationFixture fix) : base(output, fix) { }
 
-    [Fact] void ScreenSizeTest() {
+    [Fact] void WindowSizeTest() {
         //given
-        var conf = EasyDriverConfig.BrowserConfig.Copy();
+        var conf = Configuration.BrowserConfig.Copy();
         int width = 888;
         int height = 444;
         conf.WindowSize = $"{width}x{height}";
@@ -26,9 +26,9 @@ public class BrowserRunnerTest : IntegrationBase, IDisposable {
         ShouldEqual(actualSize.Width, width);
     }
 
-    [Fact] void ScreenMaximizedTest() {
+    [Fact] void WindowMaximizedTest() {
         //given
-        var conf = EasyDriverConfig.BrowserConfig.Copy();
+        var conf = Configuration.BrowserConfig.Copy();
         conf.WindowSize = "maximized";
         _currentDriver = new BrowserRunner(conf).RunNewBrowser();
 
@@ -42,21 +42,21 @@ public class BrowserRunnerTest : IntegrationBase, IDisposable {
 
     [Fact] void ScreenSizeInvalidTest() {
         //given
-        var conf = EasyDriverConfig.BrowserConfig.Copy();
+        var conf = Configuration.BrowserConfig.Copy();
         var runner = new BrowserRunner(conf);
 
         conf.WindowSize = "xd";
         ShouldThrow(() => runner.RunNewBrowser(),
-            "Invalid ScreenSize='xd', accept 1234x567 | default | maximized");
+            "Invalid WindowSize='xd', accepted are: 1234x567 | default | maximized");
 
-        conf.WindowSize = "123,456";
-        ShouldThrow(() => runner.RunNewBrowser(), $"Invalid ScreenSize='{conf.WindowSize}'");
+        conf.WindowSize = "123lol456";
+        ShouldThrow(() => runner.RunNewBrowser(), $"Invalid WindowSize='{conf.WindowSize}'");
 
         conf.WindowSize = "";
-        ShouldThrow(() => runner.RunNewBrowser(), $"Invalid ScreenSize='{conf.WindowSize}'");
+        ShouldThrow(() => runner.RunNewBrowser(), $"Invalid WindowSize='{conf.WindowSize}'");
 
         conf.WindowSize = null!;
-        ShouldThrow(() => runner.RunNewBrowser(), $"Invalid ScreenSize='{conf.WindowSize}'");
+        ShouldThrow(() => runner.RunNewBrowser(), $"Invalid WindowSize='{conf.WindowSize}'");
     }
 
     // [Fact]
@@ -65,7 +65,7 @@ public class BrowserRunnerTest : IntegrationBase, IDisposable {
         // find some proxy here https://free-proxy-list.net/
         Uri proxyUrl = new Uri("http://155.94.241.134:3128");
 
-        var conf = EasyDriverConfig.BrowserConfig;
+        var conf = Configuration.BrowserConfig.Copy();
         conf.Headless = false;
         conf.ProxyUrl = proxyUrl.OriginalString;
 

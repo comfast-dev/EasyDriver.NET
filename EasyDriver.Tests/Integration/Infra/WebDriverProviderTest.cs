@@ -10,16 +10,16 @@ using Xunit.Abstractions;
 
 namespace EasyDriver.Tests.Integration.Infra;
 
-public class DriverProviderTest : IntegrationBase, IDisposable {
-    public DriverProviderTest(ITestOutputHelper output, IntegrationFixture fix) : base(output, fix) { }
+public class WebDriverProviderTest : IntegrationBase, IDisposable {
+    public WebDriverProviderTest(ITestOutputHelper output, IntegrationFixture fix) : base(output, fix) { }
 
-    private readonly string _driverPath = EasyDriverConfig.BrowserConfig.DriverPath;
-    private readonly string _browserPath = EasyDriverConfig.BrowserConfig.BrowserPath;
+    private readonly string _driverPath = Configuration.BrowserConfig.DriverPath;
+    private readonly string _browserPath = Configuration.BrowserConfig.BrowserPath;
     private IWebDriver? _currentDriver;
 
     public void Dispose() {
-        EasyDriverConfig.BrowserConfig.DriverPath = _driverPath;
-        EasyDriverConfig.BrowserConfig.BrowserPath = _browserPath;
+        Configuration.BrowserConfig.DriverPath = _driverPath;
+        Configuration.BrowserConfig.BrowserPath = _browserPath;
         _currentDriver?.Quit();
         _currentDriver?.Dispose();
     }
@@ -31,18 +31,18 @@ public class DriverProviderTest : IntegrationBase, IDisposable {
             Reconnect = true,
             Headless = true,
             AutoClose = true,
-            BrowserPath = EasyDriverConfig.BrowserConfig.BrowserPath,
-            DriverPath = EasyDriverConfig.BrowserConfig.DriverPath,
+            BrowserPath = Configuration.BrowserConfig.BrowserPath,
+            DriverPath = Configuration.BrowserConfig.DriverPath,
         };
 
-        var driverProvider1 = new DriverProvider(conf);
+        var driverProvider1 = new WebDriverProvider(conf);
         var driver1 = driverProvider1.GetDriver();
         _currentDriver = driver1;
         var originalTitle = driver1.Title;
         var sessionId = driver1.ReadField<string>("SessionId.sessionOpaqueKey");
 
         // simulates new Process trying to reconnect to the same driver
-        var driverProvider2 = new DriverProvider(conf);
+        var driverProvider2 = new WebDriverProvider(conf);
         var driver2 = driverProvider2.GetDriver();
 
         driver2.Title.Should().Be(originalTitle);
@@ -52,14 +52,14 @@ public class DriverProviderTest : IntegrationBase, IDisposable {
     [Fact] public void CustomBrowserRunnerTest() {
         //prepare browser
         const string pageTitle = "Lol page";
-        var options = new ChromeOptions { BinaryLocation = EasyDriverConfig.BrowserConfig.BrowserPath };
+        var options = new ChromeOptions { BinaryLocation = Configuration.BrowserConfig.BrowserPath };
         options.AddArgument("headless");
-        var myChrome = new ChromeDriver(EasyDriverConfig.BrowserConfig.DriverPath, options);
+        var myChrome = new ChromeDriver(Configuration.BrowserConfig.DriverPath, options);
         _browserContent.SetBody($"<h1>{pageTitle}</h1>");
-        EasyDriverConfig.BrowserConfig.AutoClose = true;
+        Configuration.BrowserConfig.AutoClose = true;
 
         //set configuration
-        EasyDriverConfig.SetCustomBrowser(() => myChrome);
+        DriverProvider.SetCustomBrowser(() => myChrome);
 
         //assert
         ShouldHaveText(S("h1"), pageTitle);
@@ -69,11 +69,12 @@ public class DriverProviderTest : IntegrationBase, IDisposable {
         myChrome.Dispose();
     }
 
-    // [Fact] public void InvalidBrowserPath() {
-    //     EasyDriverConfig.BrowserConfig.BrowserPath = "lol";
-    //
-    //     var action = () => DriverApi.Driver;
-    //     action.Should().Throw<Exception>()
-    //         .WithMessage("unknown error: no chrome binary at lol");
-    // }
+    [Fact] public void InvalidBrowserPath() {
+        var conf = Configuration.BrowserConfig.Copy();
+        conf.BrowserPath = "xd";
+
+        var provider = new WebDriverProvider(conf);
+
+        ShouldThrow(() => provider.GetDriver(), "Not found file path:" );
+    }
 }

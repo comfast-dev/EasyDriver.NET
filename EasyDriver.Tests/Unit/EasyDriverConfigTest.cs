@@ -2,6 +2,6 @@
 
 public class EasyDriverConfigTest {
     [Fact] void ReadConfigTest() {
-        EasyDriverConfig.ReloadConfig("EasyDriverConfig.json");
+        Configuration.ReloadConfig("EasyDriverConfig.json");
     }
 }

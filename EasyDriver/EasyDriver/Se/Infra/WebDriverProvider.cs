@@ -9,30 +9,25 @@ namespace Comfast.EasyDriver.Se.Infra;
 /// - reconnect - try to recreate driver based on previous session<br/>
 /// - autoClose - close browser after process exit
 /// </summary>
-public class DriverProvider : IDriverProvider {
+public class WebDriverProvider : IWebDriverProvider {
     private readonly ThreadLocal<IWebDriver> _instances;
-    private readonly WebDriverSessionStore _webDriverSessionStore = new();
+    private readonly WebDriverSessionStore _webDriverSessionStore;
     private readonly BrowserConfig _browserConfig;
-
-    /// <summary> Update this field to customize browser creation logic</summary>
-    public IBrowserRunner BrowserRunner { get; set; }
+    private IBrowserRunner _browserRunner;
 
     /// <summary> Create new instance based on config.</summary>
-    public DriverProvider(BrowserConfig browserConfig) {
+    public WebDriverProvider(BrowserConfig browserConfig) {
         _instances = new ThreadLocal<IWebDriver>(ProvideDriverInstance, true);
+        _webDriverSessionStore = new();
         _browserConfig = browserConfig;
-        BrowserRunner = new BrowserRunner(browserConfig);
+        _browserRunner = new BrowserRunner(browserConfig);
 
         AppDomain.CurrentDomain.ProcessExit += (s, e) => {
             if (_browserConfig.AutoClose) CloseAllDrivers();
         };
     }
 
-    /// <summary>
-    /// Provide WebDriver Instance.<br/>
-    /// - One per thread.<br/>
-    /// - Can be called multiple times.
-    /// </summary>
+    /// <summary> Provide WebDriver instance </summary>
     public IWebDriver GetDriver() {
         //@formatter:off
         if (_browserConfig.Reconnect && _instances.Values.Count > 1) throw new Exception(@"
@@ -48,10 +43,20 @@ Reconnect feature isn't compatible with parallel runs. Possible solutions:
         Parallel.ForEach(_instances.Values, driver => driver.Quit());
     }
 
+    /// <summary>
+    /// Overrides how WebDriver is created.
+    /// Doesn't affect to Reconnect, AutoClose and Multi-thread functionalities.
+    /// Given function "runBrowser" will be called once to create WebDriver per every thread
+    /// </summary>
+    /// <param name="runBrowser">Function that will run browser e.g. () => new ChromeDriver(myOptions)</param>
+    public void SetCustomBrowser(Func<IWebDriver> runBrowser) {
+        _browserRunner = new SimpleBrowserRunner(runBrowser);
+    }
+
     /// <summary> Run/reconnect to Browser instance</summary>
     private IWebDriver ProvideDriverInstance() {
         return _browserConfig.Reconnect
-            ? _webDriverSessionStore.RestoreSessionOrRunNewDriver(BrowserRunner.RunNewBrowser)
-            : BrowserRunner.RunNewBrowser();
+            ? _webDriverSessionStore.RestoreSessionOrRunNewDriver(_browserRunner.RunNewBrowser)
+            : _browserRunner.RunNewBrowser();
     }
 }

@@ -15,11 +15,11 @@ public static class ReflectionUtils {
     public static T Copy<T>(this T from) {
         T to = (T)(Activator.CreateInstance(typeof(T)) ?? throw new Exception("Invalid constructor"));
 
-        return to.RewriteFrom(from);
+        return to.RewriteAllFieldsFrom(from);
     }
 
     /// <summary> Rewrite all fields from source to target object.</summary>
-    public static T RewriteFrom<T>(this T target, T source) {
+    public static T RewriteAllFieldsFrom<T>(this T target, T source) {
         foreach (var prop in typeof(T).GetProperties(_universalFlags)) {
             prop.SetValue(target, prop.GetValue(source));
         }

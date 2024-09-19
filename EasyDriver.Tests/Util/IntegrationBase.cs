@@ -27,8 +27,8 @@ public class IntegrationFixture : IDisposable {
 
     //After all hook
     public void Dispose() {
-        if (!EasyDriverConfig.BrowserConfig.Reconnect) {
-            EasyDriverConfig.DriverProvider.CloseAllDrivers();
+        if (!Configuration.BrowserConfig.Reconnect) {
+            DriverProvider.CloseAllDrivers();
         }
     }
 }

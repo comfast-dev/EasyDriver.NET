@@ -84,7 +84,7 @@ public abstract class BaseComponent : ILocator {
 
     /// <inheritdoc />
     public virtual string[] Texts =>
-        EasyDriverConfig.RuntimeConfig.ExperimentalGetTextUsingJs
+        Configuration.RuntimeConfig.ExperimentalGetTextUsingJs
             ? MapUsingJs<string>("return el.innerText").ToArray()
             : Map(el => el.Text).ToArray();
 
@@ -303,7 +303,7 @@ public abstract class BaseComponent : ILocator {
     private JsFinder JsFinder => new(GetDriver(), this);
 
     private void HighlightIfEnabled() {
-        if (EasyDriverConfig.RuntimeConfig.HighlightActions) {
+        if (Configuration.RuntimeConfig.HighlightActions) {
             var found = TryFind();
             if (found != null) found.Highlight();
         }

@@ -5,12 +5,18 @@ namespace EasyDriver.Tests.Util;
 
 public static class Assertions {
     public static void ShouldThrow(Action func, string expectedErrorMessage) {
-        func.Should().Throw<Exception>()
-            .Where(e => e.Message.Contains(expectedErrorMessage));
+        var ex = func.Should().Throw<Exception>().Which;
+        Assert.Contains(expectedErrorMessage, ex.Message);
     }
+
     public static void ShouldThrow<T>(Func<T> func, string expectedErrorMessage) {
-        func.Should().Throw<Exception>()
-            .Where(e => e.Message.Contains(expectedErrorMessage));
+        var ex = func.Should().Throw<Exception>().Which;
+        Assert.Contains(expectedErrorMessage, ex.Message);
+    }
+
+    public static void ShouldThrowEquals<T>(Func<T> func, string expectedErrorMessage) {
+        var ex = func.Should().Throw<Exception>().Which;
+        Assert.Equal(expectedErrorMessage, ex.Message);
     }
 
     public static void ShouldNotThrow<T>(Func<T> func) {
@@ -18,17 +24,15 @@ public static class Assertions {
     }
 
     public static void ShouldHaveValue(ILocator locator, string expectedValue) {
-        var value = locator.GetAttribute("value");
-        if (expectedValue.Length == 0) value.Should().BeEmpty();
-        else value.Should().Match(expectedValue);
+        Assert.Equal(expectedValue, locator.GetAttribute("value"));
     }
 
     public static void ShouldHaveText(ILocator locator, string expectedText) {
-        locator.Text.Should().Match(expectedText);
+        Assert.Equal(expectedText, locator.Text);
     }
 
     public static void ShouldFindCount(ILocator locator, int expectedCount) {
-        locator.Count.Should().Be(expectedCount);
+        Assert.Equal(expectedCount, locator.Count);
     }
 
     public static void ShouldNotFind(ILocator locator) {
@@ -36,7 +40,7 @@ public static class Assertions {
     }
 
     public static void ShouldEqual(object actual, object expected) {
-        actual.Should().Be(expected);
+        Assert.Equal(expected, actual);
     }
 
     public static double ShouldEndInTime(Action func, int minTimeMs, int maxTimeMs) {

@@ -124,7 +124,7 @@ public class BrowserRunner : IBrowserRunner {
     /// <returns>validated match</returns>
     private Match ValidateWindowSize() {
         var size = _config.WindowSize;
-        var match = Regex.Match(size ?? "", @"(\d+)[x- ,](\d+)|default|maximized");
+        var match = Regex.Match(size ?? "", @"(\d+)[x\- ,](\d+)|default|maximized");
         if (!match.Success) throw new($"Invalid WindowSize='{size}', accepted are: 1234x567 | default | maximized");
         return match;
     }

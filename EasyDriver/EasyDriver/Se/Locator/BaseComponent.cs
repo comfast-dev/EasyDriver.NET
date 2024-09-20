@@ -37,45 +37,45 @@ public abstract class BaseComponent : ILocator {
     }
 
     /// <inheritdoc />
-    public virtual IWebElement FindElement() {
+    public virtual IWebElement FindElement() => CallAction("FindElement", () => {
         return WebElementFinder.Find();
-    }
+    });
 
     /// <inheritdoc />
-    public virtual IList<IWebElement> FindElements() {
+    public virtual IList<IWebElement> FindElements() => CallAction("FindElements", () => {
         return WebElementFinder.FindAll();
-    }
+    });
 
     /// <inheritdoc />
-    public virtual IFoundLocator Find() {
+    public virtual IFoundLocator Find() => CallAction("Find", () => {
         return new FoundLocator(CssOrXpath, Description, FindElement());
-    }
+    });
 
     /// <inheritdoc />
-    public virtual IList<IFoundLocator> FindAll() {
+    public virtual IList<IFoundLocator> FindAll() => CallAction("FindAll", () => {
         return FindElements()
             .Select(webEl => (IFoundLocator)new FoundLocator(CssOrXpath, Description, webEl))
             .ToList();
-    }
+    });
 
     /// <inheritdoc />
-    public virtual IFoundLocator? TryFind() {
+    public virtual IFoundLocator? TryFind() => CallAction("TryFind", () => {
         try {
             return Find();
         } catch (Exception) {
             return null;
         }
-    }
+    });
 
     /// <inheritdoc />
-    public virtual IFoundLocator Nth(int number) {
+    public virtual IFoundLocator Nth(int number) => CallAction("Nth", () => {
         if (number < 1) throw new Exception($"Invalid number: {number}. Nth is indexed from 1");
         var all = FindElements();
         if (all.Count < number)
             throw new Exception($"Not found element #{number}. There are {all.Count} matched by:\n{CssOrXpath}");
 
         return new FoundLocator(CssOrXpath, Description, all[number - 1]);
-    }
+    });
 
     /// <inheritdoc />
     public virtual string Text => ExecuteJs<string>("return el.innerText");
@@ -113,41 +113,41 @@ public abstract class BaseComponent : ILocator {
         ?? throw new("Fatal error: field elementId is null");
 
     /// <inheritdoc />
-    public virtual bool HasClass(string cssClass) {
+    public virtual bool HasClass(string cssClass) => CallAction("HasClass", () => {
         return GetAttribute("class").Split(" ").Contains(cssClass);
-    }
+    });
 
     /// <inheritdoc />
-    public virtual string GetCssValue(string cssPropertyName) {
+    public virtual string GetCssValue(string cssPropertyName) => CallAction("GetCssValue", () => {
         return FindElement().GetCssValue(cssPropertyName);
-    }
+    });
 
     /// <inheritdoc />
-    public virtual string GetAttribute(string name) {
+    public virtual string GetAttribute(string name) => CallAction("GetAttribute", () => {
         return FindElement().GetAttribute(name);
-    }
+    });
 
     /// <inheritdoc />
-    public bool HasAttribute(string name) {
+    public virtual bool HasAttribute(string name) => CallAction("HasAttribute", () => {
         return FindElement().GetAttribute(name) != null;
-    }
+    });
 
     /// <inheritdoc />
-    public virtual ILocator Click() {
+    public virtual ILocator Click() => CallAction("Click", () => {
         HighlightIfEnabled();
         FindElement().Click();
         return this;
-    }
+    });
 
     /// <inheritdoc />
-    public virtual ILocator SendKeys(string text) {
+    public virtual ILocator SendKeys(string text) => CallAction("SendKeys", () => {
         HighlightIfEnabled();
         FindElement().SendKeys(text);
         return this;
-    }
+    });
 
     /// <inheritdoc />
-    public virtual ILocator SetValue(string text) {
+    public virtual ILocator SetValue(string text) => CallAction("SetValue", () => {
         var found = FindElement();
         var tag = found.TagName;
         if (tag != "input" && tag != "textarea")
@@ -158,42 +158,42 @@ public abstract class BaseComponent : ILocator {
         el.Clear();
         el.SendKeys(text);
         return this;
-    }
+    });
 
     /// <inheritdoc />
-    public virtual ILocator Highlight(string cssColor = "red") {
+    public virtual ILocator Highlight(string cssColor = "red") => CallAction("Highlight", () => {
         ExecuteJs($"el.style.border = '2px solid {cssColor}'");
         return this;
-    }
+    });
 
     /// <inheritdoc />
-    public virtual ILocator Hover() {
+    public virtual ILocator Hover() => CallAction("Hover", () => {
         HighlightIfEnabled();
         new Actions(GetDriver()).MoveToElement(FindElement()).Perform();
         return this;
-    }
+    });
 
     /// <inheritdoc />
-    public virtual ILocator Focus() {
+    public virtual ILocator Focus() => CallAction("Focus", () => {
         HighlightIfEnabled();
         ExecuteJs("el.focus()");
         return this;
-    }
+    });
 
     /// <inheritdoc />
-    public virtual ILocator Clear() {
+    public virtual ILocator Clear() => CallAction("Clear", () => {
         HighlightIfEnabled();
         FindElement().Clear();
         return this;
-    }
+    });
 
     /// <inheritdoc />
-    public ILocator ScrollIntoView() {
+    public virtual ILocator ScrollIntoView() => CallAction("ScrollIntoView", () => {
         return ExecuteJs("el.scrollIntoView({behavior: 'smooth'})");
-    }
+    });
 
     /// <inheritdoc />
-    public virtual ILocator DragTo(ILocator target) {
+    public virtual ILocator DragTo(ILocator target) => CallAction("DragTo", () => {
         HighlightIfEnabled();
         IWebElement targetEl = target.FindElement();
         ExecuteJs(ReadJsFile("dragAndDrop.js") + "executeDragAndDrop(el, arguments[0])", targetEl);
@@ -201,43 +201,43 @@ public abstract class BaseComponent : ILocator {
         return this;
 // Selenium native implementation (causes problems)
 // new Actions(getDriver()).dragAndDrop(find(), targetEl).perform();
-    }
+    });
 
     /// <inheritdoc />
-    public ILocator ExecuteJs(string jsCode, params object[] jsArgs) {
+    public virtual ILocator ExecuteJs(string jsCode, params object[] jsArgs) => CallAction("ExecuteJs", () => {
         var jsDriver = (IJavaScriptExecutor)GetDriver();
 
         jsArgs = new List<object>(jsArgs) { FindElement() }.ToArray();
         jsDriver.ExecuteScript($"const el = arguments[{jsArgs.Length - 1}];{jsCode}", jsArgs);
         return this;
-    }
+    });
 
     /// <inheritdoc />
-    public TReturnType ExecuteJs<TReturnType>(string jsCode, params object[] jsArgs) {
-        var jsDriver = (IJavaScriptExecutor)GetDriver();
+    public virtual TReturnType ExecuteJs<TReturnType>(string jsCode, params object[] jsArgs) => CallAction("ExecuteJs", () => {
+            var jsDriver = (IJavaScriptExecutor)GetDriver();
 
-        // add return statement for trivial scripts if it's missing e.g. "el.value" => "return el.value"
-        if (!Regex.IsMatch(jsCode, @"(\n|;|return|}|{)")) {
-            jsCode = "return " + jsCode;
-        }
+            // add return statement for trivial scripts if it's missing e.g. "el.value" => "return el.value"
+            if (!Regex.IsMatch(jsCode, @"(\n|;|return|}|{)")) {
+                jsCode = "return " + jsCode;
+            }
 
-        jsArgs = new List<object>(jsArgs) { FindElement() }.ToArray();
-        var result = jsDriver.ExecuteScript($"const el = arguments[{jsArgs.Length - 1}];{jsCode}", jsArgs);
-        return (TReturnType)result;
-    }
+            jsArgs = new List<object>(jsArgs) { FindElement() }.ToArray();
+            var result = jsDriver.ExecuteScript($"const el = arguments[{jsArgs.Length - 1}];{jsCode}", jsArgs);
+            return (TReturnType)result;
+        });
 
     /// <inheritdoc />
-    public ILocator WaitFor(int? timeoutMs = null, bool throwIfFail = true) {
+    public virtual ILocator WaitFor(int? timeoutMs = null, bool throwIfFail = true) => CallAction<ILocator>("WaitFor", () => {
         try {
             return Waiter.WaitFor("Element exist.", Find, timeoutMs);
         } catch (Exception) {
             if (throwIfFail) throw;
             return this;
         }
-    }
+    });
 
     /// <inheritdoc />
-    public virtual ILocator WaitForAppear(int? timeoutMs = null, bool throwIfFail = true) {
+    public virtual ILocator WaitForAppear(int? timeoutMs = null, bool throwIfFail = true) => CallAction("WaitForAppear", () => {
         try {
             Waiter.WaitFor($"Element appear: \n{CssOrXpath}", () => Find().IsDisplayed, timeoutMs);
         } catch (Exception) {
@@ -245,34 +245,34 @@ public abstract class BaseComponent : ILocator {
         }
 
         return this;
-    }
+    });
 
     /// <inheritdoc />
-    public virtual ILocator WaitForDisappear(int? timeoutMs = null) {
+    public virtual ILocator WaitForDisappear(int? timeoutMs = null) => CallAction("WaitForDisappear", () => {
         Waiter.WaitFor($"Element disappear: \n{CssOrXpath}",
             () => !IsDisplayed,
             timeoutMs);
         return this;
-    }
+    });
 
     /// <inheritdoc />
-    public ILocator WaitForReload(Action? actionThatTriggerReload = null, int? timeoutMs = null) {
+    public virtual ILocator WaitForReload(Action? actionThatTriggerReload = null, int? timeoutMs = null) => CallAction("WaitForReload", () => {
         var beforeDomId = DomId;
         if(actionThatTriggerReload != null) actionThatTriggerReload.Invoke();
         Waiter.WaitFor("Reload element: " + CssOrXpath, () => DomId != beforeDomId, timeoutMs);
         return this;
-    }
+    });
 
     /// <summary> Map every found element using JavaScript code.</summary>
     /// <param name="jsMappingCode"> js code where current element is defined as: 'el'</param>
     /// <typeparam name="T">Return type of js code</typeparam>
     /// <returns>List of all mapped elements</returns>
-    public virtual IList<T> MapUsingJs<T>(string jsMappingCode) {
+    public virtual IList<T> MapUsingJs<T>(string jsMappingCode) => CallAction("ExecuteJs", () =>  {
         return JsFinder.FindAllAndMap<T>(jsMappingCode);
-    }
+    });
 
     /// <inheritdoc />
-    public virtual List<T> Map<T>(Func<IFoundLocator, T> func) {
+    public virtual List<T> Map<T>(Func<IFoundLocator, T> func)  => CallAction("ExecuteJs", () => {
         var elements = FindAll().ToList();
         var results = new List<T>();
 
@@ -288,6 +288,12 @@ public abstract class BaseComponent : ILocator {
         }
 
         return results;
+    });
+
+    private T CallAction<T>(string actionName, Func<T> func) {
+        //beforeActionhook
+        return func.Invoke();
+        //afterActionHook
     }
 
     /// <inheritdoc />

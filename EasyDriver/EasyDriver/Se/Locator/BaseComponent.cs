@@ -16,18 +16,16 @@ namespace Comfast.EasyDriver.Se.Locator;
 /// </summary>
 public abstract class BaseComponent : ILocator {
     /// <summary>
-    /// Css / Xpath selector<br/>
-    /// or <i>Selector >> SubSelector >> ...</i> chain delimited with ' >> '
-    ///
+    /// Css / Xpath / both delimited by ' >> '<br/>
     /// <example><code>
     /// XPATH: "//input[@name='user']"
     /// CSS: "form.focused"
-    /// CHAIN: "form.focused >> //input[@name='user'] >> //span"
+    /// BOTH: "form.focused >> //input[@name='user'] >> //span"
     /// </code></example>
     /// </summary>
-    public abstract string Selector { get; }
+    public abstract string CssOrXpath { get; }
 
-    /// <inheritdoc />
+    /// <summary> Optional metadata, used in logs and error messages. </summary>
     public abstract string Description { get; }
 
     /// <inheritdoc />
@@ -35,7 +33,7 @@ public abstract class BaseComponent : ILocator {
 
     /// <inheritdoc />
     public ILocator SubLocator(string cssOrXpath, string? description) {
-        return new SimpleLocator(Selector + SelectorChain.SelectorSeparator + cssOrXpath, description);
+        return new SimpleLocator(CssOrXpath + SelectorChain.SelectorSeparator + cssOrXpath, description);
     }
 
     /// <inheritdoc />
@@ -50,13 +48,13 @@ public abstract class BaseComponent : ILocator {
 
     /// <inheritdoc />
     public virtual IFoundLocator Find() {
-        return new FoundLocator(Selector, Description, FindElement());
+        return new FoundLocator(CssOrXpath, Description, FindElement());
     }
 
     /// <inheritdoc />
     public virtual IList<IFoundLocator> FindAll() {
         return FindElements()
-            .Select(webEl => (IFoundLocator)new FoundLocator(Selector, Description, webEl))
+            .Select(webEl => (IFoundLocator)new FoundLocator(CssOrXpath, Description, webEl))
             .ToList();
     }
 
@@ -74,9 +72,9 @@ public abstract class BaseComponent : ILocator {
         if (number < 1) throw new Exception($"Invalid number: {number}. Nth is indexed from 1");
         var all = FindElements();
         if (all.Count < number)
-            throw new Exception($"Not found element #{number}. There are {all.Count} matched by:\n{Selector}");
+            throw new Exception($"Not found element #{number}. There are {all.Count} matched by:\n{CssOrXpath}");
 
-        return new FoundLocator(Selector, Description, all[number - 1]);
+        return new FoundLocator(CssOrXpath, Description, all[number - 1]);
     }
 
     /// <inheritdoc />
@@ -241,7 +239,7 @@ public abstract class BaseComponent : ILocator {
     /// <inheritdoc />
     public virtual ILocator WaitForAppear(int? timeoutMs = null, bool throwIfFail = true) {
         try {
-            Waiter.WaitFor($"Element appear: \n{Selector}", () => Find().IsDisplayed, timeoutMs);
+            Waiter.WaitFor($"Element appear: \n{CssOrXpath}", () => Find().IsDisplayed, timeoutMs);
         } catch (Exception) {
             if (throwIfFail) throw;
         }
@@ -251,7 +249,7 @@ public abstract class BaseComponent : ILocator {
 
     /// <inheritdoc />
     public virtual ILocator WaitForDisappear(int? timeoutMs = null) {
-        Waiter.WaitFor($"Element disappear: \n{Selector}",
+        Waiter.WaitFor($"Element disappear: \n{CssOrXpath}",
             () => !IsDisplayed,
             timeoutMs);
         return this;
@@ -261,7 +259,7 @@ public abstract class BaseComponent : ILocator {
     public ILocator WaitForReload(Action? actionThatTriggerReload = null, int? timeoutMs = null) {
         var beforeDomId = DomId;
         if(actionThatTriggerReload != null) actionThatTriggerReload.Invoke();
-        Waiter.WaitFor("Reload element: " + Selector, () => DomId != beforeDomId, timeoutMs);
+        Waiter.WaitFor("Reload element: " + CssOrXpath, () => DomId != beforeDomId, timeoutMs);
         return this;
     }
 

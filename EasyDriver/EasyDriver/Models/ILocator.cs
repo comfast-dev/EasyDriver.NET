@@ -15,13 +15,13 @@ public interface ILocator {
     public ILocator SubLocator(string cssOrXpath, string? description = null);
 
     /// <summary> Element selector</summary>
-    public string Selector { get; }
+    public string CssOrXpath { get; }
 
     /// <summary> Element description (as metadata used for error messages and logs)</summary>
     public string Description { get; }
 
     /// <summary> Get SelectorChain component</summary>
-    public SelectorChain SelectorChain => new(Selector);
+    public SelectorChain SelectorChain => new(CssOrXpath);
 
     /// <summary> Element text</summary>
     public string Text { get; }

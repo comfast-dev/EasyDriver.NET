@@ -6,7 +6,7 @@ namespace Comfast.EasyDriver.Ui;
 public class LinkByHref : BaseComponent {
     private readonly string _href;
 
-    public override string Selector => $"a[href='{_href}']";
+    public override string CssOrXpath => $"a[href='{_href}']";
     public override string Description => "My link to: " + _href;
 
     public LinkByHref(string href) {

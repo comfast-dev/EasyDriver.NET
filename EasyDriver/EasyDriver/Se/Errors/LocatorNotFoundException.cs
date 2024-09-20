@@ -14,7 +14,7 @@ public class LocatorNotFoundException : LocatorException {
     public override string Message =>
         ClearNewLines(@$"
 Not found element: '{Locator.Description}'
-Locator: {Locator.Selector}
+Locator: {Locator.CssOrXpath}
 at:      {CreateSpacesOffsetToFailedSelector()}^
 {OptionalLine("Screenshot", ScreenshotPath)}
 {OptionalLine("Snapshot", SnapshotPath)}
@@ -22,7 +22,7 @@ at:      {CreateSpacesOffsetToFailedSelector()}^
 ");
 
     private string CreateSpacesOffsetToFailedSelector() {
-        int offset = new SelectorChain(Locator.Selector).SelectorsArray.Take(FailedSelectorIndex)
+        int offset = new SelectorChain(Locator.CssOrXpath).SelectorsArray.Take(FailedSelectorIndex)
             .Aggregate(0, (acc, x) => acc + x.Length + SelectorChain.SelectorSeparator.Length);
         return new string(' ', offset);
     }

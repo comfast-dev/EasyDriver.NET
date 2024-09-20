@@ -16,7 +16,7 @@ public class LocatorActionFailedException : LocatorException {
     public override string Message =>
         ClearNewLines(@$"
 Action '{ActionName}' failed at element: '{Locator.Description}'
-Locator: {Locator.Selector}
+Locator: {Locator.CssOrXpath}
 {OptionalLine("Element HTML", ElementHtml?.TrimToMaxLength(300))}
 
 {OptionalLine("Screenshot", ScreenshotPath)}

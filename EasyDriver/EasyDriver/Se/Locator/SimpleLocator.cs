@@ -3,7 +3,7 @@ namespace Comfast.EasyDriver.Se.Locator;
 /// <summary> Basic locator</summary>
 public class SimpleLocator : BaseComponent {
     /// <inheritdoc />
-    public override string Selector { get; }
+    public override string CssOrXpath { get; }
 
     /// <inheritdoc />
     public override string Description { get; }
@@ -11,7 +11,7 @@ public class SimpleLocator : BaseComponent {
     /// <param name="selector">CSS or XPATH</param>
     /// <param name="description">Locator description for logs</param>
     public SimpleLocator(string selector, string? description) {
-        Selector = selector;
+        CssOrXpath = selector;
         Description = description ?? "SimpleLocator";
     }
 }

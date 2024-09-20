@@ -18,7 +18,7 @@ public static class Waiter {
     /// <returns>index of found locator</returns>
     /// <param name="timeoutMs">max wait time, null value uses default from Configuration</param>
     public static int WaitForAny(int? timeoutMs = null, params ILocator[] locators) {
-        string description = "Any element of these:\n- " + string.Join("\n- ", locators.Select(l => l.Selector));
+        string description = "Any element of these:\n- " + string.Join("\n- ", locators.Select(l => l.CssOrXpath));
         var foundIndex = WaitFor(description, () => {
             for (var i = 0; i < locators.Length; i++) {
                 if (locators[i].Exists) {

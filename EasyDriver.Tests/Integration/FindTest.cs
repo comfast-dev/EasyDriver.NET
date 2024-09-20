@@ -128,8 +128,9 @@ public class FindTest : IntegrationBase {
 
     [Fact] public void OpenShadowDom() {
         _browserContent.OpenResourceFile("test.html");
-        S("my-div >> h3").Text.Should().Match("Hello from shadow");
-        S("my-div >> my-div >> h5").Text.Should().Match("We need go deeper");
+
+        ShouldEqual("Hello from shadow", S("my-div >> h3").Text);
+        ShouldEqual("We need go deeper", S("my-div >> my-div >> h5").Text);
     }
 
     [Fact(Skip = "not yet handled")] public void OpenIframe() {

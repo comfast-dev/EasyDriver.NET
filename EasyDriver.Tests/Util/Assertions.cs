@@ -14,11 +14,6 @@ public static class Assertions {
         Assert.Contains(expectedErrorMessage, ex.Message);
     }
 
-    public static void ShouldThrowEquals<T>(Func<T> func, string expectedErrorMessage) {
-        var ex = func.Should().Throw<Exception>().Which;
-        Assert.Equal(expectedErrorMessage, ex.Message);
-    }
-
     public static void ShouldNotThrow<T>(Func<T> func) {
         func.Should().NotThrow();
     }

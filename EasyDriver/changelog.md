@@ -2,7 +2,7 @@
 
 [TODO List]
 
-- [ ] Add configuration json's json-schema documentation
+- [x] Add configuration json's json-schema documentation
 - [ ] Auto generating markdown docs
 - [ ] Logger compatible with Xunit
 - [ ] Auto download browser using selenium-manager

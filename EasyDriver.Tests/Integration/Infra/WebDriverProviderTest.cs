@@ -45,8 +45,8 @@ public class WebDriverProviderTest : IntegrationBase, IDisposable {
         var driverProvider2 = new WebDriverProvider(conf);
         var driver2 = driverProvider2.GetDriver();
 
-        driver2.Title.Should().Be(originalTitle);
-        driver2.ReadField<string>("SessionId.sessionOpaqueKey").Should().Be(sessionId);
+        Assert.Equal(originalTitle, driver2.Title);
+        Assert.Equal(sessionId, driver2.ReadField<string>("SessionId.sessionOpaqueKey"));
     }
 
     [Fact] public void CustomBrowserRunnerTest() {

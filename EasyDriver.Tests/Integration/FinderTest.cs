@@ -64,6 +64,6 @@ public class FinderTest : IntegrationBase {
     }
 
     private void ShouldFindPass(IWebElement foundElement, string expectedText) {
-        foundElement.Text.Should().Be(expectedText);
+        Assert.Equal(expectedText, foundElement.Text);
     }
 }

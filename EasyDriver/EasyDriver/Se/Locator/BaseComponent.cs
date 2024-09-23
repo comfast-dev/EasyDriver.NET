@@ -37,7 +37,7 @@ public abstract class BaseComponent : ILocator {
     }
 
     /// <inheritdoc />
-    public virtual IWebElement FindElement() => CallAction("FindElement", () => {
+    public virtual IWebElement FindWebElement() => CallAction("FindElement", () => {
         return WebElementFinder.Find();
     });
 
@@ -48,7 +48,7 @@ public abstract class BaseComponent : ILocator {
 
     /// <inheritdoc />
     public virtual IFoundLocator Find() => CallAction("Find", () => {
-        return new FoundLocator(CssOrXpath, Description, FindElement());
+        return new FoundLocator(CssOrXpath, Description, FindWebElement());
     });
 
     /// <inheritdoc />
@@ -96,7 +96,7 @@ public abstract class BaseComponent : ILocator {
     public virtual bool Exists => TryFind() != null;
 
     /// <inheritdoc />
-    public virtual string TagName => FindElement().TagName;
+    public virtual string TagName => FindWebElement().TagName;
 
     /// <inheritdoc />
     public virtual string InnerHtml => GetAttribute("innerHTML");
@@ -109,8 +109,8 @@ public abstract class BaseComponent : ILocator {
 
     /// <inheritdoc />
     public string DomId =>
-        FindElement().ReadField<string>("elementId")
-        ?? throw new("Fatal error: field elementId is null");
+        FindWebElement().ReadField<string>("elementId")
+        ?? throw new("Fatal error: field elementId is null"));
 
     /// <inheritdoc />
     public virtual bool HasClass(string cssClass) => CallAction("HasClass", () => {
@@ -119,36 +119,36 @@ public abstract class BaseComponent : ILocator {
 
     /// <inheritdoc />
     public virtual string GetCssValue(string cssPropertyName) => CallAction("GetCssValue", () => {
-        return FindElement().GetCssValue(cssPropertyName);
+        return FindWebElement().GetCssValue(cssPropertyName);
     });
 
     /// <inheritdoc />
     public virtual string GetAttribute(string name) => CallAction("GetAttribute", () => {
-        return FindElement().GetAttribute(name);
+        return FindWebElement().GetAttribute(name);
     });
 
     /// <inheritdoc />
     public virtual bool HasAttribute(string name) => CallAction("HasAttribute", () => {
-        return FindElement().GetAttribute(name) != null;
+        return FindWebElement().GetAttribute(name) != null;
     });
 
     /// <inheritdoc />
     public virtual ILocator Click() => CallAction("Click", () => {
         HighlightIfEnabled();
-        FindElement().Click();
+        FindWebElement().Click();
         return this;
     });
 
     /// <inheritdoc />
     public virtual ILocator SendKeys(string text) => CallAction("SendKeys", () => {
         HighlightIfEnabled();
-        FindElement().SendKeys(text);
+        FindWebElement().SendKeys(text);
         return this;
     });
 
     /// <inheritdoc />
     public virtual ILocator SetValue(string text) => CallAction("SetValue", () => {
-        var found = FindElement();
+        var found = FindWebElement();
         var tag = found.TagName;
         if (tag != "input" && tag != "textarea")
             throw new NotImplementedException($"SetValue doesn't handle {tag}. Handle only input / textarea.");
@@ -169,7 +169,7 @@ public abstract class BaseComponent : ILocator {
     /// <inheritdoc />
     public virtual ILocator Hover() => CallAction("Hover", () => {
         HighlightIfEnabled();
-        new Actions(GetDriver()).MoveToElement(FindElement()).Perform();
+        new Actions(GetDriver()).MoveToElement(FindWebElement()).Perform();
         return this;
     });
 
@@ -183,7 +183,7 @@ public abstract class BaseComponent : ILocator {
     /// <inheritdoc />
     public virtual ILocator Clear() => CallAction("Clear", () => {
         HighlightIfEnabled();
-        FindElement().Clear();
+        FindWebElement().Clear();
         return this;
     });
 
@@ -195,7 +195,7 @@ public abstract class BaseComponent : ILocator {
     /// <inheritdoc />
     public virtual ILocator DragTo(ILocator target) => CallAction("DragTo", () => {
         HighlightIfEnabled();
-        IWebElement targetEl = target.FindElement();
+        IWebElement targetEl = target.FindWebElement();
         ExecuteJs(ReadJsFile("dragAndDrop.js") + "executeDragAndDrop(el, arguments[0])", targetEl);
 
         return this;
@@ -207,7 +207,7 @@ public abstract class BaseComponent : ILocator {
     public virtual ILocator ExecuteJs(string jsCode, params object[] jsArgs) => CallAction("ExecuteJs", () => {
         var jsDriver = (IJavaScriptExecutor)GetDriver();
 
-        jsArgs = new List<object>(jsArgs) { FindElement() }.ToArray();
+        jsArgs = new List<object>(jsArgs) { FindWebElement() }.ToArray();
         jsDriver.ExecuteScript($"const el = arguments[{jsArgs.Length - 1}];{jsCode}", jsArgs);
         return this;
     });
@@ -221,7 +221,7 @@ public abstract class BaseComponent : ILocator {
                 jsCode = "return " + jsCode;
             }
 
-            jsArgs = new List<object>(jsArgs) { FindElement() }.ToArray();
+            jsArgs = new List<object>(jsArgs) { FindWebElement() }.ToArray();
             var result = jsDriver.ExecuteScript($"const el = arguments[{jsArgs.Length - 1}];{jsCode}", jsArgs);
             return (TReturnType)result;
         });
@@ -315,7 +315,7 @@ public abstract class BaseComponent : ILocator {
 
     private T? TryExecuteOnElement<T>(Func<IWebElement, T> func) {
         try {
-            return func.Invoke(FindElement());
+            return func.Invoke(FindWebElement());
         } catch (LocatorException) {
             return default;
         } catch (StaleElementReferenceException) {

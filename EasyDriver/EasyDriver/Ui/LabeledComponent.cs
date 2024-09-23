@@ -22,9 +22,9 @@ public abstract class LabeledComponent : BaseComponent {
     }
 
     /// <summary> Add details to error message</summary>
-    public override IWebElement FindElement() {
+    public override IWebElement FindWebElement() {
         try {
-            return base.FindElement();
+            return base.FindWebElement();
         } catch (Exception e) {
             var labels = string.Join("\", \"", AllLabels);
             throw new(e.Message + $"\nAvailable {GetType().Name} labels are: \"{labels}\" \n");

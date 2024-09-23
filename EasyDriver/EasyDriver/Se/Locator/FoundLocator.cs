@@ -17,5 +17,5 @@ public class FoundLocator : SimpleLocator, IFoundLocator {
     }
 
     /// <summary> Override DoFind with same instance</summary>
-    public override IWebElement FindElement() => FoundElement;
+    public override IWebElement FindWebElement() => FoundElement;
 }

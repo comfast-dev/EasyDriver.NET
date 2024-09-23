@@ -1,33 +1,45 @@
 ﻿# Changelog
 
 [TODO List]
-
+- [ ] Refactor Description into structured NamesChain array (keep names from all parents)
 - [x] Add configuration json's json-schema documentation
 - [ ] Auto generating markdown docs
+- [ ] Wrap every Action into "Action" to get:
+  - [ ] Add ability to AutoWaiting
+  - [ ] throw detailed ActionFailedException
+  - [ ] Add ability to create action logs
+  - [ ] Add ability to add before/after action hooks
+  - [ ] Add ability to Measure action time/generate statistics/benchmarks
 - [ ] Logger compatible with Xunit
 - [ ] Auto download browser using selenium-manager
-- [x] Get Texts using Js experimental option
-- [x] Add method: MapUsingJs
-- [x] Rename `S() -> Locator()`, `_S() -> SubLocator()` keeping aliases: `S`, `_S`
-- [x] Fix IsDisplayed throwing StaleElementReference exception
 
-### [0.4.x] - NOT RELEASED
+
+### [0.4.1] - NOT RELEASED
+- [ ] Actions hooks / time measurement and other features
+
+### [0.4.0]
+CODE COVERAGE: 77%
 BREAKING CHANGES:
 - [x] Rename config file to EasyDriverConfig.json
-- [x] Change API: FindElement, FindElements,
 - [x] Change DriverApi -> EasyDriverApi
 - [x] Change AppConfig.json -> EasyDriverConfig.json
 - [x] Change Configuration -> EasyDriverConfig
-- [ ] Change ILocator interface:
-  - [ ] Selector -> LocatorString
-    - [ ] Description -> NamesChain
-    - [ ] LocatorName
+- [x] Change ILocator interface:
+  - [x] Rename `S() -> GetLocator()`, `_S() -> SubLocator()` keeping aliases: `S`, `_S`
+  - [x] Selector -> CssOrXpath
+  - [x] FindElement -> FindWebElement
+  - [x] IFoundLocator.FoundElement -> FoundWebElement
+
+OTHER CHANGES:
+- [x] Wrap every Action into "Action" method - for future improvements
+- [x] Get Texts using Js experimental option
+- [x] Add method: MapUsingJs
+- [x] Fix IsDisplayed throwing StaleElementReference exception
 
 ### [0.3.1]
 - [x] Add DriverConfig.WindowSize functionality
 
 ### [0.3.0]
-
 - [x] Validation of browser path and driver path
 - [x] Optional (virtual) Description field in BaseComponent
 - [x] Second parameter for description in `DriverApi.S("", "description")`

@@ -8,56 +8,76 @@ Main features:
 - Expose universal API for CSS/XPATH locators `ILocator`
   - Configurable auto Wait
   - Extensive API for actions/
-  - Short API `S("css or xpath selector")`
-  - Sub-selectors like `S("//table")._s("td.selected")`
+  - Short API `GetLocator("css or xpath selector").Click()`
+  - Sub-selectors like `GetLocator("//table").SubLocator("td.selected")`
 
 ### Locators:
-Main entrypoint is `DriverApi `.
+Main entrypoint is `EasyDriverApi `.
 ```csharp
-using Comfast.EasyDriver.DriverApi
+using Comfast.EasyDriver.EasyDriverApi
 ```
 
 Basic locator and Selenium elements
-```
-ILocator MyButton = DriverApi.S("css or xpath selector here");
+```csharp
+ILocator MyButton = EasyDriverApi.GetLocator("css or xpath selector here");
 MyButton.Click();
 var text = MyButton.Text
 
-// there are always option to get native selenium WebElements/WebDriver:
-IWebDriver driver = DriverApi.GetDriver();
-IWebElement foundButton = MyButton.DoFind();
+// there are always option to get/use native selenium WebElements/WebDriver:
+IWebDriver driver = EasyDriverApi.GetDriver();
+IWebElement foundButton = MyButton.FindWebElement();
 ```
 
-Import statically DriverApi to have short locator syntax
+To get short locator syntax import statically EasyDriverApi
 ```
 //if DriverApi imported statically it can be shorter:
-using static Comfast.EasyDriver.DriverApi;
-S("#myButton").Click(); // by css
-S("//button[@id='myButton']").Click() // by xpath
+using static Comfast.EasyDriver.EasyDriverApi;
+GetLocator("#myButton").Click(); // by css
+GetLocator("//button[@id='myButton']").Click() // by xpath
 ```
 
-Creatinc components like `MyForm` here
+
+
+
+## Components concept
+EasyDriver provides API to model parts of DOM into classes.
+Let's analyse this example HTML of form:
+```html
+(...)
+<form id="myForm">
+    <input type="text" name="username" />
+    <input type="text" name="password" />
+    <button type="submit" />
+</form>
 ```
-// locators won't perform search if you don't call action
-var btn = S("#myButton"); //this code will not call browser
-btn.Click(); //this code will find element by CSS selector and click
+It can be modelled as C# class in few lines:
+```csharp
+class MyForm : BaseComponent {
+    //fields required to implement: CssOrXpath, Description
+    public string CssOrXpath => "#myForm"
+    public string Description => "My form";
 
-//so, locator'sare cheap and can be used as class fields without problem
-class MyForm {
-    ILocator nameInput = S("//input[@name='name']");
-    ILocator submitBtn = S("button[type=submit]");
+    //these Sub-locators will be searched as children of parent: "#myForm"
+    ILocator userInput = SubLocator("//input[@name='username']");
+    ILocator passwordInput = SubLocator("//input[@name='password']");
+    ILocator submitBtn = SubLocator("button[type=submit]");
 
-    public Send(string name) {
-        nameInput.SetValue(name);
+    public Send(string user, string pass) {
+        userInput.SetValue(user);
+        passwordInput.SetValue(pass);
         submitBtn.Click();
     }
 }
-var form = new MyForm();
-form.Send("John"); //now all browser actions will be called
 ```
+Where:
+1. `CssOrXpath` is same selector string as can be passed to `GetLocator()` method
+2. `Description` is required only as metadata used in Error messages/logs - don't important in code run
+3. `MyForm` implements `ILocator` interface itself, so all methods like `this.Click()` can be called (`#myForm` will be clicked here.
+4. Locator won't perform search if action like Click, SetValue) is not called, so class can be created at any point of program.
+
 
 ## Configuration
-Here is example `EasyDriverConfig.json` that need to be in project root path:
+Here is example `EasyDriverConfig.json` that need to be placed in project root path:
 ```json
 {
   "BrowserConfig": {
@@ -73,6 +93,9 @@ Here is example `EasyDriverConfig.json` that need to be in project root path:
 }
 ```
 Where:
+- **BrowserPath** - path to browser executable, e.g. chrome.exe, firefox.exe, etc.
+- **DriverPath** - path to chromedriver.exe / geckodriver.exe / edgedriver.exe etc.
 - **Reconnect** - should try to reuse same browser between runs.
 - **AutoClose** - should browser be closed after test run - if you use reconnect, set it to false
 - **Headless** - makes tests faster, but don't show browser UI
+- **TimeoutMs** - default timeout for wait methods (where not specified in call code)

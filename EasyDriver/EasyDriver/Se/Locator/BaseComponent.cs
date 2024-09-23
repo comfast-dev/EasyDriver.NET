@@ -43,7 +43,7 @@ public abstract class BaseComponent : ILocator {
     });
 
     /// <inheritdoc />
-    public virtual IList<IWebElement> FindElements() => CallAction("FindElements", () => {
+    public virtual IList<IWebElement> FindWebElements() => CallAction("FindElements", () => {
         return WebElementFinder.FindAll();
     });
 
@@ -54,7 +54,7 @@ public abstract class BaseComponent : ILocator {
 
     /// <inheritdoc />
     public virtual IList<IFoundLocator> FindAll() => CallAction("FindAll", () => {
-        return FindElements()
+        return FindWebElements()
             .Select(webEl => (IFoundLocator)new FoundLocator(CssOrXpath, Description, webEl))
             .ToList();
     });
@@ -71,7 +71,7 @@ public abstract class BaseComponent : ILocator {
     /// <inheritdoc />
     public virtual IFoundLocator Nth(int number) => CallAction("Nth", () => {
         if (number < 1) throw new Exception($"Invalid number: {number}. Nth is indexed from 1");
-        var all = FindElements();
+        var all = FindWebElements();
         if (all.Count < number)
             throw new Exception($"Not found element #{number}. There are {all.Count} matched by:\n{CssOrXpath}");
 

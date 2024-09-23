@@ -145,7 +145,7 @@ public interface ILocator {
     public IWebElement FindWebElement();
 
     /// <summary> Finds all elements matched by locator</summary>
-    public IList<IWebElement> FindElements();
+    public IList<IWebElement> FindWebElements();
 
     /// <summary>
     /// Perform action on all found elements.<br/>

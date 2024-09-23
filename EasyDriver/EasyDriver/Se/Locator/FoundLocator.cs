@@ -9,13 +9,13 @@ namespace Comfast.EasyDriver.Se.Locator;
 /// </summary>
 public class FoundLocator : SimpleLocator, IFoundLocator {
     /// <summary> Represent DOM element found in browser</summary>
-    public IWebElement FoundElement { get; }
+    public IWebElement FoundWebElement { get; }
 
     public FoundLocator(string selector, string? description, IWebElement foundElement)
         : base(selector, description ?? "FoundLocator") {
-        FoundElement = foundElement;
+        FoundWebElement = foundElement;
     }
 
     /// <summary> Override DoFind with same instance</summary>
-    public override IWebElement FindWebElement() => FoundElement;
+    public override IWebElement FindWebElement() => FoundWebElement;
 }

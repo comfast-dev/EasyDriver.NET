@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 using Comfast.Commons.Utils;
 using Comfast.EasyDriver.Models;
@@ -78,37 +79,37 @@ public abstract class BaseComponent : ILocator {
     });
 
     /// <inheritdoc />
-    public virtual string Text => ExecuteJs<string>("return el.innerText");
+    public virtual string Text => CallPropertyAction("Text", () => ExecuteJs<string>("return el.innerText"));
 
     /// <inheritdoc />
-    public virtual string[] Texts =>
+    public virtual string[] Texts => CallPropertyAction("Texts", () =>
         Configuration.RuntimeConfig.ExperimentalGetTextUsingJs
             ? MapUsingJs<string>("return el.innerText").ToArray()
-            : Map(el => el.Text).ToArray();
+            : Map(el => el.Text).ToArray());
 
     /// <inheritdoc />
-    public virtual int Count => FindAll().Count;
+    public virtual int Count => CallPropertyAction("Count", () => FindAll().Count);
 
     /// <inheritdoc />
-    public virtual bool IsDisplayed => TryExecuteOnElement(el => el.Displayed);
+    public virtual bool IsDisplayed => CallPropertyAction("IsDisplayed", () => TryToExecuteOnElement(el => el.Displayed));
 
     /// <inheritdoc />
-    public virtual bool Exists => TryFind() != null;
+    public virtual bool Exists => CallPropertyAction("Exists", () => TryFind() != null);
 
     /// <inheritdoc />
-    public virtual string TagName => FindWebElement().TagName;
+    public virtual string TagName => CallPropertyAction("Exists", () => FindWebElement().TagName);
 
     /// <inheritdoc />
-    public virtual string InnerHtml => GetAttribute("innerHTML");
+    public virtual string InnerHtml => CallPropertyAction("InnerHtml", () => GetAttribute("innerHTML"));
 
     /// <inheritdoc />
-    public virtual string OuterHtml => GetAttribute("outerHTML");
+    public virtual string OuterHtml => CallPropertyAction("OuterHtml", () => GetAttribute("outerHTML"));
 
     /// <inheritdoc />
-    public virtual string Value => GetAttribute("value");
+    public virtual string Value => CallPropertyAction("Value", () => GetAttribute("value"));
 
     /// <inheritdoc />
-    public string DomId =>
+    public string DomId => CallPropertyAction("DomId", () =>
         FindWebElement().ReadField<string>("elementId")
         ?? throw new("Fatal error: field elementId is null"));
 
@@ -227,12 +228,12 @@ public abstract class BaseComponent : ILocator {
         });
 
     /// <inheritdoc />
-    public virtual ILocator WaitFor(int? timeoutMs = null, bool throwIfFail = true) => CallAction<ILocator>("WaitFor", () => {
+    public virtual ILocator WaitFor(int? timeoutMs = null, bool throwIfFail = true) => CallAction("WaitFor", () => {
         try {
             return Waiter.WaitFor("Element exist.", Find, timeoutMs);
         } catch (Exception) {
             if (throwIfFail) throw;
-            return this;
+            return (ILocator)this;
         }
     });
 
@@ -267,9 +268,8 @@ public abstract class BaseComponent : ILocator {
     /// <param name="jsMappingCode"> js code where current element is defined as: 'el'</param>
     /// <typeparam name="T">Return type of js code</typeparam>
     /// <returns>List of all mapped elements</returns>
-    public virtual IList<T> MapUsingJs<T>(string jsMappingCode) => CallAction("ExecuteJs", () =>  {
-        return JsFinder.FindAllAndMap<T>(jsMappingCode);
-    });
+    public virtual IList<T> MapUsingJs<T>(string jsMappingCode) => CallAction("ExecuteJs",
+        () => JsFinder.FindAllAndMap<T>(jsMappingCode));
 
     /// <inheritdoc />
     public virtual List<T> Map<T>(Func<IFoundLocator, T> func)  => CallAction("ExecuteJs", () => {
@@ -290,12 +290,6 @@ public abstract class BaseComponent : ILocator {
         return results;
     });
 
-    private T CallAction<T>(string actionName, Func<T> func) {
-        //beforeActionhook
-        return func.Invoke();
-        //afterActionHook
-    }
-
     /// <inheritdoc />
     public override string ToString() => Description;
 
@@ -313,7 +307,26 @@ public abstract class BaseComponent : ILocator {
         }
     }
 
-    private T? TryExecuteOnElement<T>(Func<IWebElement, T> func) {
+    private T CallPropertyAction<T>(string propName, Func<T> func) => CallAction("Get" + propName, func);
+    private T CallAction<T>(string actionName, Func<T> func) {
+        T? actionResult = default(T);
+        var sw = new Stopwatch();
+        sw.Start();
+        try {
+            //onActionStart
+            actionResult = func.Invoke();
+            //onActionEnd
+        } catch (Exception e) {
+            //onError
+            throw e;
+        } finally {
+            sw.Stop();
+        }
+
+        return actionResult!;
+    }
+
+    private T? TryToExecuteOnElement<T>(Func<IWebElement, T> func) {
         try {
             return func.Invoke(FindWebElement());
         } catch (LocatorException) {

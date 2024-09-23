@@ -24,8 +24,9 @@ public class IntegrationBase : IAssemblyFixture<IntegrationFixture> {
 
 public class IntegrationFixture : IDisposable {
     //Before all hook
-
+    public IntegrationFixture() { }
     //After all hook
+
     public void Dispose() {
         if (!Configuration.BrowserConfig.Reconnect) {
             DriverProvider.CloseAllDrivers();

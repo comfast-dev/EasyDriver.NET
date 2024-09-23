@@ -142,7 +142,7 @@ public interface ILocator {
     public IList<IFoundLocator> FindAll();
 
     /// <summary> Finds Selenium WebElement.</summary>
-    public IWebElement FindElement();
+    public IWebElement FindWebElement();
 
     /// <summary> Finds all elements matched by locator</summary>
     public IList<IWebElement> FindElements();

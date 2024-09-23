@@ -1,9 +1,7 @@
 ﻿using Comfast.Commons.Utils;
 using Comfast.EasyDriver.Models;
 using Comfast.EasyDriver.Se.Infra;
-using Comfast.EasyDriver.Ui;
 using EasyDriver.Tests.Util;
-using FluentAssertions;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using Xunit.Abstractions;
@@ -72,6 +70,7 @@ public class WebDriverProviderTest : IntegrationBase, IDisposable {
     [Fact] public void InvalidBrowserPath() {
         var conf = Configuration.BrowserConfig.Copy();
         conf.BrowserPath = "xd";
+        conf.Reconnect = false;
 
         var provider = new WebDriverProvider(conf);
 

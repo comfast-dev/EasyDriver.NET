@@ -1,5 +1,5 @@
-﻿using Comfast.EasyDriver.Models;
-using Comfast.EasyDriver.Se.Errors;
+﻿using Comfast.EasyDriver.Core.Errors;
+using Comfast.EasyDriver.Models;
 using EasyDriver.Tests.Util;
 using Xunit.Abstractions;
 

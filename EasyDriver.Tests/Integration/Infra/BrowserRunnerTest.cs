@@ -1,6 +1,6 @@
 ﻿using Comfast.Commons.Utils;
-using Comfast.EasyDriver.Se.Finder;
-using Comfast.EasyDriver.Se.Infra.Browser;
+using Comfast.EasyDriver.Core.Finder;
+using Comfast.EasyDriver.Core.Infra.Browser;
 using EasyDriver.Tests.Util;
 using FluentAssertions;
 using OpenQA.Selenium;

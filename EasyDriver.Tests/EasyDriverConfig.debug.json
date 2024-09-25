@@ -9,8 +9,10 @@
         "Headless": false
     },
     "RuntimeConfig": {
-        "TimeoutMs": 20000,
+        "TimeoutMs": 4000,
         "ShortWaitMs": 0,
-        "HighlightActions": false
+        "HighlightActions": false,
+        "ExperimentalJsFinder": false,
+        "ExperimentalJsActions": false
     }
 }

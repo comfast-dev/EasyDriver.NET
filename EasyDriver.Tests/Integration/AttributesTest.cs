@@ -1,5 +1,4 @@
 using Comfast.EasyDriver.Models;
-using Comfast.EasyDriver.Ui;
 using EasyDriver.Tests.Util;
 using FluentAssertions;
 using Xunit.Abstractions;
@@ -74,7 +73,6 @@ public class AttributesTest : IntegrationBase {
         Assert.Equal("text", input.GetAttribute("type"));
         Assert.Equal("", input.GetAttribute("value"));
         Assert.Null(input.GetAttribute("required"));
-        Assert.Null(input.GetAttribute("required"));
         Assert.Null(input.GetAttribute("notattribute"));
 
         // JS attributes
@@ -100,10 +98,10 @@ public class AttributesTest : IntegrationBase {
         _browserContent.SetBody("<input class='myclass disabled' />");
 
         var input = S("input");
-        Assert.True(input.HasClass("myclass"));
-        Assert.True(input.HasClass("disabled"));
-        Assert.False(input.HasClass("lol"));
-        Assert.False(input.HasClass("myclass disabled"));
+        Assert.True(input.HasCssClass("myclass"));
+        Assert.True(input.HasCssClass("disabled"));
+        Assert.False(input.HasCssClass("lol"));
+        Assert.False(input.HasCssClass("myclass disabled"));
     }
 
     [Fact] void Value() {

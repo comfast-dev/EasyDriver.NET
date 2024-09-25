@@ -1,4 +1,4 @@
-﻿using Comfast.EasyDriver.Ui;
+﻿using Comfast.EasyDriver.Lib;
 using OpenQA.Selenium;
 using Xunit.Abstractions;
 using Xunit.Extensions.AssemblyFixture;

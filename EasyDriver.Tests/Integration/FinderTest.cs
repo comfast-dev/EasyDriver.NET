@@ -1,5 +1,4 @@
-﻿using Comfast.EasyDriver.Se.Finder;
-using Comfast.EasyDriver.Ui;
+﻿using Comfast.EasyDriver.Core.Finder;
 using EasyDriver.Tests.Util;
 using FluentAssertions;
 using OpenQA.Selenium;

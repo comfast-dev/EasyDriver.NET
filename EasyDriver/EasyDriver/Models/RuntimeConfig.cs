@@ -14,6 +14,9 @@ public class RuntimeConfig {
     /// <summary> If true - elements will be highlighted after actions like Click, SetValue, etc.</summary>
     public bool HighlightActions { get; set; } = false;
 
-    /// <summary> Use one call to JavaScript to get all texts instead of multiple Selenium calls.</summary>
-    public bool ExperimentalGetTextUsingJs { get; set; } = false;
+    /// <summary> Speed up tests. Use JS calls to get Text/Attributes.</summary>
+    public bool ExperimentalJsActions { get; set; } = false;
+
+    /// <summary> Speed up find long locators. Use JS to find elements.</summary>
+    public bool ExperimentalJsFinder { get; set; } = false;
 }

@@ -12,10 +12,20 @@
   - [ ] Add ability to Measure action time/generate statistics/benchmarks
 - [ ] Logger compatible with Xunit
 - [ ] Auto download browser using selenium-manager
+- [ ] Prepare Chromium browser flags for fastest run possible
 
 
-### [0.4.1] - NOT RELEASED
-- [ ] Actions hooks / time measurement and other features
+### [0.4.2] - NOT RELEASED
+
+
+
+### [0.4.1]
+- Add Experimental find using JS
+- Add Experimental actions using JS
+- Rename HasClass -> HasCssClass
+- Rearrange namespaces EasyDriver.Se -> EasyDriver.Core
+- Rearrange namespaces EasyDriver.Ui -> EasyDriver.Lib
+
 
 ### [0.4.0]
 CODE COVERAGE: 77%

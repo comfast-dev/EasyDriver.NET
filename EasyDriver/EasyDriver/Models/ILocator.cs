@@ -1,4 +1,4 @@
-using Comfast.EasyDriver.Se.Finder;
+using Comfast.EasyDriver.Core.Finder;
 using OpenQA.Selenium;
 
 namespace Comfast.EasyDriver.Models;
@@ -53,19 +53,8 @@ public interface ILocator {
     /// <summary> Internal element DOM Id. Unique, changes during element refresh.</summary>
     public string DomId { get; }
 
-    // public string CssValue { get; }
-
-    /// <summary>
-    /// Check for CSS class. e.g. <br/>
-    /// <input class="myclass disabled" />
-    /// <code>
-    /// HasClass("myclass") // return true
-    /// HasClass("disabled") // return true
-    /// HasClass("lol") // return false
-    /// HasClass("myclass disabled") // return false - it doesn't check 'class' property, but CSS class
-    ///</code>
-    /// </summary>
-    public bool HasClass(string cssClass);
+    /// <summary> Check for CSS class. </summary>
+    public bool HasCssClass(string cssClass);
 
     /// <summary> Gets value of CSS Property. Native WebDriver method: GetCssValue.</summary>
     public string GetCssValue(string cssPropertyName);
@@ -109,10 +98,11 @@ public interface ILocator {
     /// <summary> Does keyboard input</summary>
     public ILocator SendKeys(string text);
 
-    // public ILocator Tap();
-
     /// <summary> Focus on element e.g. set cursor on it.</summary>
     public ILocator Focus();
+
+    /// <summary> Stop focus on element.</summary>
+    public ILocator UnFocus();
 
     /// <summary> Move mouse over element.</summary>
     public ILocator Hover();

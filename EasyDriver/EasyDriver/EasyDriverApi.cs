@@ -1,6 +1,6 @@
-﻿using Comfast.EasyDriver.Models;
-using Comfast.EasyDriver.Se.Infra;
-using Comfast.EasyDriver.Se.Locator;
+﻿using Comfast.EasyDriver.Core.Infra;
+using Comfast.EasyDriver.Core.Locator;
+using Comfast.EasyDriver.Models;
 using OpenQA.Selenium;
 
 namespace Comfast.EasyDriver;
@@ -18,7 +18,6 @@ public static class EasyDriverApi {
         return new SimpleLocator(cssOrXpath, description);
     }
 
-    /// <summary>  </summary>
     /// <param name="cssOrXpath"></param>
     /// <param name="description"></param>
     /// <returns></returns>

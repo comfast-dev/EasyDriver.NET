@@ -1,4 +1,4 @@
-﻿using Comfast.EasyDriver.Se.Finder;
+﻿using Comfast.EasyDriver.Core.Finder;
 using JetBrains.Annotations;
 
 namespace EasyDriver.Tests.Unit;

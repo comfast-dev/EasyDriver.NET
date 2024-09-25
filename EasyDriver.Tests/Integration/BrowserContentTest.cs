@@ -1,5 +1,4 @@
-﻿using Comfast.EasyDriver.Ui;
-using EasyDriver.Tests.Util;
+﻿using EasyDriver.Tests.Util;
 using FluentAssertions;
 using Xunit.Abstractions;
 
@@ -11,7 +10,7 @@ public class BrowserContentTest : IntegrationBase {
     [Fact(Skip = "unstable on chrome")] void TrustedHtmlTest() {
         try {
             var func = () => {
-                GetDriver().Url ="chrome://settings/privacy";
+                GetDriver().Url = "chrome://settings/privacy";
                 _browserContent.SetBody("<ul><li>xxx</li></ul>");
             };
             func.Should().NotThrow();

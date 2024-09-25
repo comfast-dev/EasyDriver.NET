@@ -1,7 +1,6 @@
-﻿using Comfast.EasyDriver.Models;
-using Comfast.EasyDriver.Se;
-using Comfast.EasyDriver.Se.Finder;
-using Comfast.EasyDriver.Ui;
+﻿using Comfast.EasyDriver.Core;
+using Comfast.EasyDriver.Core.Finder;
+using Comfast.EasyDriver.Models;
 using EasyDriver.Tests.Util;
 using Xunit.Abstractions;
 

@@ -1,6 +1,7 @@
 ﻿using Comfast.Commons.Utils;
+using Comfast.EasyDriver.Core.Infra;
+using Comfast.EasyDriver.Lib;
 using Comfast.EasyDriver.Models;
-using Comfast.EasyDriver.Se.Infra;
 using EasyDriver.Tests.Util;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
@@ -48,19 +49,23 @@ public class WebDriverProviderTest : IntegrationBase, IDisposable {
     }
 
     [Fact] public void CustomBrowserRunnerTest() {
+        var browserConfig = Configuration.BrowserConfig.Copy();
+        var driverProvider = new WebDriverProvider(browserConfig);
+
         //prepare browser
         const string pageTitle = "Lol page";
-        var options = new ChromeOptions { BinaryLocation = Configuration.BrowserConfig.BrowserPath };
+        var options = new ChromeOptions { BinaryLocation = browserConfig.BrowserPath };
         options.AddArgument("headless");
-        var myChrome = new ChromeDriver(Configuration.BrowserConfig.DriverPath, options);
-        _browserContent.SetBody($"<h1>{pageTitle}</h1>");
-        Configuration.BrowserConfig.AutoClose = true;
+        var myChrome = new ChromeDriver(browserConfig.DriverPath, options);
+
+        new BrowserContent(myChrome).SetBody($"<h1>{pageTitle}</h1>");
+        browserConfig.AutoClose = true;
 
         //set configuration
-        DriverProvider.SetCustomBrowser(() => myChrome);
+        driverProvider.SetCustomBrowser(() => myChrome);
 
         //assert
-        ShouldHaveText(S("h1"), pageTitle);
+        Assert.Equal(pageTitle, myChrome.FindElement(By.CssSelector("h1")).Text);
 
         // close browser
         myChrome.Close();

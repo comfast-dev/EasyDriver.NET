@@ -16,8 +16,8 @@ public class FindTest : IntegrationBase {
     private const string OptionValue = "some option";
 
     [Fact] void FindUsingFullAlias() {
-        ShouldHaveValue(GetLocator("//html//input"), InputValue);
-        ShouldHaveValue(GetLocator("//html").SubLocator("//input"), InputValue);
+        ShouldHaveValue(LocateBy("//html//input"), InputValue);
+        ShouldHaveValue(LocateBy("//html").SubLocator("//input"), InputValue);
     }
 
     [Fact] public void FindCss() {

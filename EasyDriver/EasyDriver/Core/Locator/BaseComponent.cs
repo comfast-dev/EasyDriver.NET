@@ -4,18 +4,13 @@ using Comfast.Commons.Utils;
 using Comfast.EasyDriver.Core.Errors;
 using Comfast.EasyDriver.Core.Finder;
 using Comfast.EasyDriver.Js;
-using Comfast.EasyDriver.Lib;
 using Comfast.EasyDriver.Models;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 
 namespace Comfast.EasyDriver.Core.Locator;
 
-/// <summary>
-/// Base class for component.
-/// Example implementation:
-/// <see cref="LinkByHref"/>
-/// </summary>
+/// <summary> Base class for component. </summary>
 public abstract class BaseComponent : ILocator {
     /// <summary>
     /// Css / Xpath / both delimited by ' >> '<br/>
@@ -321,22 +316,6 @@ public abstract class BaseComponent : ILocator {
         }
     }
 
-    private T CallPropertyAction<T>(string propName, Func<T> func) => CallAction("Get" + propName, func);
-    private T CallAction<T>(string actionName, Func<T> func) {
-        T? actionResult = default(T);
-        var sw = new Stopwatch();
-        sw.Start();
-        try {
-            //onActionStart
-            actionResult = func.Invoke();
-            //onActionEnd
-        } finally {
-            sw.Stop();
-        }
-
-        return actionResult!;
-    }
-
     private T? TryToExecuteOnElement<T>(Func<IWebElement, T> func) {
         try {
             return func.Invoke(FindWebElement());
@@ -346,4 +325,37 @@ public abstract class BaseComponent : ILocator {
             return default;
         }
     }
+
+
+
+    class BeforeAction {
+        private string name;
+
+    }
+
+    class ActionHooks {
+        void onActionStart(string name) {
+
+        }
+    }
+
+    private T CallPropertyAction<T>(string propName, Func<T> func) => CallAction("Get" + propName, func);
+    private T CallAction<T>(string actionName, Func<T> func) {
+        T? actionResult = default(T);
+        var sw = new Stopwatch();
+        sw.Start();
+        try {
+            //onActionStart
+            actionResult = func.Invoke();
+            //onActionEnd
+        } catch (Exception) {
+            //onerror
+        } finally {
+            sw.Stop();
+        }
+
+        return actionResult!;
+    }
+
+
 }

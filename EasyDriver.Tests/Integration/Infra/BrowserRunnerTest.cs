@@ -2,6 +2,7 @@
 using Comfast.EasyDriver.Core.Finder;
 using Comfast.EasyDriver.Core.Infra.Browser;
 using EasyDriver.Tests.Util;
+using EasyDriver.Tests.Util.Hooks;
 using FluentAssertions;
 using OpenQA.Selenium;
 using Xunit.Abstractions;
@@ -10,7 +11,7 @@ namespace EasyDriver.Tests.Integration.Infra;
 
 public class BrowserRunnerTest : IntegrationBase, IDisposable {
     private IWebDriver? _currentDriver;
-    public BrowserRunnerTest(ITestOutputHelper output, IntegrationFixture fix) : base(output, fix) { }
+    public BrowserRunnerTest(ITestOutputHelper output, AssemblyFixture fix) : base(output, fix) { }
 
     [Fact] void WindowSizeTest() {
         //given

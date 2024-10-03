@@ -1,11 +1,12 @@
 using EasyDriver.Tests.Util;
+using EasyDriver.Tests.Util.Hooks;
 using FluentAssertions;
 using Xunit.Abstractions;
 
 namespace EasyDriver.Tests.Integration;
 
 public class FindTest : IntegrationBase {
-    public FindTest(ITestOutputHelper output, IntegrationFixture fix) : base(output, fix) {
+    public FindTest(ITestOutputHelper output, AssemblyFixture fix) : base(output, fix) {
         _browserContent.SetBody($@"
 <form id='inputForm'><input value='{InputValue}'/></form>
 <form id='selectForm'><select><option value='{OptionValue}'>some select</option></select></form>

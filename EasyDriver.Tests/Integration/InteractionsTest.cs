@@ -1,4 +1,5 @@
 using EasyDriver.Tests.Util;
+using EasyDriver.Tests.Util.Hooks;
 using FluentAssertions;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
@@ -7,7 +8,7 @@ using Xunit.Abstractions;
 namespace EasyDriver.Tests.Integration;
 
 public class InteractionsTest : IntegrationBase {
-    public InteractionsTest(ITestOutputHelper output, IntegrationFixture fix) : base(output, fix) {
+    public InteractionsTest(ITestOutputHelper output, AssemblyFixture fix) : base(output, fix) {
         _browserContent.OpenResourceFile("test.html");
     }
 

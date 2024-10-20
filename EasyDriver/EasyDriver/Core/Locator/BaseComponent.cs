@@ -108,13 +108,13 @@ public abstract class BaseComponent : ILocator {
     public virtual string TagName => CallPropertyAction("Exists", () => FindWebElement().TagName);
 
     /// <inheritdoc />
-    public virtual string InnerHtml => CallPropertyAction("InnerHtml", () => GetAttribute("innerHTML"));
+    public virtual string InnerHtml => CallPropertyAction("InnerHtml", () => RequireGetAttribute("innerHTML"));
 
     /// <inheritdoc />
-    public virtual string OuterHtml => CallPropertyAction("OuterHtml", () => GetAttribute("outerHTML"));
+    public virtual string OuterHtml => CallPropertyAction("OuterHtml", () => RequireGetAttribute("outerHTML"));
 
     /// <inheritdoc />
-    public virtual string Value => CallPropertyAction("Value", () => GetAttribute("value"));
+    public virtual string? Value => CallPropertyAction("Value", () => GetAttribute("value"));
 
     /// <inheritdoc />
     public string DomId => CallPropertyAction("DomId", () =>
@@ -123,7 +123,7 @@ public abstract class BaseComponent : ILocator {
 
     /// <inheritdoc />
     public virtual bool HasCssClass(string cssClass) => CallAction("HasClass", () => {
-        return GetAttribute("class").Split(" ").Contains(cssClass);
+        return GetAttribute("class")?.Split(" ").Contains(cssClass) ?? false;
     });
 
     /// <inheritdoc />
@@ -135,18 +135,18 @@ public abstract class BaseComponent : ILocator {
     });
 
     /// <inheritdoc />
-    public virtual string? GetAttribute(string name) => CallAction("GetAttribute", () => {
-        if (Configuration.RuntimeConfig.ExperimentalJsActions) {
-            var value = JsFinder.FindAndExecuteJs<object>($"return (el.{name} || el.getAttribute('{name}'))");
-            return value?.ToString();
-        }
-        return FindWebElement().GetAttribute(name);
-    });
+    public virtual string? GetAttribute(string name) => CallAction("GetAttribute", () => DoGetAttribute(name));
 
     /// <inheritdoc />
     public virtual bool HasAttribute(string name) => CallAction("HasAttribute", () => {
         return GetAttribute(name) != null;
     });
+
+    private string RequireGetAttribute(string name) => DoGetAttribute(name) ?? throw new($"Not found attribute {name}");
+
+    private string? DoGetAttribute(string name) => Configuration.RuntimeConfig.ExperimentalJsActions
+            ? JsFinder.FindAndExecuteJs<object>($"return (el.{name} || el.getAttribute('{name}'))")?.ToString()
+            : FindWebElement().GetAttribute(name);
 
     /// <inheritdoc />
     public virtual ILocator Click() => CallAction("Click", () => {
@@ -323,7 +323,7 @@ public abstract class BaseComponent : ILocator {
 
     private T CallPropertyAction<T>(string propName, Func<T> func) => CallAction("Get" + propName, func);
     private T CallAction<T>(string actionName, Func<T> func) {
-        T? actionResult = default(T);
+        T? actionResult;
         var sw = new Stopwatch();
         sw.Start();
         try {

@@ -101,7 +101,11 @@ public class WaiterTest : IntegrationBase {
 
     private void ScheduleReloadHtmlAfter(string html, int timeoutMs) {
         _driver.ExecuteJs<string>(
-            "setTimeout(() => document.querySelector('#spawn .target').innerHTML = arguments[0], arguments[1])",
+"""
+const spawnTarget = document.querySelector('#spawn .target')
+spawnTarget.scrollIntoView()
+setTimeout(() => spawnTarget.innerHTML = arguments[0], arguments[1])
+""",
             html, timeoutMs);
     }
 }

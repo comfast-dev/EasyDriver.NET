@@ -378,10 +378,13 @@
             redirectCount = parseInt(url.searchParams.get("redirect"));
         }
 
-        if (redirectCount > 0) setTimeout(() => {
-            url.searchParams.set("redirect", redirectCount - 1);
-            window.location.replace(url.toString())
-        }, intervalMs)
+        if (redirectCount > 0) {
+            $("#redirect").scrollIntoView()
+            setTimeout(() => {
+                url.searchParams.set("redirect", redirectCount - 1);
+                window.location.replace(url.toString())
+            }, intervalMs)
+        }
     }
 
     handleRedirect();

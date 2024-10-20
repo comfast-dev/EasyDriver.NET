@@ -1,13 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk" InitialTargets="CopyConfigFiles">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <IsPackable>false</IsPackable>
         <NoWarn>
             xUnit1041; <!-- Fixture argument 'fix' does not have a fixture source-->
         </NoWarn>
+        <LangVersion>12</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>

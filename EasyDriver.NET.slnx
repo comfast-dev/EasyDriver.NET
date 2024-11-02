@@ -1,0 +1,4 @@
+﻿<Solution>
+  <Project Path="EasyDriver.Tests\EasyDriver.Tests.csproj" Type="Classic C#" />
+  <Project Path="EasyDriver\EasyDriver.csproj" Type="Classic C#" />
+</Solution>

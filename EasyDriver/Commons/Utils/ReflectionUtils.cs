@@ -50,7 +50,7 @@ public static class ReflectionUtils {
                 throw new($"Can't get field '{name}', because parent '{string.Join(".", parentsPath)}' is null");
             }
 
-            curr = getOneMember(curr.GetType(), name).GetValue(curr);
+            curr = GetOneMember(curr.GetType(), name).GetValue(curr);
         }
 
         return (T?)curr;
@@ -63,7 +63,7 @@ public static class ReflectionUtils {
         if (parent == null)
             throw new($"Can't get field '{name}', because parent '{string.Join(".", parentsPath)}' is null");
 
-        getOneMember(parent.GetType(), fieldPath.Last()).SetValue(parent, valueToSet);
+        GetOneMember(parent.GetType(), fieldPath.Last()).SetValue(parent, valueToSet);
     }
 
     private static void SetValue(this MemberInfo memberInfo, object target, object? value) {
@@ -87,13 +87,23 @@ public static class ReflectionUtils {
         };
     }
 
-    private static MemberInfo getOneMember(Type type, string name) {
+    private static MemberInfo GetOneMember(Type type, string name) {
+        var result = TryGetOneMember(type, name);
+        if (result != null) return result;
+
+        if (type.BaseType != null) {
+            var parentMember = TryGetOneMember(type.BaseType, name);
+            if (parentMember != null) return parentMember;
+        }
+        throw new ArgumentException($"Not found field '{name}' in {type.Name} or {type.BaseType?.Name ?? ""}");
+    }
+
+    private static MemberInfo? TryGetOneMember(Type type, string name) {
         var prop = type.GetProperty(name, _universalFlags);
         if (prop != null) return prop;
 
         var field = type.GetField(name, _universalFlags);
         if (field != null) return field;
-
-        throw new ArgumentException($"Not found field '{name}' in {type.Name}");
+        return null;
     }
 }

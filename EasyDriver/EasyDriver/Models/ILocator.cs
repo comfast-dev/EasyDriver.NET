@@ -48,7 +48,7 @@ public interface ILocator {
     public string OuterHtml { get; }
 
     /// <summary> Element value property. Equivalent to JS code: element.value</summary>
-    public string Value { get; }
+    public string? Value { get; }
 
     /// <summary> Internal element DOM Id. Unique, changes during element refresh.</summary>
     public string DomId { get; }

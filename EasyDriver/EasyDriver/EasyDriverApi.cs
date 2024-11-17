@@ -1,4 +1,5 @@
-﻿using Comfast.EasyDriver.Core.Infra;
+﻿using Comfast.EasyDriver.Core.Events;
+using Comfast.EasyDriver.Core.Infra;
 using Comfast.EasyDriver.Core.Locator;
 using Comfast.EasyDriver.Models;
 using OpenQA.Selenium;
@@ -9,6 +10,8 @@ namespace Comfast.EasyDriver;
 public static class EasyDriverApi {
     public static EasyDriverConfig Configuration { get; } = new();
     public static WebDriverProvider DriverProvider { get; } = new(Configuration.BrowserConfig);
+    public static EventManager ActionsEvents { get; } = new("Action Events", true);
+    public static EventManager WebDriverEvents { get; } = new("WebDriver Events", true);
 
     /// <summary> Returns current WebDriver instance.</summary>
     public static IWebDriver GetDriver() => DriverProvider.GetDriver();

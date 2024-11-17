@@ -1,6 +1,7 @@
 ﻿using Comfast.EasyDriver.Core.Infra.Browser;
 using Comfast.EasyDriver.Models;
 using OpenQA.Selenium;
+using static Comfast.EasyDriver.Core.Infra.Browser.WebDriverReconnectUtils;
 
 namespace Comfast.EasyDriver.Core.Infra;
 
@@ -11,14 +12,14 @@ namespace Comfast.EasyDriver.Core.Infra;
 /// </summary>
 public class WebDriverProvider : IWebDriverProvider {
     private readonly ThreadLocal<IWebDriver> _instances;
-    private readonly WebDriverSessionStore _webDriverSessionStore;
+    private readonly TempFile _sessionFile;
     private readonly BrowserConfig _browserConfig;
     private IBrowserRunner _browserRunner;
 
     /// <summary> Create new instance based on config.</summary>
     public WebDriverProvider(BrowserConfig browserConfig) {
         _instances = new ThreadLocal<IWebDriver>(ProvideDriverInstance, true);
-        _webDriverSessionStore = new();
+        _sessionFile = new("EasyDriver/WebDriverSessionInfo.txt");
         _browserConfig = browserConfig;
         _browserRunner = new BrowserRunner(browserConfig);
 
@@ -55,8 +56,16 @@ public class WebDriverProvider : IWebDriverProvider {
 
     /// <summary> Run/reconnect to Browser instance</summary>
     private IWebDriver ProvideDriverInstance() {
-        return _browserConfig.Reconnect
-            ? _webDriverSessionStore.RestoreSessionOrRunNewDriver(_browserRunner.RunNewBrowser)
-            : _browserRunner.RunNewBrowser();
+        if (_browserConfig.Reconnect && _sessionFile.Exists) {
+            var sessionInfo = _sessionFile.ReadFile();
+            var reconnectedDriver = CreateDriver(sessionInfo);
+            if (reconnectedDriver.TestConnection()) return reconnectedDriver;
+        } //in case of fail reconnection run new Browser
+
+        var newDriver = _browserRunner.RunNewBrowser();
+        var newBrowserSessionString = ExtractSessionString(newDriver);
+        if (_browserConfig.Reconnect) _sessionFile.SaveFile(newBrowserSessionString);
+
+        return CreateDriver(newBrowserSessionString);
     }
 }

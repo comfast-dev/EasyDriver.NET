@@ -1,4 +1,5 @@
 using Comfast.Commons.Utils;
+using Comfast.EasyDriver.Core.Errors;
 using Microsoft.Extensions.Configuration;
 
 namespace Comfast.EasyDriver.Models;
@@ -8,8 +9,12 @@ namespace Comfast.EasyDriver.Models;
 /// Internal fields of BrowserConfig/RuntimeConfig can be edited in runtime.
 /// </summary>
 public class EasyDriverConfig {
+    const string ConfigFileName = "EasyDriverConfig.json";
+
     public EasyDriverConfig() {
-        ReloadConfig("EasyDriverConfig.json");
+        if (!File.Exists(ConfigFileName)) throw new ConfigurationError(
+            $"Not found config file: {ConfigFileName}");
+        ReloadConfig(ConfigFileName);
     }
 
     /// <summary> Options that define way how WebDriver managed browser is created/managed</summary>

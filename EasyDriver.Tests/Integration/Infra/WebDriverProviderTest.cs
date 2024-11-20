@@ -3,6 +3,7 @@ using Comfast.EasyDriver.Core.Infra;
 using Comfast.EasyDriver.Lib;
 using Comfast.EasyDriver.Models;
 using EasyDriver.Tests.Util;
+using EasyDriver.Tests.Util.Hooks;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using Xunit.Abstractions;
@@ -10,7 +11,7 @@ using Xunit.Abstractions;
 namespace EasyDriver.Tests.Integration.Infra;
 
 public class WebDriverProviderTest : IntegrationBase, IDisposable {
-    public WebDriverProviderTest(ITestOutputHelper output, IntegrationFixture fix) : base(output, fix) { }
+    public WebDriverProviderTest(ITestOutputHelper output, AssemblyFixture fix) : base(output, fix) { }
 
     private readonly string _driverPath = Configuration.BrowserConfig.DriverPath;
     private readonly string _browserPath = Configuration.BrowserConfig.BrowserPath;

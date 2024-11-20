@@ -1,12 +1,13 @@
 using Comfast.EasyDriver.Models;
 using EasyDriver.Tests.Util;
+using EasyDriver.Tests.Util.Hooks;
 using FluentAssertions;
 using Xunit.Abstractions;
 
 namespace EasyDriver.Tests.Integration;
 
 public class AttributesTest : IntegrationBase {
-    public AttributesTest(ITestOutputHelper output, IntegrationFixture fix) : base(output, fix) {
+    public AttributesTest(ITestOutputHelper output, AssemblyFixture fix) : base(output, fix) {
         _browserContent.OpenResourceFile("test.html");
     }
 
@@ -23,6 +24,8 @@ public class AttributesTest : IntegrationBase {
     [Fact] void TextsTest() {
         var tds = S("tr > td:first-child");
         tds.Texts.Length.Should().BeGreaterThan(40);
+
+
     }
 
     [Fact] void DomIdTest() {

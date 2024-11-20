@@ -2,12 +2,13 @@
 using Comfast.EasyDriver.Core.Finder;
 using Comfast.EasyDriver.Models;
 using EasyDriver.Tests.Util;
+using EasyDriver.Tests.Util.Hooks;
 using Xunit.Abstractions;
 
 namespace EasyDriver.Tests.Integration;
 
 public class WaiterTest : IntegrationBase {
-    public WaiterTest(ITestOutputHelper output, IntegrationFixture fix) : base(output, fix) {
+    public WaiterTest(ITestOutputHelper output, AssemblyFixture fix) : base(output, fix) {
         _browserContent.OpenResourceFile("test.html");
         Configuration.RuntimeConfig.TimeoutMs = LongTime;
     }

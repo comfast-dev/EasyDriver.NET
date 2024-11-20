@@ -1,5 +1,6 @@
 ﻿using Comfast.EasyDriver.Core.Finder;
 using EasyDriver.Tests.Util;
+using EasyDriver.Tests.Util.Hooks;
 using FluentAssertions;
 using OpenQA.Selenium;
 using Xunit.Abstractions;
@@ -7,7 +8,7 @@ using Xunit.Abstractions;
 namespace EasyDriver.Tests.Integration;
 
 public class FinderTest : IntegrationBase {
-    public FinderTest(ITestOutputHelper output, IntegrationFixture fix) : base(output, fix) {
+    public FinderTest(ITestOutputHelper output, AssemblyFixture fix) : base(output, fix) {
         _browserContent.OpenResourceFile("test.html");
     }
 

@@ -4,18 +4,13 @@ using Comfast.Commons.Utils;
 using Comfast.EasyDriver.Core.Errors;
 using Comfast.EasyDriver.Core.Finder;
 using Comfast.EasyDriver.Js;
-using Comfast.EasyDriver.Lib;
 using Comfast.EasyDriver.Models;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 
 namespace Comfast.EasyDriver.Core.Locator;
 
-/// <summary>
-/// Base class for component.
-/// Example implementation:
-/// <see cref="LinkByHref"/>
-/// </summary>
+/// <summary> Base class for component. </summary>
 public abstract class BaseComponent : ILocator {
     /// <summary>
     /// Css / Xpath / both delimited by ' >> '<br/>
@@ -87,37 +82,37 @@ public abstract class BaseComponent : ILocator {
     });
 
     /// <inheritdoc />
-    public virtual string Text => CallPropertyAction("Text", () => ExecuteJs<string>("return el.innerText"));
+    public virtual string Text => CallAction("Text", () => ExecuteJs<string>("return el.innerText"));
 
     /// <inheritdoc />
-    public virtual string[] Texts => CallPropertyAction("Texts", () =>
+    public virtual string[] Texts => CallAction("Texts", () =>
         Configuration.RuntimeConfig.ExperimentalJsActions
             ? MapUsingJs<string>("return el.innerText").ToArray()
             : Map(el => el.Text).ToArray());
 
     /// <inheritdoc />
-    public virtual int Count => CallPropertyAction("Count", () => FindAll().Count);
+    public virtual int Count => CallAction("Count", () => FindAll().Count);
 
     /// <inheritdoc />
-    public virtual bool IsDisplayed => CallPropertyAction("IsDisplayed", () => TryToExecuteOnElement(el => el.Displayed));
+    public virtual bool IsDisplayed => CallAction("IsDisplayed", () => TryToExecuteOnElement(el => el.Displayed));
 
     /// <inheritdoc />
-    public virtual bool Exists => CallPropertyAction("Exists", () => TryFind() != null);
+    public virtual bool Exists => CallAction("Exists", () => TryFind() != null);
 
     /// <inheritdoc />
-    public virtual string TagName => CallPropertyAction("Exists", () => FindWebElement().TagName);
+    public virtual string TagName => CallAction("Exists", () => FindWebElement().TagName);
 
     /// <inheritdoc />
-    public virtual string InnerHtml => CallPropertyAction("InnerHtml", () => RequireGetAttribute("innerHTML"));
+    public virtual string InnerHtml => CallAction("InnerHtml", () => ForceGetAttribute("innerHTML"));
 
     /// <inheritdoc />
-    public virtual string OuterHtml => CallPropertyAction("OuterHtml", () => RequireGetAttribute("outerHTML"));
+    public virtual string OuterHtml => CallAction("OuterHtml", () => ForceGetAttribute("outerHTML"));
 
     /// <inheritdoc />
-    public virtual string? Value => CallPropertyAction("Value", () => GetAttribute("value"));
+    public virtual string? Value => CallAction("Value", () => GetAttribute("value"));
 
     /// <inheritdoc />
-    public string DomId => CallPropertyAction("DomId", () =>
+    public string DomId => CallAction("DomId", () =>
         FindWebElement().ReadField<string>("elementId")
         ?? throw new("Fatal error: field elementId is null"));
 
@@ -134,19 +129,22 @@ public abstract class BaseComponent : ILocator {
         return FindWebElement().GetCssValue(cssPropertyName);
     });
 
+    private string ForceGetAttribute(string name) => GetAttribute(name) ?? throw new(
+        "Not found attribute: " + name);
+
     /// <inheritdoc />
-    public virtual string? GetAttribute(string name) => CallAction("GetAttribute", () => DoGetAttribute(name));
+    public virtual string? GetAttribute(string name) => CallAction("GetAttribute", () => {
+        if (Configuration.RuntimeConfig.ExperimentalJsActions) {
+            var value = JsFinder.FindAndExecuteJs<object>($"return (el.{name} || el.getAttribute('{name}'))");
+            return value?.ToString();
+        }
+        return FindWebElement().GetAttribute(name);
+    });
 
     /// <inheritdoc />
     public virtual bool HasAttribute(string name) => CallAction("HasAttribute", () => {
         return GetAttribute(name) != null;
     });
-
-    private string RequireGetAttribute(string name) => DoGetAttribute(name) ?? throw new($"Not found attribute {name}");
-
-    private string? DoGetAttribute(string name) => Configuration.RuntimeConfig.ExperimentalJsActions
-            ? JsFinder.FindAndExecuteJs<object>($"return (el.{name} || el.getAttribute('{name}'))")?.ToString()
-            : FindWebElement().GetAttribute(name);
 
     /// <inheritdoc />
     public virtual ILocator Click() => CallAction("Click", () => {
@@ -221,7 +219,7 @@ public abstract class BaseComponent : ILocator {
         ExecuteJs(JsFiles.ReadJsFile("dragAndDrop.js") + "executeDragAndDrop(el, arguments[0])", targetEl);
 
         return this;
-// Selenium native implementation (causes problems)
+// Selenium native implementation causes problems
 // new Actions(getDriver()).dragAndDrop(find(), targetEl).perform();
     });
 
@@ -235,7 +233,8 @@ public abstract class BaseComponent : ILocator {
     });
 
     /// <inheritdoc />
-    public virtual TReturnType ExecuteJs<TReturnType>(string jsCode, params object[] jsArgs) => CallAction("ExecuteJs", () => {
+    public virtual TReturnType ExecuteJs<TReturnType>(string jsCode, params object[] jsArgs) => CallAction("ExecuteJs",
+        () => {
             var jsDriver = (IJavaScriptExecutor)GetDriver();
 
             // add return statement for trivial scripts if it's missing e.g. "el.value" => "return el.value"
@@ -259,15 +258,16 @@ public abstract class BaseComponent : ILocator {
     });
 
     /// <inheritdoc />
-    public virtual ILocator WaitForAppear(int? timeoutMs = null, bool throwIfFail = true) => CallAction("WaitForAppear", () => {
-        try {
-            Waiter.WaitFor($"Element appear: \n{CssOrXpath}", () => Find().IsDisplayed, timeoutMs);
-        } catch (Exception) {
-            if (throwIfFail) throw;
-        }
+    public virtual ILocator WaitForAppear(int? timeoutMs = null, bool throwIfFail = true) => CallAction("WaitForAppear",
+        () => {
+            try {
+                Waiter.WaitFor($"Element appear: \n{CssOrXpath}", () => Find().IsDisplayed, timeoutMs);
+            } catch (Exception) {
+                if (throwIfFail) throw;
+            }
 
-        return this;
-    });
+            return this;
+        });
 
     /// <inheritdoc />
     public virtual ILocator WaitForDisappear(int? timeoutMs = null) => CallAction("WaitForDisappear", () => {
@@ -278,12 +278,13 @@ public abstract class BaseComponent : ILocator {
     });
 
     /// <inheritdoc />
-    public virtual ILocator WaitForReload(Action? actionThatTriggerReload = null, int? timeoutMs = null) => CallAction("WaitForReload", () => {
-        var beforeDomId = DomId;
-        if(actionThatTriggerReload != null) actionThatTriggerReload.Invoke();
-        Waiter.WaitFor("Reload element: " + CssOrXpath, () => DomId != beforeDomId, timeoutMs);
-        return this;
-    });
+    public virtual ILocator WaitForReload(Action? actionThatTriggerReload = null, int? timeoutMs = null) => CallAction(
+        "WaitForReload", () => {
+            var beforeDomId = DomId;
+            if (actionThatTriggerReload != null) actionThatTriggerReload.Invoke();
+            Waiter.WaitFor("Reload element: " + CssOrXpath, () => DomId != beforeDomId, timeoutMs);
+            return this;
+        });
 
     /// <summary> Map every found element using JavaScript code.</summary>
     /// <param name="jsMappingCode"> js code where current element is defined as: 'el'</param>
@@ -293,7 +294,7 @@ public abstract class BaseComponent : ILocator {
         () => new JsFinder(GetDriver(), this).FindAllAndMapUsingJs<T>(jsMappingCode));
 
     /// <inheritdoc />
-    public virtual List<T> Map<T>(Func<IFoundLocator, T> func)  => CallAction("Map", () => {
+    public virtual List<T> Map<T>(Func<IFoundLocator, T> func) => CallAction("Map", () => {
         var elements = FindAll().ToList();
         var results = new List<T>();
 
@@ -321,22 +322,6 @@ public abstract class BaseComponent : ILocator {
         }
     }
 
-    private T CallPropertyAction<T>(string propName, Func<T> func) => CallAction("Get" + propName, func);
-    private T CallAction<T>(string actionName, Func<T> func) {
-        T? actionResult;
-        var sw = new Stopwatch();
-        sw.Start();
-        try {
-            //onActionStart
-            actionResult = func.Invoke();
-            //onActionEnd
-        } finally {
-            sw.Stop();
-        }
-
-        return actionResult!;
-    }
-
     private T? TryToExecuteOnElement<T>(Func<IWebElement, T> func) {
         try {
             return func.Invoke(FindWebElement());
@@ -345,5 +330,9 @@ public abstract class BaseComponent : ILocator {
         } catch (StaleElementReferenceException) {
             return default;
         }
+    }
+
+    private T CallAction<T>(string actionName, Func<T> func) {
+        return ActionsEvents.CallAction(this, actionName, func);
     }
 }

@@ -33,8 +33,8 @@ public class AttributesTest : IntegrationBase {
     }
 
     [Fact] void HighlightTest() {
-        S("#spawn").Highlight();
-        S("#spawn").GetCssValue("border").Should().Contain("2px solid");
+        S("#spawn").ScrollIntoView().Highlight();
+        S("#spawn").GetCssValue("outline").Should().Contain("solid");
     }
 
     [Fact] void ScrollIntoViewTest() {

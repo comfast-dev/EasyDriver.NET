@@ -1,23 +1,22 @@
 ﻿# Changelog
 
-[TODO List]
+### [TODO List]
 - [ ] Refactor Description into structured NamesChain array (keep names from all parents)
-- [x] Add configuration json's json-schema documentation
 - [ ] Auto generating markdown docs
-- [ ] Wrap every Action into "Action" to get:
-  - [ ] Add ability to AutoWaiting
-  - [ ] throw detailed ActionFailedException
-  - [ ] Add ability to create action logs
-  - [ ] Add ability to add before/after action hooks
-  - [ ] Add ability to Measure action time/generate statistics/benchmarks
+- [ ] Add ability to AutoWaiting
 - [ ] Logger compatible with Xunit
 - [ ] Auto download browser using selenium-manager
 - [ ] Prepare Chromium browser flags for fastest run possible
+- [ ] Refactor: extract thread context object
+- [ ] Add zero-configuration option (auto-download using selenium-manager)
+- [ ] throw proper errors in case of missing configuration paths (browser and driver)
 
-
-### [0.4.2] - NOT RELEASED
-
-
+### [0.5.1]
+- throw detailed LocatorActionFailedException, LocatorNotFoundException
+- Add ability to create action logs
+- Add ability to add before/after action hooks
+- Add ability to Measure action time/generate statistics/benchmarks
+- Add configuration json's json-schema documentation
 
 ### [0.4.1]
 - Add Experimental find using JS

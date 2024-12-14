@@ -176,7 +176,7 @@ public abstract class BaseComponent : ILocator {
 
     /// <inheritdoc />
     public virtual ILocator Highlight(string cssColor = "red") => CallAction("Highlight", () => {
-        ExecuteJs($"el.style.border = '2px solid {cssColor}'");
+        ExecuteJs($"el.style.outline = '2px solid {cssColor}'");
         return this;
     });
 

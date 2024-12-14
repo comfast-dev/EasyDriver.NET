@@ -8,12 +8,11 @@ namespace EasyDriver.Tests.Integration;
 public class ZSummarizeTests : IntegrationBase {
     public ZSummarizeTests(ITestOutputHelper output, AssemblyFixture fix) : base(output, fix) { }
 
-    [Fact] void DoSummarize() {
-        // Thread.Sleep(2000);
+    [Fact] void PrintSummaryStats() {
         var d = GetDriver();
         S("html").HasCssClass("abc");
 
-        Thread.Sleep(3000);
+        Thread.Sleep(5000);
         _output.WriteLine(ActionsEvents.Stats?.PrintStats());
         _output.WriteLine(WebDriverEvents.Stats?.PrintStats());
     }

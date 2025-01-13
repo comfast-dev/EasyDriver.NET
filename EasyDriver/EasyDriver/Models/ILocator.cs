@@ -5,20 +5,32 @@ namespace Comfast.EasyDriver.Models;
 
 /// <summary> Main locator interface</summary>
 public interface ILocator {
+
+    /// <summary>
+    /// Css / Xpath / combined delimited by ' >> '<br/>
+    /// <example><code>
+    /// XPATH: "//input[@name='user']"
+    /// CSS: "form.focused"
+    /// COMBINED: "form.focused >> //input[@name='user'] >> //span"
+    /// </code></example>
+    /// </summary>
+    public string CssOrXpath { get; }
+
+    /// <summary> Optional Element description (used as metadata for error messages and logs)</summary>
+    public string Description { get; }
+
     /// <summary>Alias to <see cref="SubLocator"/></summary>
-    public ILocator _S(string cssOrXpath, string? description = null);
+    public ILocator _S(string cssOrXpath);
 
     /// <summary> Creates new SubLocator</summary>
     /// <param name="cssOrXpath">CSS / XPATH selector</param>
+    /// <returns>locator to sub-element</returns>
+    public ILocator SubLocator(string cssOrXpath);
+
+    /// <summary> Add description to current locator</summary>
     /// <param name="description">used in error messages and logs</param>
-    /// <returns></returns>
-    public ILocator SubLocator(string cssOrXpath, string? description = null);
-
-    /// <summary> Element selector</summary>
-    public string CssOrXpath { get; }
-
-    /// <summary> Element description (as metadata used for error messages and logs)</summary>
-    public string Description { get; }
+    /// <returns>current locator</returns>
+    public ILocator As(string description);
 
     /// <summary> Get SelectorChain component</summary>
     public SelectorChain SelectorChain => new(CssOrXpath);

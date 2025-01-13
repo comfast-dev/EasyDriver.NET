@@ -25,7 +25,7 @@ public class WebElementFinder : IFinder<IWebElement> {
     private readonly ILocator _locator;
 
     public WebElementFinder(IWebDriver webDriver, string selector)
-        : this(webDriver, new SimpleLocator(selector, "Element")) { }
+        : this(webDriver, new SimpleLocator(selector)) { }
 
     public WebElementFinder(IWebDriver webDriver, ILocator locator) {
         _webDriver = webDriver;

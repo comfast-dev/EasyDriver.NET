@@ -21,6 +21,13 @@ public class FindTest : IntegrationBase {
         ShouldHaveValue(LocateBy("//html").SubLocator("//input"), InputValue);
     }
 
+    [Fact] void FoundLocatorHasDescription() {
+        var locator = LocateBy("//html//input").As("My input");
+
+        Assert.Equal("My input", locator.Description);
+        Assert.Equal("Found: My input", locator.Find().Description);
+    }
+
     [Fact] public void FindCss() {
         ShouldFindCount(S("input"), 2);
         ShouldFindCount(S("html input"), 2);

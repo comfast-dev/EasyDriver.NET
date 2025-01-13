@@ -9,8 +9,8 @@ public class ExceptionsTest : UnitBase {
     public ExceptionsTest(ITestOutputHelper output) : base(output) { }
 
     [Fact] public void ElementNotFoundExceptionTest() {
-        ILocator table = S("//html/table", "My Table");
-        ILocator activeCell = table._S("td.active span", "Active cell");
+        ILocator table = S("//html/table").As("My Table");
+        ILocator activeCell = table._S("td.active span").As("Active cell");
 
         var exception = new LocatorNotFoundException(activeCell, 1);
         exception.ScreenshotPath = "c:/some/path.png";
@@ -25,8 +25,8 @@ Snapshot: c:/some/path.html".Trim());
     }
 
     [Fact] public void ActionFailedExceptionTest() {
-        ILocator table = S("//html/table", "My Table");
-        ILocator activeCell = table._S("td.active span", "Active cell");
+        ILocator table = S("//html/table").As( "My Table");
+        ILocator activeCell = table._S("td.active span").As("Active cell");
 
         var exception = new LocatorActionFailedException(activeCell, "Click");
 
@@ -43,10 +43,9 @@ Snapshot: c:/some/path.html".Trim());
     }
 
     [Fact] public void ClearNewLines() {
-        var ex = new LocatorActionFailedException(S("//html"), "Click", new Exception("example"));
-        Assert.Equal(ex.Message, @"
-Action 'Click' failed at element: 'Locator'
+        var ex = new LocatorActionFailedException(S("//html").As("myLocator"), "Click", new("example"));
+        Assert.Equal(@"Action 'Click' failed at element: 'myLocator'
 Locator: //html
-Cause: example".Trim());
+Cause: example", ex.Message);
     }
 }

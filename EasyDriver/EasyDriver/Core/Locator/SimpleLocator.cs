@@ -1,17 +1,16 @@
 namespace Comfast.EasyDriver.Core.Locator;
 
-/// <summary> Basic locator</summary>
+/// <summary> Basic ILocator implementation.</summary>
 public class SimpleLocator : BaseComponent {
     /// <inheritdoc />
     public override string CssOrXpath { get; }
 
     /// <inheritdoc />
-    public override string Description { get; }
+    public override sealed string Description { get; protected set; }
 
     /// <param name="selector">CSS or XPATH</param>
-    /// <param name="description">Locator description for logs</param>
-    public SimpleLocator(string selector, string? description) {
+    public SimpleLocator(string selector) {
         CssOrXpath = selector;
-        Description = description ?? "SimpleLocator";
+        Description = "";
     }
 }

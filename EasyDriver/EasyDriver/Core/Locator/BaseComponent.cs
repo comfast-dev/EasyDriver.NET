@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Text.RegularExpressions;
 using Comfast.Commons.Utils;
 using Comfast.EasyDriver.Core.Errors;
@@ -12,25 +11,24 @@ namespace Comfast.EasyDriver.Core.Locator;
 
 /// <summary> Base class for component. </summary>
 public abstract class BaseComponent : ILocator {
-    /// <summary>
-    /// Css / Xpath / both delimited by ' >> '<br/>
-    /// <example><code>
-    /// XPATH: "//input[@name='user']"
-    /// CSS: "form.focused"
-    /// BOTH: "form.focused >> //input[@name='user'] >> //span"
-    /// </code></example>
-    /// </summary>
+
+    /// <inheritdoc />
     public abstract string CssOrXpath { get; }
 
-    /// <summary> Optional metadata, used in logs and error messages. </summary>
-    public abstract string Description { get; }
+    /// <inheritdoc />
+    public virtual string Description { get; protected set; } = "";
 
     /// <inheritdoc />
-    public ILocator _S(string cssOrXpath, string? description) => SubLocator(cssOrXpath, description);
+    public ILocator _S(string cssOrXpath) => SubLocator(cssOrXpath);
 
     /// <inheritdoc />
-    public ILocator SubLocator(string cssOrXpath, string? description) {
-        return new SimpleLocator(CssOrXpath + SelectorChain.SelectorSeparator + cssOrXpath, description);
+    public ILocator SubLocator(string cssOrXpath) {
+        return new SimpleLocator(CssOrXpath + SelectorChain.SelectorSeparator + cssOrXpath);
+    }
+
+    public ILocator As(string description) {
+        Description = description;
+        return this;
     }
 
     /// <inheritdoc />
@@ -52,13 +50,13 @@ public abstract class BaseComponent : ILocator {
 
     /// <inheritdoc />
     public virtual IFoundLocator Find() => CallAction("Find", () => {
-        return new FoundLocator(CssOrXpath, Description, FindWebElement());
+        return new FoundLocator(this, FindWebElement());
     });
 
     /// <inheritdoc />
     public virtual IList<IFoundLocator> FindAll() => CallAction("FindAll", () => {
         return FindWebElements()
-            .Select(webEl => (IFoundLocator)new FoundLocator(CssOrXpath, Description, webEl))
+            .Select(webEl => (IFoundLocator)new FoundLocator(this, webEl))
             .ToList();
     });
 
@@ -76,15 +74,16 @@ public abstract class BaseComponent : ILocator {
         if (number < 1) throw new Exception($"Invalid number: {number}. Nth is indexed from 1");
         var all = FindWebElements();
         if (all.Count < number)
-            throw new Exception($"Not found element #{number}. There are {all.Count} matched by:\n{CssOrXpath}");
+            throw new($"Not found element #{number}. There are {all.Count} matched by:\n{CssOrXpath}");
 
-        return new FoundLocator(CssOrXpath, Description, all[number - 1]);
+        return new FoundLocator(this, all[number - 1]);
     });
 
     /// <inheritdoc />
-    public virtual string Text => CallAction("Text", () => ExecuteJs<string>("return el.innerText"));
+    public virtual string Text => CallAction("Text", () =>
+        ExecuteJs<string>("return el.innerText"));
 
-    /// <inheritdoc />
+    /// <inheritdoc /> bnbnb
     public virtual string[] Texts => CallAction("Texts", () =>
         Configuration.RuntimeConfig.ExperimentalJsActions
             ? MapUsingJs<string>("return el.innerText").ToArray()
@@ -135,8 +134,8 @@ public abstract class BaseComponent : ILocator {
     /// <inheritdoc />
     public virtual string? GetAttribute(string name) => CallAction("GetAttribute", () => {
         if (Configuration.RuntimeConfig.ExperimentalJsActions) {
-            var value = JsFinder.FindAndExecuteJs<object>($"return (el.{name} || el.getAttribute('{name}'))");
-            return value?.ToString();
+            return JsFinder.FindAndExecuteJs<object>($"return (el.{name} || el.getAttribute('{name}'))")
+                .ToString();
         }
         return FindWebElement().GetAttribute(name);
     });
@@ -167,10 +166,9 @@ public abstract class BaseComponent : ILocator {
         if (tag != "input" && tag != "textarea")
             throw new NotImplementedException($"SetValue doesn't handle {tag}. Handle only input / textarea.");
 
-        var el = found;
         HandleHighlight();
-        el.Clear();
-        el.SendKeys(text);
+        found.Clear();
+        found.SendKeys(text);
         return this;
     });
 
@@ -304,7 +302,7 @@ public abstract class BaseComponent : ILocator {
                 results.Add(func.Invoke(element));
             } catch (Exception e) {
                 var elementHtml = element.OuterHtml.TrimToMaxLength(100);
-                throw new Exception($"Mapping failed during processing element [{i}/{elements.Count}]: " + elementHtml,
+                throw new($"Mapping failed during processing element [{i}/{elements.Count}]: " + elementHtml,
                     e);
             }
         }

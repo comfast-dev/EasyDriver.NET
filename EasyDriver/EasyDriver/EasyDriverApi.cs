@@ -17,14 +17,13 @@ public static class EasyDriverApi {
     public static IWebDriver GetDriver() => DriverProvider.GetDriver();
 
     /// Alias of <see cref="LocateBy"/>
-    public static ILocator S(string cssOrXpath, string description = "Locator") {
-        return new SimpleLocator(cssOrXpath, description);
+    public static ILocator S(string cssOrXpath) {
+        return new SimpleLocator(cssOrXpath);
     }
 
+    /// <summary> Create new locator </summary>
     /// <param name="cssOrXpath">Locator string</param>
-    /// <param name="description">Locator description</param>
-    /// <returns></returns>
-    public static ILocator LocateBy(string cssOrXpath, string description = "Locator") {
-        return new SimpleLocator(cssOrXpath, description);
+    public static ILocator LocateBy(string cssOrXpath) {
+        return new SimpleLocator(cssOrXpath);
     }
 }

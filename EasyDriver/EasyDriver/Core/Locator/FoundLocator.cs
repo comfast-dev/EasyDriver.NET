@@ -11,9 +11,9 @@ public class FoundLocator : SimpleLocator, IFoundLocator {
     /// <summary> Represent DOM element found in browser</summary>
     public IWebElement FoundWebElement { get; }
 
-    public FoundLocator(string selector, string? description, IWebElement foundElement)
-        : base(selector, description ?? "FoundLocator") {
+    public FoundLocator(ILocator locator, IWebElement foundElement) : base(locator.CssOrXpath) {
         FoundWebElement = foundElement;
+        As("Found: " + locator.Description);
     }
 
     /// <summary> Override DoFind with same instance</summary>

@@ -29,7 +29,7 @@ public class JsFinder : IFinder<IWebElement> {
     private readonly string[] _selectorsArgs;
     private readonly ILocator _locator;
 
-    public JsFinder(IWebDriver webDriver, string selector) : this(webDriver, new SimpleLocator(selector, "Element")) { }
+    public JsFinder(IWebDriver webDriver, string selector) : this(webDriver, new SimpleLocator(selector)) { }
 
     public JsFinder(IWebDriver webDriver, ILocator locator) {
         _jsDriver = (IJavaScriptExecutor)webDriver;

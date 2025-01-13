@@ -12,8 +12,11 @@ public class LocatorActionFailedException : LocatorException {
         ActionName = actionName;
     }
 
-    public override string Message =>
-        ClearNewLines(@$"
+    public override string Message
+    {
+        get
+        {
+            var msg = @$"
 Action '{ActionName}' failed at element: '{Locator.Description}'
 Locator: {Locator.CssOrXpath}
 {OptionalLine("Element HTML", ElementHtml?.TrimToMaxLength(300))}
@@ -21,5 +24,8 @@ Locator: {Locator.CssOrXpath}
 {OptionalLine("Screenshot", ScreenshotPath)}
 {OptionalLine("Snapshot", SnapshotPath)}
 {OptionalLine("Cause", CleanSeleniumCauseMessage(InnerException))}
-");
+";
+            return ClearNewLines(msg);
+        }
+    }
 }

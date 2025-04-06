@@ -12,7 +12,7 @@
   - [ ] Auto download browser using selenium-manager
   - [ ] Prepare Chromium browser flags for fastest run possible
   - [ ] throw proper errors in case of missing configuration paths (browser and driver)
-- [ ] Refactor: extract thread context object
+- [ ] Refactor: Add ThreadContext and GlobalContext containers
 
 ### [0.5.1]
 - throw detailed LocatorActionFailedException, LocatorNotFoundException

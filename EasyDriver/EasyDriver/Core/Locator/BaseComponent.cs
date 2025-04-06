@@ -112,7 +112,7 @@ public abstract class BaseComponent : ILocator {
 
     /// <inheritdoc />
     public string DomId => CallAction("DomId", () =>
-        FindWebElement().ReadField<string>("elementId")
+        FindWebElement().ReadField<string>("id")
         ?? throw new("Fatal error: field elementId is null"));
 
     /// <inheritdoc />

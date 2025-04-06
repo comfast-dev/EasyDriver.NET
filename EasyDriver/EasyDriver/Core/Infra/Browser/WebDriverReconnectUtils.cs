@@ -13,10 +13,11 @@ public static class WebDriverReconnectUtils {
 
     public static (string url, string ssid) ParseSessionString(string sessionString) {
         var data = sessionString.Split(Separator);
+        if (data.Length != 2) throw new($"Invalid session string: '{sessionString}'");
         return (data[0], data[1]);
     }
 
-    public static RemoteWebDriver CreateDriver(string sessionString) {
+    public static RemoteWebDriver ReCreateDriver(string sessionString) {
         var (url, ssid) = ParseSessionString(sessionString);
         return new(
             new FixedSessionExecutor(url, ssid),
@@ -25,7 +26,7 @@ public static class WebDriverReconnectUtils {
 
     public static bool TestConnection(this IWebDriver driver) {
         try {
-            var shouldNotThrow = driver.Title;
+            var _ = driver.Title;
             return true;
         } catch (Exception) {
             return false;

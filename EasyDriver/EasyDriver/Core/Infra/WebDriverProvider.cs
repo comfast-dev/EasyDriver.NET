@@ -10,16 +10,18 @@ namespace Comfast.EasyDriver.Core.Infra;
 /// - reconnect - try to recreate driver based on previous session<br/>
 /// - autoClose - close browser after process exit
 /// </summary>
-public class WebDriverProvider : IWebDriverProvider {
-    private readonly ThreadLocal<IWebDriver> _instances;
+public class WebDriverProvider : IWebDriverProvider, IDisposable {
+    public const string SessionInfoFilePath = "EasyDriver/WebDriverSessionInfo.txt";
+
     private readonly TempFile _sessionFile;
+    private readonly ThreadLocal<IWebDriver> _instances;
     private readonly BrowserConfig _browserConfig;
     private IBrowserRunner _browserRunner;
 
     /// <summary> Create new instance based on config.</summary>
     public WebDriverProvider(BrowserConfig browserConfig) {
         _instances = new ThreadLocal<IWebDriver>(ProvideDriverInstance, true);
-        _sessionFile = new("EasyDriver/WebDriverSessionInfo.txt");
+        _sessionFile = new(SessionInfoFilePath);
         _browserConfig = browserConfig;
         _browserRunner = new BrowserRunner(browserConfig);
 
@@ -57,15 +59,24 @@ public class WebDriverProvider : IWebDriverProvider {
     /// <summary> Run/reconnect to Browser instance</summary>
     private IWebDriver ProvideDriverInstance() {
         if (_browserConfig.Reconnect && _sessionFile.Exists) {
-            var sessionInfo = _sessionFile.ReadFile();
-            var reconnectedDriver = CreateDriver(sessionInfo);
-            if (reconnectedDriver.TestConnection()) return reconnectedDriver;
-        } //in case of fail reconnection run new Browser
+            try {
+                var sessionString = _sessionFile.ReadFile();
+                var reconnectedDriver = ReCreateDriver(sessionString);
+                if (reconnectedDriver.TestConnection()) return reconnectedDriver;
+            } catch (Exception) {
+                // ignored
+            }
+        }
 
+        //in case of reconnection fail - run new Browser
         var newDriver = _browserRunner.RunNewBrowser();
         var newBrowserSessionString = ExtractSessionString(newDriver);
         if (_browserConfig.Reconnect) _sessionFile.SaveFile(newBrowserSessionString);
 
-        return CreateDriver(newBrowserSessionString);
+        return ReCreateDriver(newBrowserSessionString);
+    }
+
+    public void Dispose() {
+        _instances.Dispose();
     }
 }

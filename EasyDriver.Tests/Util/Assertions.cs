@@ -34,6 +34,10 @@ public static class Assertions {
         Assert.False(locator.Exists, "should not find: " + locator);
     }
 
+    public static void ShouldBeInRange(int actual, int rangeFrom, int rangeTo) {
+        actual.Should().BeInRange(rangeFrom, rangeTo);
+    }
+
     public static void ShouldEqual(object actual, object expected) {
         Assert.Equal(expected, actual);
     }

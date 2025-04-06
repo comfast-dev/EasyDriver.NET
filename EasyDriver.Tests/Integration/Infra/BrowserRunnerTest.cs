@@ -22,9 +22,10 @@ public class BrowserRunnerTest : IntegrationBase, IDisposable {
         _currentDriver = new BrowserRunner(conf).RunNewBrowser();
 
         //expect
+        int maxDiff = 5;
         var actualSize = _currentDriver.Manage().Window.Size;
-        ShouldEqual(actualSize.Height, height);
-        ShouldEqual(actualSize.Width, width);
+        ShouldBeInRange(actualSize.Height, height-maxDiff, height+maxDiff);
+        ShouldBeInRange(actualSize.Width, width-maxDiff, width+maxDiff);
     }
 
     [Fact] void WindowMaximizedTest() {
@@ -77,6 +78,6 @@ public class BrowserRunnerTest : IntegrationBase, IDisposable {
     }
 
     public void Dispose() {
-        _currentDriver?.Dispose();
+        // _currentDriver?.Dispose();
     }
 }

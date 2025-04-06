@@ -66,7 +66,7 @@ public class JsFinder : IFinder<IWebElement> {
         var funcCode = $"\nfunction func(el) {{\n{jsCode}\n}}";
         var result = _jsDriver.ExecuteScript(
             FinderJsCode + funcCode + "return Array.from(findAll(arguments)).map(func)", _selectorsArgs);
-        return ConvertJsCollectionResult<T>(result);
+        return ConvertJsCollectionResult<T>(result!);
     }
 
     private static IList<T> ConvertJsCollectionResult<T>(object result) {
